@@ -3,11 +3,14 @@
 // =========================================================================
 const BASE_REPO_URL = 'https://api.github.com/repos/blancapamtor/pruebaEdicionNataliareal/contents/NATABAILE%20pruebaedicion';
 
-// Helper genérico para extraer campos del Frontmatter YAML en Markdown
+// Helper genérico para extraer campos del Frontmatter YAML en Markdown (Mejorado)
 function getField(content, fieldName) {
-  const regex = new RegExp(`${fieldName}:\\s*"?([^"\\n]+)"?`);
+  const regex = new RegExp(`^${fieldName}:\\s*(?:"([^"]*)"|'([^']*)'|([^\\n\\r]*))`, 'm');
   const match = content.match(regex);
-  return match ? match[1].trim() : '';
+  if (match) {
+    return (match[1] || match[2] || match[3] || '').trim();
+  }
+  return '';
 }
 
 // =========================================================================
@@ -18,15 +21,10 @@ function updateDateBadge() {
   if (!badgeElement) return;
 
   const fechaActual = new Date();
-  
-  // Obtenemos el nombre del mes en español
   let mes = fechaActual.toLocaleDateString('es-ES', { month: 'long' });
   const anio = fechaActual.getFullYear();
-
-  // Ponemos la primera letra del mes en mayúscula
   mes = mes.charAt(0).toUpperCase() + mes.slice(1);
 
-  // Formato final: "Agosto 2026"
   badgeElement.textContent = `${mes} ${anio}`;
 }
 
@@ -92,7 +90,7 @@ async function renderNews() {
               </div>
             </article>
           `;
-          break; // Solo pintamos la primera destacada
+          break;
         }
       }
     }
@@ -100,7 +98,7 @@ async function renderNews() {
     console.error('Error cargando noticias destacadas:', error);
   }
 
-  // 2. CARGAR NOTICIAS SECUNDARIAS (LATERALE)
+  // 2. CARGAR NOTICIAS SECUNDARIAS (LATERALES)
   try {
     const resSecondary = await fetch(`${BASE_REPO_URL}/content/noticias_secundarias`);
     if (resSecondary.ok) {
@@ -123,13 +121,15 @@ async function renderNews() {
 
           secondaryContainer.innerHTML += `
             <article class="news-card card-secondary">
-              <div class="card-badge-row" style="display: flex; align-items: center; gap: 8px;">
+              <div class="card-badge-row" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                 <span class="badge badge-subtle">${tag}</span>
-                ${statusTag ? `<span class="status-indicator" style="font-size: 12px; color: #6b7280; font-weight: 500;">${statusTag}</span>` : ''}
+                ${statusTag ? `<span class="status-indicator" style="font-size: 13px; color: #6b7280; font-weight: 500;">${statusTag}</span>` : ''}
               </div>
               
-              <h3 class="card-title" style="margin-bottom: ${subtitle ? '4px' : '12px'};">${title}</h3>
-              ${subtitle ? `<p style="font-size: 14px; color: #4b5563; margin: 0 0 12px 0; font-weight: 500;">${subtitle}</p>` : ''}
+              <h3 class="card-title" style="margin-bottom: 6px;">${title}</h3>
+              
+              <!-- Subtítulo con estilo destacado -->
+              ${subtitle ? `<p class="card-subtitle-highlight" style="font-size: 15px; color: #1f2937; font-weight: 600; margin: 0 0 14px 0; line-height: 1.4;">${subtitle}</p>` : ''}
               
               ${dateStr ? `
               <div class="card-location" style="margin-bottom: 6px;">
@@ -143,14 +143,15 @@ async function renderNews() {
               </div>` : ''}
 
               ${location ? `
-              <div class="card-location">
+              <div class="card-location" style="margin-bottom: 6px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
                 </svg>
                 <strong>${location}</strong>
               </div>` : ''}
 
-              ${extraInfo ? `<p class="secondary-extra-info" style="margin-top: 10px;">${extraInfo}</p>` : ''}
+              <!-- Info extra con estilo discreto -->
+              ${extraInfo ? `<p class="secondary-extra-info" style="font-size: 13px; color: #6b7280; font-weight: 500; margin-top: 10px;">${extraInfo}</p>` : ''}
 
               <a href="contacto.html" class="btn btn-cyan-outline" style="margin-top: 15px;">
                 <span>${buttonText}</span>
@@ -191,7 +192,6 @@ async function renderClasses() {
         const badge = getField(text, 'badge');
         const order = parseInt(getField(text, 'order')) || 99;
 
-        // Parse de bloques de 'schedules'
         const schedules = [];
         const schedulesBlockMatch = text.match(/schedules:([\s\S]*?)(?=\n[a-z_]+:|$)/i);
 
@@ -216,10 +216,8 @@ async function renderClasses() {
       }
     }
 
-    // Ordenar por el atributo 'order'
     classList.sort((a, b) => a.order - b.order);
 
-    // Pintar HTML de las clases
     container.innerHTML = classList.map(item => `
       <article class="class-card">
         <div class="card-top">
@@ -275,7 +273,7 @@ async function renderClasses() {
 }
 
 // =========================================================================
-// 4. BANNER INTERACTIVO (TYPEIT HUMANO Y FLUIDO)
+// 4. BANNER INTERACTIVO
 // =========================================================================
 function initQuoteBanner() {
   const banner = document.getElementById('quoteBanner');
@@ -287,25 +285,23 @@ function initQuoteBanner() {
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      // Comprueba si el usuario ha llegado escroleando a la sección
       if (entry.isIntersecting) {
         banner.classList.add('is-visible');
 
         if (!typeitInstance && typeof TypeIt !== 'undefined') {
           typeitInstance = new TypeIt('#typeitQuote', {
-            speed: 50,           // Velocidad fluida y cómoda
-            lifeLike: true,      // Micro-variaciones humanas entre teclas
+            speed: 50,
+            lifeLike: true,
             cursorChar: '|',
-            // Quitado: waitUntilVisible (lo gestiona el IntersectionObserver)
           })
           .type("Un espacio para soltarte y disfrutarr")
-          .pause(180)            // Micro-pausa de duda
-          .delete(1)             // Borra la 'r' extra
+          .pause(180)
+          .delete(1)
           .type(" el proceso,")
-          .pause(450)            // Pausa natural tras la coma
-          .break({ delay: 300 }) // Salto a la segunda línea
+          .pause(450)
+          .break({ delay: 300 })
           .type("donde bailar sin presiones.")
-          .pause(1000)           // Mantiene la frase lista
+          .pause(1000)
           .exec(async () => {
             const cursor = banner.querySelector('.ti-cursor');
             if (cursor) cursor.style.opacity = '0.3';
@@ -313,19 +309,18 @@ function initQuoteBanner() {
           .go();
         }
 
-        // Una vez ejecutado, dejamos de observar para que no se repita
         observer.unobserve(banner);
       }
     });
   }, { 
-    threshold: 0.4 // 0.4 significa que arrancará cuando el 40% del banner sea visible al hacer scroll
+    threshold: 0.4 
   });
 
   observer.observe(banner);
 }
 
 // =========================================================================
-// INICIALIZACIÓN UNIFICADA AL CARGAR EL DOM
+// INICIALIZACIÓN UNIFICADA
 // =========================================================================
 document.addEventListener('DOMContentLoaded', () => {
   updateDateBadge();

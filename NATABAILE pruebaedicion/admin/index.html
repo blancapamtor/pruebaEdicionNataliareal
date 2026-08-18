@@ -181,10 +181,9 @@
         const title = entry.getIn(['data', 'title']) || 'Escribe aquí el Título...';
         const subtitle = entry.getIn(['data', 'subtitle']) || '';
         
-        // CAMPOS OPCIONALES (Solo se muestran si se rellenan)
+        // CAMPOS OPCIONALES
         const dateStr = entry.getIn(['data', 'date_str']) || ''; 
         const location = entry.getIn(['data', 'location']) || '';
-        
         const extraInfo = entry.getIn(['data', 'extra_info']) || '';
         const buttonText = entry.getIn(['data', 'button_text']) || 'VER DETALLES';
         
@@ -197,16 +196,16 @@
                 h('div', {},
                   
                   // 🏷️ Fila de etiquetas
-                  h('div', { className: 'card-badge-row', style: { display: 'flex', alignItems: 'center', gap: '8px' } },
+                  h('div', { className: 'card-badge-row', style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' } },
                     h('span', { className: 'badge badge-subtle' }, tag),
-                    statusTag ? h('span', { style: { fontSize: '12px', color: '#6b7280', fontWeight: '500' } }, statusTag) : null
+                    statusTag ? h('span', { style: { fontSize: '13px', color: '#6b7280', fontWeight: '500' } }, statusTag) : null
                   ),
 
                   // 📌 Título
-                  h('h3', { className: 'card-title', style: { marginBottom: subtitle ? '4px' : '12px' } }, title),
+                  h('h3', { className: 'card-title', style: { marginBottom: '6px' } }, title),
                   
-                  // ✍️ Subtítulo opcional
-                  subtitle ? h('p', { style: { fontSize: '14px', color: '#4b5563', margin: '0 0 12px 0', fontWeight: '500' } }, subtitle) : null,
+                  // ✍️ Subtítulo: Destacado y llamativo (Lugar original, nuevo estilo)
+                  subtitle ? h('p', { style: { fontSize: '15px', color: '#1f2937', margin: '0 0 14px 0', fontWeight: '600', lineHeight: '1.4' } }, subtitle) : null,
 
                   // 📅 Fecha opcional
                   dateStr ? h('div', { className: 'card-location', style: { marginBottom: '6px' } },
@@ -220,7 +219,7 @@
                   ) : null,
 
                   // 📍 Ubicación opcional
-                  location ? h('div', { className: 'card-location' },
+                  location ? h('div', { className: 'card-location', style: { marginBottom: '6px' } },
                     h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2' },
                       h('path', { d: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z' }),
                       h('circle', { cx: '12', cy: '10', r: '3' })
@@ -228,12 +227,12 @@
                     h('strong', {}, location)
                   ) : null,
 
-                  // 📝 Información extra
-                  extraInfo ? h('p', { className: 'secondary-extra-info', style: { marginTop: '10px' } }, extraInfo) : null
+                  // 📝 Información extra: Discreto (Lugar original, nuevo estilo)
+                  extraInfo ? h('p', { className: 'secondary-extra-info', style: { fontSize: '13px', color: '#6b7280', fontWeight: '500', marginTop: '10px' } }, extraInfo) : null
                 ),
 
                 // 🔘 Botón
-                h('a', { href: fixedButtonLink, className: 'btn-cyan-outline' },
+                h('a', { href: fixedButtonLink, className: 'btn-cyan-outline', style: { marginTop: '15px' } },
                   buttonText,
                   h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2.5' },
                     h('path', { d: 'M5 12h14M12 5l7 7-7 7' })
