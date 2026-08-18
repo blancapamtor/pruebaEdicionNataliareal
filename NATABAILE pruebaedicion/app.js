@@ -39,42 +39,36 @@ async function renderNews() {
 
   if (!featuredContainer || !secondaryContainer) return;
 
+  // 1. CARGAR NOTICIA DESTACADA (AZUL)
   try {
-    const response = await fetch(`${BASE_REPO_URL}/content/noticias`);
-    if (!response.ok) return;
+    const resFeatured = await fetch(`${BASE_REPO_URL}/content/noticias_destacadas`);
+    if (resFeatured.ok) {
+      const filesFeatured = await resFeatured.json();
+      featuredContainer.innerHTML = '';
 
-    const files = await response.json();
+      for (const file of filesFeatured) {
+        if (file.name.endsWith('.md')) {
+          const res = await fetch(file.download_url);
+          const content = await res.text();
 
-    featuredContainer.innerHTML = '';
-    secondaryContainer.innerHTML = '';
-    let hasFeatured = false;
+          const tag = getField(content, 'tag') || 'NOTICIA';
+          const frequency = getField(content, 'frequency');
+          const title = getField(content, 'title');
+          const image = getField(content, 'image') || 'assets/imagenes/base.jpg';
+          const organizer = getField(content, 'organizer');
+          const extraInfo = getField(content, 'extra_info');
+          const buttonText = getField(content, 'button_text') || 'MÁS INFORMACIÓN';
+          const buttonLink = getField(content, 'button_link') || 'contacto.html';
 
-    for (const file of files) {
-      if (file.name.endsWith('.md') || file.name.endsWith('.json')) {
-        const res = await fetch(file.download_url);
-        const content = await res.text();
-
-        const title = getField(content, 'title');
-        const badge = getField(content, 'badge');
-        const metaInfo = getField(content, 'meta_info');
-        const isFeatured = getField(content, 'featured') === 'true';
-        const image = getField(content, 'image') || 'assets/imagenes/base.jpg';
-        const organizer = getField(content, 'organizer');
-        const info = getField(content, 'info');
-        const phone = getField(content, 'phone');
-
-        // Noticia Principal (Columna Izquierda)
-        if (isFeatured && !hasFeatured) {
-          hasFeatured = true;
           featuredContainer.innerHTML = `
             <article class="news-card card-featured">
               <div class="card-media">
                 <img src="${image}" alt="${title}" class="media-img" />
-                <span class="badge badge-accent">${badge}</span>
+                <span class="badge badge-accent">${tag}</span>
               </div>
               <div class="card-content">
                 <div class="card-meta">
-                  <span class="meta-day">${metaInfo}</span>
+                  <span class="meta-day">${frequency}</span>
                 </div>
                 <h3 class="card-title">${title}</h3>
                 
@@ -86,47 +80,82 @@ async function renderNews() {
                     </svg>
                     <span>Organiza: <strong>${organizer}</strong></span>
                   </li>` : ''}
-                  ${phone ? `
+                  ${extraInfo ? `
                   <li>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 22 16.92z"/>
-                    </svg>
-                    <span>Info & Reservas: <a href="tel:${phone}">${phone}</a></span>
+                    <span>${extraInfo}</span>
                   </li>` : ''}
                 </ul>
 
                 <div class="card-actions">
-                  <a href="contacto.html" class="btn btn-dark">Más Información</a>
+                  <a href="${buttonLink}" class="btn btn-dark">${buttonText}</a>
                 </div>
               </div>
             </article>
           `;
-        } else {
-          // Noticias Secundarias (Columna Derecha)
+          break; // Solo pintamos la primera destacada
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error cargando noticias destacadas:', error);
+  }
+
+  // 2. CARGAR NOTICIAS SECUNDARIAS (LATERALE)
+  try {
+    const resSecondary = await fetch(`${BASE_REPO_URL}/content/noticias_secundarias`);
+    if (resSecondary.ok) {
+      const filesSecondary = await resSecondary.json();
+      secondaryContainer.innerHTML = '';
+
+      for (const file of filesSecondary) {
+        if (file.name.endsWith('.md')) {
+          const res = await fetch(file.download_url);
+          const content = await res.text();
+
+          const tag = getField(content, 'tag') || 'CLASE GRATUITA';
+          const statusTag = getField(content, 'status_tag');
+          const title = getField(content, 'title');
+          const subtitle = getField(content, 'subtitle');
+          const dateStr = getField(content, 'date_str');
+          const location = getField(content, 'location');
+          const extraInfo = getField(content, 'extra_info');
+          const buttonText = getField(content, 'button_text') || 'VER DETALLES';
+
           secondaryContainer.innerHTML += `
             <article class="news-card card-secondary">
-              <div class="card-badge-row">
-                <span class="badge badge-subtle">${badge}</span>
-                <span class="status-indicator">${metaInfo}</span>
+              <div class="card-badge-row" style="display: flex; align-items: center; gap: 8px;">
+                <span class="badge badge-subtle">${tag}</span>
+                ${statusTag ? `<span class="status-indicator" style="font-size: 12px; color: #6b7280; font-weight: 500;">${statusTag}</span>` : ''}
               </div>
               
-              <h3 class="card-title">${title}</h3>
+              <h3 class="card-title" style="margin-bottom: ${subtitle ? '4px' : '12px'};">${title}</h3>
+              ${subtitle ? `<p style="font-size: 14px; color: #4b5563; margin: 0 0 12px 0; font-weight: 500;">${subtitle}</p>` : ''}
               
+              ${dateStr ? `
+              <div class="card-location" style="margin-bottom: 6px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <strong>${dateStr}</strong>
+              </div>` : ''}
+
+              ${location ? `
               <div class="card-location">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
                 </svg>
-                <div>
-                  <strong>${organizer}</strong>
-                  <p>${info}</p>
-                </div>
-              </div>
+                <strong>${location}</strong>
+              </div>` : ''}
 
-              <a href="contacto.html" class="btn btn-cyan-outline">
-                <span>Escríbeme</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
+              ${extraInfo ? `<p class="secondary-extra-info" style="margin-top: 10px;">${extraInfo}</p>` : ''}
+
+              <a href="contacto.html" class="btn btn-cyan-outline" style="margin-top: 15px;">
+                <span>${buttonText}</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
               </a>
             </article>
@@ -135,7 +164,7 @@ async function renderNews() {
       }
     }
   } catch (error) {
-    console.error('Error cargando noticias:', error);
+    console.error('Error cargando noticias secundarias:', error);
   }
 }
 
