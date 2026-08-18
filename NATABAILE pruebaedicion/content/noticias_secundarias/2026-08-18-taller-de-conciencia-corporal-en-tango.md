@@ -2,7 +2,7 @@
 tag: CLASE GRATUITA
 status_tag: PLAZAS LIMITADAS
 title: TALLER DE CONCIENCIA CORPORAL EN TANGO
-subtitle: OCTUBRE
+subtitle: Tu cuerpo ya sabe… vení a escucharlo
 date_str: "10 Y 11 de Octubre "
 location: C/ De La Luna 19, 1A
 button_text: ¡APUNTATE!
@@ -12,9 +12,7 @@ Despertemos nuestra conciencia corporal, descubriendo una forma más fluida de m
 
 A través de la exploración y el aprendizaje, encontrarás tus propias maneras de mover tu cuerpo, logrando un baile más preciso, orgánico y auténtico.
 
-> ### Un taller para sentir, comprender y bailar mejor.
->
-> ### Tu cuerpo ya sabe… vení a escucharlo.
+Un taller para sentir, comprender y bailar mejor.
 
 
 
