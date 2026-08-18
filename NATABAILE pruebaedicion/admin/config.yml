@@ -35,14 +35,14 @@ collections:
     summary: "{{title}}  •  [{{tag}}]"
     fields:
       - { label: "Etiqueta Principal", name: "tag", widget: "string", default: "CLASE GRATUITA" }
-      - { label: "Texto / Estado al lado de la etiqueta (Sin fondo)", name: "status_tag", widget: "string", required: false }
+      - { label: "Etiqueta secundaria (opcional)", name: "status_tag", widget: "string", required: false }
       - { label: "Título de la Noticia", name: "title", widget: "string", default: "INICIACIÓN AL BAILE" }
       - { label: "Subtítulo (Opcional)", name: "subtitle", widget: "string", required: false }
       - { label: "Fecha (Opcional)", name: "date_str", widget: "string", required: false, hint: "Ej: 25 de Octubre / Todos los lunes" }
-      - { label: "Lugar / Ubicación (Opcional)", name: "location", widget: "string", required: false, hint: "Ej: Madrid Centro / C/ Paz 4" }
-      - { label: "Información Extra / Descripción", name: "extra_info", widget: "text", required: false }
-      - { label: "Texto del Botón", name: "button_text", widget: "string", default: "VER DETALLES" }
-      
+      - { label: "Lugar (Opcional)", name: "location", widget: "string", required: false, hint: "Ej: Madrid Centro / C/ Paz 4" }
+      - { label: "Información Extra", name: "extra_info", widget: "text", required: false }
+      - { label: "Detalles desplegable", name: "body", widget: "markdown", required: false, hint: "Escribe aquí la explicación detallada que se verá cuando el usuario despliegue la tarjeta." }
+
   # 🕺 COLECCIÓN DE CLASES Y TALLERES
   - name: "clases"
     label: "Clases y Talleres"

@@ -260,7 +260,7 @@ body {
   overflow: hidden;
 }
 .quote-banner .container {
-  max-width: 1200px;
+  max-width: 100px;
   margin: 0 auto;
   min-height: 220px;
   display: flex;
