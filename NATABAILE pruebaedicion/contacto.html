@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacto | Natalia Vicente</title>
+  <link rel="stylesheet" href="assets/css/contacto.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Estilos para la pantalla de éxito tras enviar */
+    .success-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 100%;
+      min-height: 400px;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .success-screen h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      color: #ffffff;
+    }
+
+    .success-screen p {
+      font-size: 1.05rem;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 28px;
+      max-width: 380px;
+      line-height: 1.5;
+    }
+
+    .success-btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      color: #000000;
+      padding: 12px 24px;
+      border-radius: 40px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .success-btn-back:hover {
+      transform: translateY(-2px);
+      background: #f0f0f0;
+    }
+
+    .success-btn-back svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="page-contact">
+
+    <main class="contact-layout">
+      
+      <!-- Mitad Izquierda: Contenido visual y mensaje -->
+      <div class="contact-pane-visual">
+        <a href="index.html" class="btn-back" aria-label="Volver al inicio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </a>
+        
+        <!-- Imagen artística de fondo -->
+        <img src="assets/imagenes/base.jpg" alt="Natalia Vicente" class="visual-bg-image">
+  
+        <div class="visual-body">
+          <h1 class="visual-heading">HABLEMOS!!</h1>
+          <div class="visual-copy">
+            <p class="highlight">Hola, soy Natalia.</p>
+            <p>Si tienes cualquier duda o quieres información sobre las clases no dudes en escribirme.</p>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Mitad Derecha: Formulario de contacto -->
+      <div class="contact-pane-form">
+        <div class="form-inner">
+          
+          <!-- Bloque del Formulario y Cabecera -->
+          <div id="formContainer">
+            <header class="form-header">
+              <h2 class="form-title">CONTÁCTAME</h2>
+              <p class="form-subtitle">Mándame un correo y hablemos!</p>
+            </header>
+    
+            <form id="contactForm" class="main-contact-form" action="https://formsubmit.co/ajax/blanca.pampanas@esdmadrid.es" method="POST">
+              <input type="hidden" name="_captcha" value="false">
+              <input type="hidden" name="_subject" value="Nuevo mensaje desde la web Natalia Vicente">
+
+              <div class="field-item">
+                <input type="text" name="name" placeholder="Nombre" required>
+              </div>
+    
+              <div class="field-item">
+                <input type="email" name="email" placeholder="Email" required>
+              </div>
+    
+              <div class="field-item">
+                <input type="tel" name="phone" placeholder="Número de teléfono">
+              </div>
+    
+              <div class="field-item select-container">
+                <select name="source" required>
+                  <option value="" disabled selected hidden>¿Cómo me encontraste?</option>
+                  <option value="instagram">Instagram</option>
+                  <option value="recommendation">Recomendación de un amigo</option>
+                  <option value="google">Búsqueda en Google</option>
+                  <option value="other">Otro canal</option>
+                </select>
+              </div>
+
+              <div class="field-item">
+                <textarea name="message" placeholder="Escribe tu mensaje aquí..." rows="3" required></textarea>
+              </div>
+    
+              <button type="submit" id="submitBtn" class="submit-button">SEND</button>
+            </form>
+          </div>
+
+          <!-- Mensaje que se muestra únicamente tras enviar con éxito -->
+          <div id="successScreen" class="success-screen">
+            <h2>¡MENSAJE ENVIADO!</h2>
+            <p>Muchas gracias por contactar. He recibido tu mensaje correctamente y te responderé lo antes posible.</p>
+            <a href="index.html" class="success-btn-back">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              Volver al inicio
+            </a>
+          </div>
+  
+          <footer class="contact-meta-info">
+            <div class="meta-card">
+              <div class="meta-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+              </div>
+              <div class="meta-text">
+                <span class="label">NÚMERO</span>
+                <a href="tel:+34667080998">+34 667 08 09 98</a>
+              </div>
+            </div>
+  
+            <div class="meta-card">
+              <div class="meta-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+              </div>
+              <div class="meta-text">
+                <span class="label">EMAIL</span>
+                <a href="mailto:blanca.pampanas@esdmadrid.es">blanca.pampanas@esdmadrid.es</a>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+  
+    </main>
+
+  <script>
+    const form = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formContainer = document.getElementById('formContainer');
+    const successScreen = document.getElementById('successScreen');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'ENVIANDO...';
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          // Ocultar el formulario y mostrar la pantalla de éxito
+          formContainer.style.display = 'none';
+          successScreen.style.display = 'flex';
+        } else {
+          alert('Hubo un problema al enviar el formulario. Por favor inténtalo de nuevo.');
+          submitBtn.disabled = false;
+          submitBtn.innerText = 'SEND';
+        }
+      } catch (error) {
+        alert('Error de conexión. Revisa tu conexión a internet.');
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'SEND';
+      }
+    });
+  </script>
+  
+  </body>
+</html>

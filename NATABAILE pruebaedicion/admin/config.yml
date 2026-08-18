@@ -1,0 +1,71 @@
+backend:
+  name: git-gateway
+  repo: blancapamtor/pruebaEdicionNataliareal
+  branch: main
+
+media_folder: "NATABAILE pruebaedicion/assets/imagenes"
+public_folder: "assets/imagenes"
+
+collections:
+  # 🌟 1. NOTICIAS DESTACADAS (TARJETA GRANDE AZUL)
+  - name: "noticias_destacadas"
+    label: "🌟 Noticias Destacadas (Grandes)"
+    folder: "NATABAILE pruebaedicion/content/noticias_destacadas"
+    create: true
+    delete: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{title}}  •  [{{tag}}]"
+    fields:
+      - { label: "Etiqueta sobre la Foto", name: "tag", widget: "string", default: "NOTICIA", hint: "Ej: EVENTO, NOTICIA" }
+      - { label: "Frecuencia / Días", name: "frequency", widget: "string", hint: "Ej: Cada 15 días, Todos los lunes" }
+      - { label: "Título de la Noticia", name: "title", widget: "string" }
+      - { label: "Imagen de Fondo", name: "image", widget: "image" }
+      - { label: "Organizador", name: "organizer", widget: "string", hint: "Ej: Natalia Vicente / Escuela BNE" }
+      - { label: "Información Extra", name: "extra_info", widget: "text", required: false }
+      - { label: "Texto del Botón", name: "button_text", widget: "string", default: "MÁS INFORMACIÓN" }
+      - { label: "Enlace del Botón", name: "button_link", widget: "string", default: "#" }
+
+  # 📄 NOTICIAS SECUNDARIAS
+  - name: "noticias_secundarias"
+    label: "📄 Noticias Secundarias (Laterales)"
+    folder: "NATABAILE pruebaedicion/content/noticias_secundarias"
+    create: true
+    delete: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{title}}  •  [{{tag}}]"
+    fields:
+      - { label: "Etiqueta Principal", name: "tag", widget: "string", default: "CLASE GRATUITA" }
+      - { label: "Texto / Estado al lado de la etiqueta (Sin fondo)", name: "status_tag", widget: "string", required: false }
+      - { label: "Título de la Noticia", name: "title", widget: "string", default: "INICIACIÓN AL BAILE" }
+      - { label: "Subtítulo (Opcional)", name: "subtitle", widget: "string", required: false }
+      - { label: "Fecha (Opcional)", name: "date_str", widget: "string", required: false, hint: "Ej: 25 de Octubre / Todos los lunes" }
+      - { label: "Lugar / Ubicación (Opcional)", name: "location", widget: "string", required: false, hint: "Ej: Madrid Centro / C/ Paz 4" }
+      - { label: "Información Extra / Descripción", name: "extra_info", widget: "text", required: false }
+      - { label: "Texto del Botón", name: "button_text", widget: "string", default: "VER DETALLES" }
+      
+  # 🕺 COLECCIÓN DE CLASES Y TALLERES
+  - name: "clases"
+    label: "Clases y Talleres"
+    folder: "NATABAILE pruebaedicion/content/clases"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    summary: "{{title}}  •  [{{badge}}]  •  (Orden: {{order}})"
+    fields:
+      - { label: "Etiqueta superior (Categoría / Nivel)", name: "badge", widget: "string", required: true }
+      - { label: "Título Principal de la Tarjeta", name: "title", widget: "string", required: true }
+      - { label: "Orden de Aparición", name: "order", widget: "number", default: 1, value_type: "int" }
+      - label: "CLASES / HORARIOS DE ESTA TARJETA"
+        label_singular: "Clase / Horario"
+        name: "schedules"
+        widget: "list"
+        summary: '📍 {{fields.city}}  •  🕒 {{fields.day}} ({{fields.time_slot}})'
+        fields:
+          - { label: "Título específico para esta clase (Opcional)", name: "sub_title", widget: "string", required: false }
+          - { label: "LUGAR / CIUDAD", name: "city", widget: "string", required: true }
+          - { label: "Día", name: "day", widget: "string", required: true }
+          - { label: "Horario", name: "time_slot", widget: "string", required: true }
+          - { label: "Etiqueta al lado del Día/Hora (Opcional)", name: "meta_extra", widget: "string", required: false }
+          - { label: "DIRECCIÓN COMPLETA", name: "address", widget: "string", required: true }
+          - { label: "Descripción / Info desplegable", name: "description", widget: "text", required: true }
+          - { label: "Enlace de Google Maps", name: "map_link", widget: "string", required: true }

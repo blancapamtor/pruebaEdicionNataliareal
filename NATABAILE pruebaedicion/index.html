@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Natalia Vicente | Baile de Tango</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+  <!-- Navegación principal -->
+  <header class="header">
+    <nav class="navbar">
+      <ul>
+        <li><a href="#sobre-mi">SOBRE MÍ</a></li>
+        <li><a href="#clases">CLASES</a></li>
+        <li><a href="#multimedia">MULTIMEDIA</a></li>
+        <li><a href="#noticias">NOTICIAS</a></li>
+        <li><a href="contacto.html">CONTACTO</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-brand">
+        <h1 class="logo-title">
+          <video autoplay muted playsinline preload="auto">
+            <!-- Para Chrome, Firefox, Edge y Android -->
+            <source src="assets/imagenes/logo-animado.webm" type="video/webm">
+            
+            <!-- Para Safari, macOS e iOS -->
+            <source src="assets/imagenes/logo-animado.mov" type='video/mp4; codecs="hvc1"'>
+            
+            Tu navegador no soporta videos con transparencia.
+          </video>
+        </h1>
+      </div>
+    </section>
+
+    <!-- Sección Conóceme / Sobre Mí -->
+    <section id="sobre-mi" class="about-section">
+      <div class="container">
+        
+        <div class="about-content">
+          <h2>CONÓCEME</h2>
+          <p>
+            Detrás de mi forma de entender el tango; directa, sin poses y enfocada en tu libertad, hay un largo camino de aprendizaje que empezó sobre las puntas de ballet y se pulió en Buenos Aires. Te invito a conocer la historia que transformó mi manera de enseñar.
+          </p>
+
+          <a href="mihistoria.html" class="btn-about-story">
+            <span>MI HISTORIA</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <div class="about-image">
+          <img src="assets/imagenes/horizontal1.jpg" alt="Natalia Vicente bailando tango">
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Sección Banner Interactivo -->
+    <section class="quote-banner" id="quoteBanner">
+      <div class="container">
+        
+        <h2 class="quote-text" id="typeitQuote"></h2>
+        
+      </div>
+    </section>
+
+    <!-- Sección Clases -->
+    <section id="clases" class="classes-section">
+      <div class="container">
+        <div class="classes-header">
+          <span class="eyebrow">CLASES · TEMPORADA <span id="current-year"></span></span>
+          <h2 class="section-title">Elige tu Nivel y Modalidad</h2>
+        </div>
+
+        <!-- Las tarjetas se cargarán dinámicamente aquí -->
+        <div class="classes-grid--4" id="classes-container">
+          <p style="text-align: center; width: 100%;">Cargando clases...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección Multimedia / Galería -->
+    <section id="multimedia" class="multimedia-section">
+      <div class="container">
+        <h2 class="section-title">MULTIMEDIA</h2>
+
+        <div class="gallery-grid">
+          <div class="gallery-item item-1">
+            <img src="https://picsum.photos/600/600?grayscale&random=1" alt="Tango Natalia Vicente">
+          </div>
+          <div class="gallery-item item-2">
+            <img src="https://picsum.photos/1000/800?grayscale&random=2" alt="Tango Natalia Vicente">
+          </div>
+          <div class="gallery-item item-3">
+            <img src="https://picsum.photos/600/900?grayscale&random=3" alt="Tango Natalia Vicente">
+          </div>
+          <div class="gallery-item item-4">
+            <img src="https://picsum.photos/600/500?grayscale&random=4" alt="Tango Natalia Vicente">
+          </div>
+          <div class="gallery-item item-5">
+            <img src="https://picsum.photos/600/500?grayscale&random=5" alt="Tango Natalia Vicente">
+          </div>
+          <div class="gallery-item item-wide">
+            <img src="https://picsum.photos/1400/600?grayscale&random=6" alt="Espectáculo Tango Natalia Vicente">
+          </div>
+          <div class="gallery-item item-b1">
+            <img src="https://picsum.photos/600/600?grayscale&random=7" alt="Tango Natalia Vicente">
+          </div>
+          <div class="gallery-item item-b2">
+            <img src="https://picsum.photos/600/600?grayscale&random=8" alt="Tango Natalia Vicente">
+          </div>
+          <div class="gallery-item item-b3">
+            <img src="https://picsum.photos/600/600?grayscale&random=9" alt="Tango Natalia Vicente">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección Últimas Noticias / Agenda -->
+    <section id="noticias" class="news-section">
+      <div class="news-container">
+        
+        <header class="news-header">
+          <div class="header-titles">
+            <span class="header-tag">Novedades & Agenda</span>
+            <h2 class="header-title">Últimas Noticias</h2>
+          </div>
+          <div class="header-date-badge">
+            <span class="dot"></span>
+            <span class="date-text" id="current-month-badge">Agenda</span>
+          </div>
+        </header>
+
+        <div class="news-grid">
+          <!-- Aquí se inyectará la noticia principal -->
+          <div id="featured-news-container"></div>
+
+          <!-- Aquí se inyectarán las noticias secundarias -->
+          <aside class="news-sidebar" id="secondary-news-container"></aside>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+   <!-- Footer -->
+   <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        
+        <!-- Columna 1: Marca -->
+        <div class="footer-col brand-col">
+          <h3 class="footer-brand">NATALIA <span>VICENTE</span></h3>
+          <p class="footer-description">
+            Clases de baile, talleres y eventos. Encuentra tu ritmo y aprende a disfrutar del baile.
+          </p>
+        </div>
+
+        <!-- Columna 2: Contacto -->
+        <div class="footer-col">
+          <h4 class="footer-title">Contacto</h4>
+          <ul class="footer-contact-list">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+              <a href="tel:+34667080998">+34 667 080 998</a>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              <a href="mailto:natangomadrid@gmail.com">natangomadrid@gmail.com</a>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span>Madrid, España</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Columna 3: Redes Sociales -->
+        <div class="footer-col">
+          <h4 class="footer-title">Sígueme</h4>
+          <div class="footer-socials">
+            <a href="https://www.instagram.com/natavice" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
+            </a>
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+              </svg>
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Copyright -->
+      <div class="footer-bottom">
+        <p>&copy; 2026 Natalia Vicente · Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- CDN de TypeIt.js -->
+  <script src="https://unpkg.com/typeit@8.8.0/dist/index.umd.js"></script>
+
+  <!-- Script Netlify Identity -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  
+  <script src="app.js"></script>
+  
+  <!-- Script para inyectar el año dinámicamente -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const year = new Date().getFullYear();
+      
+      const seasonYear = document.getElementById('current-year');
+      if (seasonYear) seasonYear.textContent = year;
+
+      const footerYear = document.getElementById('footer-year');
+      if (footerYear) footerYear.textContent = year;
+    });
+  </script>
+
+</body>
+</html>

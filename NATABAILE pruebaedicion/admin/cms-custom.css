@@ -1,0 +1,369 @@
+/* ==========================================
+   1. RESET GLOBAL & VARIABLES ADMIN
+   ========================================== */
+   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+   :root {
+     --admin-bg: #f8fafc;
+     --admin-card-bg: #ffffff;
+     --admin-text-main: #0c192c;
+     --admin-text-muted: #64748b;
+     --admin-primary: #00c6f3;
+     --admin-primary-hover: #00b4dd;
+     --admin-primary-light: #e0f7fc;
+     --admin-border: #e2e8f0;
+     --admin-shadow-sm: 0 1px 3px rgba(12, 25, 44, 0.05);
+     --admin-shadow-md: 0 10px 25px -5px rgba(12, 25, 44, 0.05), 0 8px 10px -6px rgba(12, 25, 44, 0.03);
+     --admin-shadow-lg: 0 20px 30px -10px rgba(12, 25, 44, 0.08);
+     --radius-sm: 8px;
+     --radius-md: 12px;
+     --radius-lg: 20px;
+     --radius-full: 9999px;
+     --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+   }
+   
+   *, 
+   *::before, 
+   *::after {
+     box-sizing: border-box;
+     font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+   }
+   
+   body {
+     margin: 0;
+     padding: 0;
+     color: var(--admin-text-main);
+     background-color: var(--admin-bg) !important;
+     -webkit-font-smoothing: antialiased;
+   }
+   
+   /* ==========================================
+      2. ESTILIZADO DE INTERFAZ DECAP CMS
+      ========================================== */
+   header {
+     background-color: var(--admin-card-bg) !important;
+     border-bottom: 1px solid var(--admin-border) !important;
+     box-shadow: var(--admin-shadow-sm) !important;
+   }
+   
+   aside, 
+   [class*="SidebarContainer"] {
+     background-color: var(--admin-card-bg) !important;
+     border-right: 1px solid var(--admin-border) !important;
+   }
+   
+   [class*="SidebarNavLink"] {
+     border-radius: var(--radius-full) !important;
+     color: var(--admin-text-muted) !important;
+     font-weight: 600 !important;
+     font-size: 0.88rem !important;
+     transition: var(--transition) !important;
+   }
+   
+   [class*="SidebarNavLink"]:hover {
+     background-color: var(--admin-primary-light) !important;
+     color: var(--admin-primary-hover) !important;
+   }
+   
+   [class*="SidebarNavLink"][class*="active"],
+   [class*="SidebarNavLink"]:aria-current {
+     background-color: var(--admin-primary) !important;
+     color: #ffffff !important;
+     font-weight: 700 !important;
+     box-shadow: 0 4px 14px rgba(0, 198, 243, 0.3) !important;
+   }
+   
+   input, select, textarea,
+   [class*="ControlContainer"] input,
+   [class*="ControlContainer"] textarea {
+     border-radius: var(--radius-md) !important;
+     border: 1.5px solid var(--admin-border) !important;
+     background-color: var(--admin-card-bg) !important;
+     color: var(--admin-text-main) !important;
+     font-size: 0.92rem !important;
+     padding: 0.75rem 1rem !important;
+     transition: var(--transition) !important;
+   }
+   
+   input:focus, select:focus, textarea:focus,
+   [class*="ControlContainer"] input:focus,
+   [class*="ControlContainer"] textarea:focus {
+     outline: none !important;
+     border-color: var(--admin-primary) !important;
+     box-shadow: 0 0 0 4px rgba(0, 198, 243, 0.15) !important;
+   }
+   
+   label, [class*="ControlLabel"] {
+     font-size: 0.78rem !important;
+     font-weight: 800 !important;
+     text-transform: uppercase !important;
+     letter-spacing: 0.08em !important;
+     color: var(--admin-text-main) !important;
+   }
+   
+   [class*="Card"] {
+     border-radius: var(--radius-lg) !important;
+     border: 1px solid var(--admin-border) !important;
+     box-shadow: var(--admin-shadow-md) !important;
+     background-color: var(--admin-card-bg) !important;
+     transition: var(--transition) !important;
+   }
+   
+   [class*="EditorPreviewPane"] {
+     background-color: var(--admin-bg) !important;
+   }
+   
+   /* ==========================================
+      3. ESTILOS DE LA SECCIÓN NOTICIAS Y AGENDA (WEB)
+      ========================================== */
+   .news-section {
+     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+     color: #0c192c;
+   }
+   
+   /* Badges y etiquetas */
+   .badge {
+     display: inline-block;
+     padding: 4px 10px;
+     border-radius: 6px;
+     font-size: 0.75rem;
+     font-weight: 800;
+     letter-spacing: 0.05em;
+     text-transform: uppercase;
+   }
+   
+   .badge.badge-accent {
+     background-color: #0c192c;
+     color: #ffffff;
+   }
+   
+   .badge.badge-subtle {
+     background-color: #f1f5f9;
+     color: #0c192c;
+     border-left: 3px solid #00c6f3;
+   }
+   
+   /* Segunda etiqueta opcional (ej: Plazas) */
+   .status-indicator-badge {
+     font-size: 0.72rem;
+     font-weight: 800;
+     padding: 3px 8px;
+     background-color: #e2e8f0;
+     color: #0c192c;
+     border-radius: 4px;
+     text-transform: uppercase;
+     letter-spacing: 0.04em;
+   }
+   
+   /* 1. TARJETA DESTACADA / GRANDE (AZUL CIAN) */
+   .card-featured {
+     background-color: #00c6f3;
+     border-radius: 16px;
+     overflow: hidden;
+     display: flex;
+     flex-direction: column;
+     box-shadow: 0 4px 20px rgba(12, 25, 44, 0.05);
+     transition: transform 0.25s ease, box-shadow 0.25s ease;
+   }
+   
+   .card-featured:hover {
+     transform: translateY(-4px);
+     box-shadow: 0 12px 28px rgba(0, 198, 243, 0.25);
+   }
+   
+   .card-featured .card-media {
+     position: relative;
+     height: 220px;
+     overflow: hidden;
+     background-color: #000;
+   }
+   
+   .card-featured .card-media .media-img {
+     width: 100%;
+     height: 100%;
+     background-size: cover;
+     background-position: center;
+     opacity: 0.75;
+     filter: grayscale(100%) contrast(1.1);
+     transition: transform 0.4s ease;
+   }
+   
+   .card-featured:hover .media-img {
+     transform: scale(1.03);
+   }
+   
+   .card-featured .card-media .badge-accent {
+     position: absolute;
+     top: 16px;
+     left: 16px;
+   }
+   
+   .card-featured .card-content {
+     padding: 32px 36px;
+     display: flex;
+     flex-direction: column;
+     flex-grow: 1;
+     justify-content: space-between;
+   }
+   
+   .card-featured .card-meta {
+     font-size: 0.8rem;
+     font-weight: 800;
+     text-transform: uppercase;
+     letter-spacing: 0.08em;
+     color: rgba(12, 25, 44, 0.75);
+     margin-bottom: 6px;
+   }
+   
+   .card-featured .card-title {
+     font-size: 1.85rem;
+     font-weight: 900;
+     text-transform: uppercase;
+     letter-spacing: -0.01em;
+     line-height: 1.15;
+     margin: 0 0 20px;
+     color: #0c192c;
+   }
+   
+   .card-featured .card-details {
+     list-style: none;
+     padding: 0;
+     margin: 0 0 28px;
+     display: flex;
+     flex-direction: column;
+     gap: 10px;
+   }
+   
+   .card-featured .card-details li {
+     display: flex;
+     align-items: center;
+     gap: 10px;
+     font-size: 0.92rem;
+     color: #0c192c;
+   }
+   
+   .card-featured .card-details li svg {
+     width: 17px;
+     height: 17px;
+     flex-shrink: 0;
+     opacity: 0.85;
+   }
+   
+   .card-featured .card-actions .btn-dark {
+     display: inline-block;
+     padding: 12px 26px;
+     background-color: #0c192c;
+     color: #ffffff;
+     font-size: 0.85rem;
+     font-weight: 800;
+     letter-spacing: 0.08em;
+     text-transform: uppercase;
+     text-decoration: none;
+     border-radius: 8px;
+     transition: all 0.2s ease;
+   }
+   
+   .card-featured .card-actions .btn-dark:hover {
+     background-color: #1a2e4a;
+     transform: translateY(-2px);
+     box-shadow: 0 4px 12px rgba(12, 25, 44, 0.2);
+   }
+   
+   /* 2. TARJETA SECUNDARIA (DERECHA / SIDEBAR) */
+   .news-sidebar {
+     display: flex;
+     flex-direction: column;
+     gap: 20px;
+   }
+   
+   .card-secondary {
+     background-color: #ffffff;
+     border: 1.5px solid #e2e8f0;
+     border-radius: 14px;
+     padding: 28px 30px;
+     display: flex;
+     flex-direction: column;
+     justify-content: space-between;
+     transition: all 0.25s ease;
+     box-shadow: 0 2px 10px rgba(12, 25, 44, 0.02);
+   }
+   
+   .card-secondary:hover {
+     border-color: rgba(0, 198, 243, 0.6);
+     transform: translateY(-3px);
+     box-shadow: 0 8px 20px rgba(12, 25, 44, 0.06);
+   }
+   
+   .card-secondary .card-badge-row {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     margin-bottom: 14px;
+   }
+   
+   .card-secondary .card-title {
+     font-size: 1.35rem;
+     font-weight: 900;
+     text-transform: uppercase;
+     letter-spacing: -0.01em;
+     color: #0c192c;
+     margin: 0 0 14px;
+   }
+   
+   .card-secondary .card-location {
+     display: flex;
+     align-items: flex-start;
+     gap: 10px;
+     margin-bottom: 12px;
+   }
+   
+   .card-secondary .card-location svg {
+     width: 18px;
+     height: 18px;
+     color: #00b4dd;
+     flex-shrink: 0;
+     margin-top: 2px;
+   }
+   
+   .card-secondary .card-location strong {
+     font-size: 0.9rem;
+     color: #0c192c;
+     display: block;
+   }
+   
+   .secondary-extra-info {
+     font-size: 0.85rem;
+     color: #64748b;
+     margin: 8px 0 18px 0;
+     line-height: 1.4;
+   }
+   
+   .card-secondary .btn-cyan-outline {
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     gap: 8px;
+     width: 100%;
+     padding: 11px 16px;
+     background-color: transparent;
+     border: 1.5px solid rgba(12, 25, 44, 0.15);
+     color: #0c192c;
+     font-size: 0.82rem;
+     font-weight: 800;
+     letter-spacing: 0.08em;
+     text-transform: uppercase;
+     text-decoration: none;
+     border-radius: 8px;
+     box-sizing: border-box;
+     transition: all 0.2s ease;
+   }
+   
+   .card-secondary:hover .btn-cyan-outline {
+     background-color: #00c6f3;
+     color: #0c192c;
+     border-color: #00c6f3;
+   }
+   
+   .card-secondary:hover .btn-cyan-outline svg {
+     transform: translateX(4px);
+   }

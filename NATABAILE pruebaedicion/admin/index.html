@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de Control | Natalia Vicente</title>
+  
+  <!-- Carga de la fuente Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Estilos personalizados para Decap CMS -->
+  <link rel="stylesheet" href="cms-custom.css" />
+  
+  <!-- Widget Netlify Identity -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+  <!-- Carga de Decap CMS -->
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+  <!-- 🎨 PLANTILLAS DE VISTA PREVIA EN TIEMPO REAL -->
+  <script>
+    // 1. Inyectamos los estilos reales de la web y los personalizados al iframe
+    CMS.registerPreviewStyle('../assets/css/main.css');
+    CMS.registerPreviewStyle('cms-custom.css');
+
+    // ==========================================
+    // 2. COMPONENTE PREVIEW: TARJETA DE CLASE
+    // ==========================================
+    const ClassPreview = createClass({
+      render: function() {
+        const entry = this.props.entry;
+
+        const badge = entry.getIn(['data', 'badge']) || 'CATEGORÍA / ETIQUETA';
+        const title = entry.getIn(['data', 'title']) || 'TÍTULO DE LA CLASE';
+        
+        const schedulesData = entry.getIn(['data', 'schedules']);
+        let schedules = schedulesData ? schedulesData.toJS() : [];
+
+        if (schedules.length === 0) {
+          schedules = [{
+            sub_title: '',
+            city: 'LUGAR (Ej: MADRID CENTRO)',
+            day: 'Lunes y Miércoles',
+            time_slot: '19:00h - 20:30h',
+            meta_extra: 'Avanzado',
+            address: 'C/ Paz 4 (Casa Castilla-La Mancha)',
+            description: 'Escribe aquí la información desplegable...',
+            map_link: '#'
+          }];
+        }
+
+        return h('div', { style: { padding: '30px 15px', background: '#f8fafc', minHeight: '100vh' } },
+          h('article', { className: 'class-card', style: { margin: '0 auto', maxWidth: '420px' } },
+            h('div', { className: 'card-top' },
+              h('span', { className: 'level-badge' }, badge),
+              h('h3', { className: 'card-title' }, title),
+              
+              h('div', { className: 'schedule-block' },
+                schedules.map((s, index) => 
+                  h('div', { key: index, style: { marginBottom: '20px' } },
+                    s.sub_title ? h('h4', { className: 'card-title', style: { fontSize: '1.2rem', marginTop: '15px', marginBottom: '10px' } }, s.sub_title) : null,
+
+                    h('details', { className: 'schedule-item', open: true },
+                      h('summary', {},
+                        h('div', { className: 'summary-header' },
+                          s.city ? h('span', { className: 'city-tag' }, s.city) : null,
+                          
+                          h('div', { className: 'schedule-meta' },
+                            h('strong', {}, s.day || 'Día'),
+                            s.time_slot ? h('span', {}, ` · ${s.time_slot}`) : null,
+                            s.meta_extra ? h('em', {}, ` (${s.meta_extra})`) : null
+                          ),
+                          
+                          s.address ? h('small', { className: 'schedule-address' },
+                            h('svg', { 
+                              viewBox: '0 0 24 24', 
+                              fill: 'none', 
+                              stroke: 'currentColor', 
+                              strokeWidth: '2', 
+                              width: '12', 
+                              height: '12', 
+                              style: { marginRight: '4px', verticalAlign: 'middle' } 
+                            }, 
+                              h('path', { d: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z' }),
+                              h('circle', { cx: '12', cy: '10', r: '3' })
+                            ),
+                            s.address
+                          ) : null
+                        ),
+                        h('div', { className: 'toggle-icon' })
+                      ),
+                      
+                      h('div', { className: 'item-extra-info' },
+                        s.description ? h('p', {}, s.description) : null,
+                        s.map_link ? h('a', { 
+                          href: s.map_link, 
+                          target: '_blank', 
+                          className: 'location-link' 
+                        }, '📍 Ver ubicación en mapa') : null
+                      )
+                    )
+                  )
+                )
+              )
+            ),
+            
+            h('div', { className: 'card-bottom' },
+              h('a', { href: '#', className: 'btn' }, '¡APÚNTATE!')
+            )
+          )
+        );
+      }
+    });
+
+    // ==========================================
+    // 3. PREVISUALIZACIÓN DE NOTICIA DESTACADA (AZUL)
+    // ==========================================
+    const FeaturedNewsPreview = createClass({
+      render: function() {
+        const entry = this.props.entry;
+        const tag = entry.getIn(['data', 'tag']) || 'NOTICIA';
+        const frequency = entry.getIn(['data', 'frequency']) || 'CADA X DÍAS';
+        const title = entry.getIn(['data', 'title']) || 'Escribe aquí el título...';
+        const image = entry.getIn(['data', 'image']);
+        const organizer = entry.getIn(['data', 'organizer']) || '';
+        const extraInfo = entry.getIn(['data', 'extra_info']) || '';
+        const buttonText = entry.getIn(['data', 'button_text']) || 'MÁS INFORMACIÓN';
+        const buttonLink = entry.getIn(['data', 'button_link']) || '#';
+
+        const bgImageStyle = image 
+          ? { backgroundImage: `url(${this.props.getAsset(image)})` } 
+          : { backgroundColor: '#111827' };
+
+        return h('div', { className: 'news-section', style: { padding: '30px 15px', background: '#fcfbf7', minHeight: '100vh' } },
+          h('div', { style: { maxWidth: '580px', margin: '0 auto' } },
+            h('article', { className: 'card-featured' },
+              h('div', { className: 'card-media' },
+                h('div', { className: 'media-img', style: bgImageStyle }),
+                h('span', { className: 'badge badge-accent' }, tag)
+              ),
+              h('div', { className: 'card-content' },
+                h('div', {},
+                  h('div', { className: 'card-meta' }, frequency),
+                  h('h3', { className: 'card-title' }, title),
+                  h('ul', { className: 'card-details' },
+                    organizer ? h('li', {},
+                      h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2' },
+                        h('path', { d: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2' }),
+                        h('circle', { cx: '12', cy: '7', r: '4' })
+                      ),
+                      h('strong', {}, `Org: ${organizer}`)
+                    ) : null,
+                    extraInfo ? h('li', { style: { marginTop: '8px', opacity: 0.9 } },
+                      h('span', {}, extraInfo)
+                    ) : null
+                  )
+                ),
+                h('div', { className: 'card-actions' },
+                  h('a', { href: buttonLink, className: 'btn-dark' }, buttonText)
+                )
+              )
+            )
+          )
+        );
+      }
+    });
+
+    // ==========================================
+    // 4. PREVISUALIZACIÓN DE NOTICIA SECUNDARIA (BLANCA)
+    // ==========================================
+    const SecondaryNewsPreview = createClass({
+      render: function() {
+        const entry = this.props.entry;
+        
+        // Datos del formulario
+        const tag = entry.getIn(['data', 'tag']) || 'CLASE GRATUITA';
+        const statusTag = entry.getIn(['data', 'status_tag']) || '';
+        const title = entry.getIn(['data', 'title']) || 'Escribe aquí el Título...';
+        const subtitle = entry.getIn(['data', 'subtitle']) || '';
+        
+        // CAMPOS OPCIONALES (Solo se muestran si se rellenan)
+        const dateStr = entry.getIn(['data', 'date_str']) || ''; 
+        const location = entry.getIn(['data', 'location']) || '';
+        
+        const extraInfo = entry.getIn(['data', 'extra_info']) || '';
+        const buttonText = entry.getIn(['data', 'button_text']) || 'VER DETALLES';
+        
+        const fixedButtonLink = "#"; 
+
+        return h('div', { className: 'news-section', style: { padding: '30px 15px', background: '#fcfbf7', minHeight: '100vh' } },
+          h('div', { style: { maxWidth: '440px', margin: '0 auto' } },
+            h('article', { className: 'news-sidebar' },
+              h('div', { className: 'card-secondary' },
+                h('div', {},
+                  
+                  // 🏷️ Fila de etiquetas
+                  h('div', { className: 'card-badge-row', style: { display: 'flex', alignItems: 'center', gap: '8px' } },
+                    h('span', { className: 'badge badge-subtle' }, tag),
+                    statusTag ? h('span', { style: { fontSize: '12px', color: '#6b7280', fontWeight: '500' } }, statusTag) : null
+                  ),
+
+                  // 📌 Título
+                  h('h3', { className: 'card-title', style: { marginBottom: subtitle ? '4px' : '12px' } }, title),
+                  
+                  // ✍️ Subtítulo opcional
+                  subtitle ? h('p', { style: { fontSize: '14px', color: '#4b5563', margin: '0 0 12px 0', fontWeight: '500' } }, subtitle) : null,
+
+                  // 📅 Fecha opcional
+                  dateStr ? h('div', { className: 'card-location', style: { marginBottom: '6px' } },
+                    h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2' },
+                      h('rect', { x: '3', y: '4', width: '18', height: '18', rx: '2', ry: '2' }),
+                      h('line', { x1: '16', y1: '2', x2: '16', y2: '6' }),
+                      h('line', { x1: '8', y1: '2', x2: '8', y2: '6' }),
+                      h('line', { x1: '3', y1: '10', x2: '21', y2: '10' })
+                    ),
+                    h('strong', {}, dateStr)
+                  ) : null,
+
+                  // 📍 Ubicación opcional
+                  location ? h('div', { className: 'card-location' },
+                    h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2' },
+                      h('path', { d: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z' }),
+                      h('circle', { cx: '12', cy: '10', r: '3' })
+                    ),
+                    h('strong', {}, location)
+                  ) : null,
+
+                  // 📝 Información extra
+                  extraInfo ? h('p', { className: 'secondary-extra-info', style: { marginTop: '10px' } }, extraInfo) : null
+                ),
+
+                // 🔘 Botón
+                h('a', { href: fixedButtonLink, className: 'btn-cyan-outline' },
+                  buttonText,
+                  h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2.5' },
+                    h('path', { d: 'M5 12h14M12 5l7 7-7 7' })
+                  )
+                )
+              )
+            )
+          )
+        );
+      }
+    });
+
+    // ==========================================
+    // 5. REGISTRO DE PLANTILLAS EN DECAP CMS
+    // ==========================================
+    CMS.registerPreviewTemplate('clases', ClassPreview);
+    CMS.registerPreviewTemplate("noticias_destacadas", FeaturedNewsPreview);
+    CMS.registerPreviewTemplate("noticias_secundarias", SecondaryNewsPreview);
+  </script>
+</body>
+</html>
