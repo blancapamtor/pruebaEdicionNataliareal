@@ -1,0 +1,24 @@
+{
+  "items": [
+    {
+      "title": "Tango Natalia Vicente",
+      "layout_type": "item-2",
+      "image": "assets/imagenes/horizontal1.jpg"
+    },
+    {
+      "title": "Tango Natalia Vicente",
+      "layout_type": "item-1",
+      "image": "assets/imagenes/horizontal3.jpg"
+    },
+    {
+      "title": "Tango Natalia Vicente",
+      "layout_type": "item-1",
+      "image": "assets/imagenes/vertical1.jpg"
+    },
+    {
+      "title": "Tango Natalia Vicente",
+      "layout_type": "item-1",
+      "image": "assets/imagenes/horizontal1.jpg"
+    }
+  ]
+}
