@@ -1,11 +1,11 @@
 // =========================================================================
-// CONFIGURACIÓN DÉCAP CMS & GITHUB (100% AUTOMÁTICO DESDE EL PANEL)
+// CONFIGURACIÓN DECAP CMS & GITHUB
 // =========================================================================
 const REPO_OWNER = 'blancapamtor';
 const REPO_NAME = 'pruebaEdicionNataliareal';
 const BASE_FOLDER = 'NATABAILE pruebaedicion/content';
 
-// Helper genérico para extraer campos del Frontmatter YAML en Markdown
+// Extrae el valor de un campo YAML del archivo Markdown
 function getField(content, fieldName) {
   const regex = new RegExp(`^${fieldName}:\\s*(?:"([^"]*)"|'([^']*)'|([^\\n\\r]*))`, 'm');
   const match = content.match(regex);
@@ -15,7 +15,7 @@ function getField(content, fieldName) {
   return '';
 }
 
-// 1. Lee automáticamente TODOS los archivos .md creados por Decap CMS desde GitHub API
+// 1. Obtiene los nombres de los archivos .md de una carpeta en GitHub API
 async function getFolderFiles(folderName) {
   const time = Date.now();
   const githubApiUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${encodeURIComponent(BASE_FOLDER)}/${folderName}?v=${time}`;
@@ -24,14 +24,13 @@ async function getFolderFiles(folderName) {
     const res = await fetch(githubApiUrl);
     
     if (res.status === 403) {
-      console.warn('⚠️ Límite de la API de GitHub alcanzado temporalmente. Espera unos minutos.');
+      console.warn('⚠️ Límite de peticiones alcanzado. Espera unos minutos o recarga la red.');
       return [];
     }
 
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data)) {
-        // Filtra para coger ÚNICAMENTE los archivos .md generados por el Panel
         return data
           .filter(file => file.name.endsWith('.md'))
           .map(file => file.name);
@@ -44,7 +43,7 @@ async function getFolderFiles(folderName) {
   return [];
 }
 
-// 2. Carga el texto del archivo .md desde Raw GitHub
+// 2. Lee el contenido texto del archivo .md desde Raw GitHub
 async function loadMarkdown(folder, filename) {
   const time = Date.now();
   try {
@@ -57,7 +56,7 @@ async function loadMarkdown(folder, filename) {
 }
 
 // =========================================================================
-// 1. ACTUALIZAR BADGE DE MES Y AÑO EN AGENDA
+// 1. BADGE DE MES Y AÑO EN AGENDA
 // =========================================================================
 function updateDateBadge() {
   const badgeElement = document.getElementById('current-month-badge');
@@ -72,7 +71,7 @@ function updateDateBadge() {
 }
 
 // =========================================================================
-// 2. RENDERIZADO DE NOTICIAS Y AGENDA
+// 2. RENDERIZADO DE NOTICIAS (DESTACADA Y SECUNDARIAS UNIFICADAS)
 // =========================================================================
 async function renderNews() {
   const featuredContainer = document.getElementById('featured-news-container');
@@ -80,8 +79,8 @@ async function renderNews() {
 
   if (!featuredContainer || !secondaryContainer) return;
 
-  // 1. CARGAR NOTICIA DESTACADA (AZUL)
-  const archivosDestacados = await getFolderFiles('noticias_destacadas');
+  // --- 🌟 NOTICIA DESTACADA ---
+  const archivosDestacados = (await getFolderFiles('noticias_destacadas')).reverse();
 
   for (const fileName of archivosDestacados) {
     const content = await loadMarkdown('noticias_destacadas', fileName);
@@ -91,11 +90,21 @@ async function renderNews() {
       const tag = getField(content, 'tag') || 'NOTICIA';
       const frequency = getField(content, 'frequency');
       const title = getField(content, 'title');
+      const subtitle = getField(content, 'subtitle');
+      const location = getField(content, 'location');
       const image = getField(content, 'image') || 'assets/imagenes/base.jpg';
       const organizer = getField(content, 'organizer');
       const extraInfo = getField(content, 'extra_info');
-      const buttonText = getField(content, 'button_text') || 'MÁS INFORMACIÓN';
-      const buttonLink = getField(content, 'button_link') || 'contacto.html';
+
+      // Formateo de párrafos en el cuerpo
+      const bodyMatch = content.split(/---[\r\n]+/);
+      let longText = bodyMatch.length >= 3 ? bodyMatch.slice(2).join('---').trim() : '';
+      if (longText) {
+        longText = longText
+          .replace(/([^\n])\n([^\n\-\*•])/g, '$1 $2')
+          .replace(/\n{2,}/g, '</p><p>')
+          .replace(/\n/g, '<br>');
+      }
 
       featuredContainer.innerHTML = `
         <article class="news-card card-featured">
@@ -104,36 +113,72 @@ async function renderNews() {
             <span class="badge badge-accent">${tag}</span>
           </div>
           <div class="card-content">
-            <div class="card-meta">
-              <span class="meta-day">${frequency}</span>
-            </div>
+            ${frequency ? `<div class="card-meta"><span class="meta-day">${frequency}</span></div>` : ''}
             <h3 class="card-title">${title}</h3>
+            ${subtitle ? `<p class="card-subtitle-highlight" style="font-size: 1rem; color: #1f2937; font-weight: 700; margin: 4px 0 12px 0;">${subtitle}</p>` : ''}
             
-            <ul class="card-details">
+            <ul class="card-details" style="list-style: none; padding: 0; margin-bottom: 12px;">
               ${organizer ? `
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <li style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
                   <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
                 </svg>
                 <span>Organiza: <strong>${organizer}</strong></span>
               </li>` : ''}
-              ${extraInfo ? `
-              <li>
-                <span>${extraInfo}</span>
+
+              ${location ? `
+              <li style="display: flex; align-items: center; gap: 6px; color: #00b4d8; font-weight: 700; margin-bottom: 6px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                </svg>
+                <span>${location}</span>
               </li>` : ''}
+
+              ${extraInfo ? `<li style="margin-top: 4px; font-size: 0.9rem; color: #475569;"><span>${extraInfo}</span></li>` : ''}
             </ul>
 
             <div class="card-actions">
-              <a href="${buttonLink}" class="btn btn-dark">${buttonText}</a>
+              <button class="btn btn-dark js-trigger-expand-featured" type="button" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; border: none; cursor: pointer;">
+                <span class="btn-label">MÁS INFORMACIÓN</span>
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16" style="transition: transform 0.2s ease;">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="expanded-content-featured" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.3);">
+              ${longText ? `<div class="news-body-text" style="font-size: 0.9rem; line-height: 1.6; text-align: left;"><p>${longText}</p></div>` : ''}
             </div>
           </div>
         </article>
       `;
-      break; // Muestra la noticia publicada
+
+      const featCard = featuredContainer.querySelector('.card-featured');
+      const featBtn = featCard.querySelector('.js-trigger-expand-featured');
+      const featContent = featCard.querySelector('.expanded-content-featured');
+      const featLabel = featCard.querySelector('.btn-label');
+      const featIcon = featCard.querySelector('.btn-icon');
+
+      if (featBtn && featContent) {
+        featBtn.addEventListener('click', () => {
+          const isOpening = featContent.style.display === 'none' || !featContent.style.display;
+          if (isOpening) {
+            featContent.style.display = 'block';
+            featLabel.textContent = 'MENOS INFORMACIÓN';
+            featIcon.style.transform = 'rotate(180deg)';
+          } else {
+            featContent.style.display = 'none';
+            featLabel.textContent = 'MÁS INFORMACIÓN';
+            featIcon.style.transform = 'rotate(0deg)';
+          }
+        });
+      }
+
+      break; 
     }
   }
 
-  // 2. CARGAR NOTICIAS SECUNDARIAS (CON DESPLEGABLE)
+  // --- 📄 NOTICIAS SECUNDARIAS ---
   const archivosSecundarios = await getFolderFiles('noticias_secundarias');
   secondaryContainer.innerHTML = '';
 
@@ -142,112 +187,149 @@ async function renderNews() {
     if (rawContent) {
       const tag = getField(rawContent, 'tag') || 'CLASE GRATUITA';
       const statusTag = getField(rawContent, 'status_tag');
-      const title = getField(rawContent, 'title');
+      const title = getField(rawContent, 'title') || 'INICIACIÓN AL BAILE';
       const subtitle = getField(rawContent, 'subtitle');
       const dateStr = getField(rawContent, 'date_str');
       const location = getField(rawContent, 'location');
       const extraInfo = getField(rawContent, 'extra_info');
-      const buttonText = getField(rawContent, 'button_text') || 'MÁS INFORMACIÓN';
 
-      // Extraer el texto largo (cuerpo en Markdown)
       const bodyMatch = rawContent.split(/---[\r\n]+/);
-      const longText = bodyMatch.length >= 3 ? bodyMatch.slice(2).join('---').trim() : '';
+      let longText = bodyMatch.length >= 3 ? bodyMatch.slice(2).join('---').trim() : '';
+      if (longText) {
+        longText = longText
+          .replace(/([^\n])\n([^\n\-\*•])/g, '$1 $2')
+          .replace(/\n{2,}/g, '</p><p>')
+          .replace(/\n/g, '<br>');
+      }
 
       secondaryContainer.innerHTML += `
         <article class="news-card card-secondary">
           <div class="card-badge-row">
             <span class="badge badge-subtle">${tag}</span>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              ${statusTag ? `<span class="status-indicator">${statusTag}</span>` : ''}
-              <!-- Botón X para cerrar -->
-              <button class="card-close-btn" aria-label="Cerrar detalles">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </button>
-            </div>
+            ${statusTag ? `<span class="status-indicator">${statusTag}</span>` : ''}
           </div>
 
-          <!-- Título y Subtítulo -->
           <h3 class="card-title">${title}</h3>
-          ${subtitle ? `<p class="card-subtitle-highlight" style="font-size: 0.95rem; color: #1f2937; font-weight: 600; margin: 0 0 12px 0; line-height: 1.4;">${subtitle}</p>` : ''}
+          ${subtitle ? `<p class="card-subtitle-highlight" style="font-size: 0.95rem; color: #1f2937; font-weight: 600; margin: 0 0 12px 0;">${subtitle}</p>` : ''}
 
-          <!-- Ubicación y Fecha -->
-          ${location ? `
+          ${location || dateStr ? `
           <div class="card-location">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
             </svg>
             <div>
-              <strong>${location}</strong>
+              ${location ? `<strong>${location}</strong>` : ''}
               ${dateStr ? `<p>${dateStr}</p>` : ''}
             </div>
           </div>` : ''}
 
           ${extraInfo ? `<p class="secondary-extra-info" style="font-size: 0.85rem; color: #5a6e82; margin: 0 0 16px 0;">${extraInfo}</p>` : ''}
 
-          <!-- Botón principal de apertura -->
           <button class="btn-cyan-outline js-trigger-expand" type="button">
-            <span>${buttonText}</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
+            <span class="btn-label">MÁS INFORMACIÓN</span>
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16" style="transition: transform 0.2s ease;">
+              <path d="M6 9l6 6 6-6"/>
             </svg>
           </button>
 
-          <!-- ÁREA DESPLEGABLE: Solo muestra el texto largo -->
-          <div class="expanded-content">
-            ${longText ? `<div class="news-body-text" style="font-size: 0.9rem; line-height: 1.6; color: #374151;">${longText.replace(/\n/g, '<br>')}</div>` : ''}
+          <div class="expanded-content" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #e2e8f0;">
+            ${longText ? `<div class="news-body-text" style="font-size: 0.9rem; line-height: 1.6; color: #374151; text-align: left;"><p>${longText}</p></div>` : ''}
           </div>
         </article>
       `;
     }
   }
 
-  // LÓGICA DE INTERACCIÓN DE TARJETAS
   const allCards = secondaryContainer.querySelectorAll('.news-card');
-
   allCards.forEach(card => {
     const triggerBtn = card.querySelector('.js-trigger-expand');
-    const closeBtn = card.querySelector('.card-close-btn');
+    const expandedContent = card.querySelector('.expanded-content');
+    const label = card.querySelector('.btn-label');
+    const icon = card.querySelector('.btn-icon');
 
-    const expandCard = () => {
-      allCards.forEach(c => {
-        if (c === card) {
-          c.classList.add('is-expanded');
-        } else {
-          c.classList.add('is-hidden');
-        }
-      });
-    };
-
-    if (triggerBtn) {
+    if (triggerBtn && expandedContent) {
       triggerBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        expandCard();
-      });
-    }
 
-    card.addEventListener('click', (e) => {
-      if (e.target.closest('.card-close-btn') || e.target.closest('a')) return;
-      if (!card.classList.contains('is-expanded')) {
-        expandCard();
-      }
-    });
+        const isOpening = expandedContent.style.display === 'none' || !expandedContent.style.display;
 
-    if (closeBtn) {
-      closeBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        allCards.forEach(c => {
-          c.classList.remove('is-expanded', 'is-hidden');
-        });
+        if (isOpening) {
+          expandedContent.style.display = 'block';
+          if (label) label.textContent = 'MENOS INFORMACIÓN';
+          if (icon) icon.style.transform = 'rotate(180deg)';
+          card.classList.add('is-expanded');
+        } else {
+          expandedContent.style.display = 'none';
+          if (label) label.textContent = 'MÁS INFORMACIÓN';
+          if (icon) icon.style.transform = 'rotate(0deg)';
+          card.classList.remove('is-expanded');
+        }
       });
     }
   });
 }
 
+// ==========================================
+    // 5. PREVISUALIZACIÓN DE GALERÍA MULTIMEDIA (SIN FILTROS)
+    // ==========================================
+    const GalleryPreview = createClass({
+      render: function() {
+        const entry = this.props.entry;
+        const itemsData = entry.getIn(['data', 'items']);
+        const items = itemsData ? itemsData.toJS() : [];
+
+        const getAsset = this.props.getAsset;
+
+        return h('section', { className: 'multimedia-section', style: { padding: '30px 15px', background: '#ffffff', minHeight: '100vh' } },
+          h('div', { className: 'container' },
+            h('h2', { className: 'section-title', style: { marginBottom: '25px', textAlign: 'center' } }, 'VISTA PREVIA DE GALERÍA'),
+            
+            h('div', { className: 'gallery-grid' },
+              items.map((item, index) => {
+                if (!item.image) return null;
+
+                const imageUrl = getAsset(item.image);
+                const layoutClass = item.layout_type || 'item-1';
+                const altText = item.title || 'Foto Galería Natalia Vicente';
+
+                return h('div', { 
+                  key: index, 
+                  className: 'gallery-item ' + layoutClass,
+                  // Reseteamos cualquier contenedor para evitar overlays o sombras
+                  style: { 
+                    overflow: 'hidden', 
+                    filter: 'none', 
+                    opacity: 1, 
+                    boxShadow: 'none', 
+                    background: 'transparent' 
+                  } 
+                },
+                  h('img', { 
+                    src: imageUrl, 
+                    alt: altText,
+                    // Estilos forzados para anular filtros CSS de la web (grayscale, brightness, etc.)
+                    style: { 
+                      width: '100%', 
+                      height: '100%', 
+                      objectFit: 'cover', 
+                      display: 'block',
+                      filter: 'none !important',
+                      webkitFilter: 'none !important',
+                      mixBlendMode: 'normal !important',
+                      opacity: '1 !important',
+                      transition: 'none !important'
+                    } 
+                  })
+                );
+              })
+            )
+          )
+        );
+      }
+    });
+
 // =========================================================================
-// 3. RENDERIZADO DE CLASES Y TALLERES
+// 4. RENDERIZADO DE CLASES Y TALLERES
 // =========================================================================
 async function renderClasses() {
   const container = document.getElementById('classes-container');
@@ -258,33 +340,75 @@ async function renderClasses() {
 
   for (const fileName of archivosClases) {
     const text = await loadMarkdown('clases', fileName);
-    if (text) {
-      const title = getField(text, 'title');
-      const badge = getField(text, 'badge');
-      const order = parseInt(getField(text, 'order')) || 99;
+    if (!text) continue;
 
-      const schedules = [];
-      const schedulesBlockMatch = text.match(/schedules:([\s\S]*?)(?=\n[a-z_]+:|$)/i);
+    const title = getField(text, 'title');
+    const badge = getField(text, 'badge');
+    const order = parseInt(getField(text, 'order')) || 1;
 
-      if (schedulesBlockMatch) {
-        const rawBlocks = schedulesBlockMatch[1].split('\n  - ').filter(b => b.trim());
+    const schedules = [];
+    const schedulesMatch = text.match(/schedules:([\s\S]*?)(?=\n[a-z_]+:|\n---|$)/i);
 
-        rawBlocks.forEach(rawItem => {
-          const subTitle = getField(rawItem, 'sub_title');
-          const city = getField(rawItem, 'city');
-          const day = getField(rawItem, 'day');
-          const timeSlot = getField(rawItem, 'time_slot');
-          const metaExtra = getField(rawItem, 'meta_extra');
-          const address = getField(rawItem, 'address');
-          const description = getField(rawItem, 'description');
-          const mapLink = getField(rawItem, 'map_link');
+    if (schedulesMatch && schedulesMatch[1]) {
+      const rawBlocks = schedulesMatch[1].split(/\n\s*-\s+(?=(?:sub_title|city|time_slots|address):)/i).filter(b => b.trim());
 
-          schedules.push({ subTitle, city, day, timeSlot, metaExtra, address, description, mapLink });
-        });
-      }
+      rawBlocks.forEach(block => {
+        const getVal = (key) => {
+          const match = block.match(new RegExp(`${key}:\\s*(?:"([^"]*)"|'([^']*)'|([^\\n\\r]*))`, 'i'));
+          return match ? (match[1] || match[2] || match[3] || '').trim() : '';
+        };
 
-      classList.push({ title, badge, order, schedules });
+        const sub_title = getVal('sub_title');
+        const city = getVal('city');
+        const address = getVal('address');
+        const map_link = getVal('map_link');
+
+        let description = '';
+        const descMatch = block.match(/description:\s*(?:>[-+]?|\|[-+]?)?\s*([\s\S]*?)(?=\n\s*(?:map_link|address|city|sub_title|time_slots):|$)/i);
+        if (descMatch && descMatch[1]) {
+          description = descMatch[1]
+            .replace(/^["']|["']$/g, '')
+            .replace(/^>\-?|^\|/g, '')
+            .trim()
+            .replace(/([^\n])\n([^\n\-\*•])/g, '$1 $2')
+            .replace(/\n{3,}/g, '\n\n');
+        }
+
+        const timeSlots = [];
+        const timeSlotsMatch = block.match(/time_slots:([\s\S]*?)(?=\n\s*(?:address|description|map_link|city|sub_title):|$)/i);
+
+        if (timeSlotsMatch && timeSlotsMatch[1]) {
+          const rawSlots = timeSlotsMatch[1].split(/\n\s*-\s+/).filter(s => s.trim());
+          rawSlots.forEach(sBlock => {
+            const getSlotVal = (key) => {
+              const match = sBlock.match(new RegExp(`${key}:\\s*(?:"([^"]*)"|'([^']*)'|([^\\n\\r]*))`, 'i'));
+              return match ? (match[1] || match[2] || match[3] || '').trim() : '';
+            };
+            const day = getSlotVal('day');
+            const time_slot = getSlotVal('time_slot');
+            const meta_extra = getSlotVal('meta_extra');
+            if (day || time_slot) {
+              timeSlots.push({ day, time_slot, meta_extra });
+            }
+          });
+        }
+
+        if (timeSlots.length === 0) {
+          const day = getVal('day');
+          const time_slot = getVal('time_slot') || getVal('horario');
+          const meta_extra = getVal('meta_extra');
+          if (day || time_slot) {
+            timeSlots.push({ day, time_slot, meta_extra });
+          }
+        }
+
+        if (timeSlots.length > 0 || city || address) {
+          schedules.push({ sub_title, city, timeSlots, address, description, map_link });
+        }
+      });
     }
+
+    classList.push({ title, badge, order, schedules });
   }
 
   classList.sort((a, b) => a.order - b.order);
@@ -298,19 +422,31 @@ async function renderClasses() {
         <div class="schedule-block">
           ${item.schedules.map(s => `
             <div style="margin-bottom: 20px;">
-              ${s.subTitle ? `<h4 class="card-title" style="font-size: 1.2rem; margin-top: 15px; margin-bottom: 10px;">${s.subTitle}</h4>` : ''}
+              ${s.sub_title ? `
+                <h4 style="font-size: 0.95rem; font-weight: 800; color: #1e293b; letter-spacing: 0.05em; text-transform: uppercase; margin: 20px 0 10px 0;">
+                  ${s.sub_title}
+                </h4>
+              ` : ''}
               
               <details class="schedule-item">
                 <summary>
                   <div class="summary-header">
-                    ${s.city ? `<span class="city-tag">${s.city}</span>` : ''}
-                    <div class="schedule-meta">
-                      <strong>${s.day}</strong>
-                      ${s.timeSlot ? `<span> · ${s.timeSlot}</span>` : ''}
-                      ${s.metaExtra ? `<em> (${s.metaExtra})</em>` : ''}
-                    </div>
+                    ${s.city ? `
+                      <span class="city-tag" style="display: block; color: #00b4d8; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.05em; margin-bottom: 6px; text-transform: uppercase;">
+                        ${s.city}
+                      </span>
+                    ` : ''}
+                    
+                    ${s.timeSlots.map(ts => `
+                      <div class="schedule-meta" style="margin-bottom: 4px; font-size: 0.95rem; color: #1e293b;">
+                        <strong>${ts.day}</strong>
+                        ${ts.time_slot ? `<span> · ${ts.time_slot}</span>` : ''}
+                        ${ts.meta_extra ? `<span style="color: #6b7280; font-weight: normal;"> (${ts.meta_extra})</span>` : ''}
+                      </div>
+                    `).join('')}
+
                     ${s.address ? `
-                      <small class="schedule-address">
+                      <small class="schedule-address" style="display: flex; align-items: center; gap: 4px; color: #6b7280; margin-top: 6px; font-size: 0.85rem;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
                           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
                         </svg>
@@ -318,13 +454,20 @@ async function renderClasses() {
                       </small>
                     ` : ''}
                   </div>
-                  
                   <div class="toggle-icon"></div>
                 </summary>
                 
-                <div class="item-extra-info">
-                  ${s.description ? `<p>${s.description}</p>` : ''}
-                  ${s.mapLink ? `<a href="${s.mapLink}" target="_blank" rel="noopener noreferrer" class="location-link">📍 Ver ubicación en mapa</a>` : ''}
+                <div class="item-extra-info" style="padding-top: 10px; border-top: 1px dashed #e2e8f0; margin-top: 8px;">
+                  ${s.description ? `
+                    <div style="font-size: 0.88rem; color: #334155; line-height: 1.5; white-space: pre-line; margin-bottom: 8px; text-align: left;">
+                      ${s.description}
+                    </div>
+                  ` : ''}
+                  ${s.map_link ? `
+                    <a href="${s.map_link}" target="_blank" rel="noopener noreferrer" class="location-link" style="display: inline-block; color: #00b4d8; font-weight: 600; text-decoration: none; font-size: 0.85rem; margin-top: 4px;">
+                      📍 Ver ubicación en mapa
+                    </a>
+                  ` : ''}
                 </div>
               </details>
             </div>
@@ -332,7 +475,7 @@ async function renderClasses() {
         </div>
       </div>
 
-      <div class="card-bottom">
+      <div class="card-bottom" style="margin-top: auto; padding-top: 15px;">
         <a href="contacto.html" class="btn">¡APÚNTATE!</a>
       </div>
     </article>
@@ -340,7 +483,7 @@ async function renderClasses() {
 }
 
 // =========================================================================
-// 4. BANNER INTERACTIVO
+// 5. BANNER INTERACTIVO
 // =========================================================================
 function initQuoteBanner() {
   const banner = document.getElementById('quoteBanner');
@@ -355,43 +498,112 @@ function initQuoteBanner() {
       if (entry.isIntersecting) {
         banner.classList.add('is-visible');
 
-        if (!typeitInstance && typeof TypeIt !== 'undefined') {
+        if (typeof TypeIt !== 'undefined' && !typeitInstance) {
+          quoteTarget.innerHTML = '';
+
           typeitInstance = new TypeIt('#typeitQuote', {
-            speed: 50,
-            lifeLike: true,
+            lifeLike: false,
+            speed: 0,
             cursorChar: '|',
           })
-          .type("Un espacio para soltarte y disfrutarr")
-          .pause(180)
-          .delete(1)
-          .type(" el proceso,")
-          .pause(450)
-          .break({ delay: 300 })
-          .type("donde bailar sin presiones.")
-          .pause(1000)
+          .type("U").pause(144)
+          .type("n").pause(44)
+          .type(" ").pause(72)
+          .type("e").pause(96)
+          .type("s").pause(40)
+          .type("p").pause(64)
+          .type("a").pause(132)
+          .type("c").pause(48)
+          .type("i").pause(68)
+          .type("o").pause(40)
+          .type(" ").pause(60)
+          .type("p").pause(56)
+          .type("a").pause(64)
+          .type("r").pause(56)
+          .type("a").pause(28)
+          .type(" ").pause(88)
+          .type("s").pause(44)
+          .type("o").pause(80)
+          .type("l").pause(112)
+          .type("t").pause(52)
+          .type("a").pause(36)
+          .type("r").pause(64)
+          .type("t").pause(56)
+          .type("e").pause(60)
+          .type(" ").pause(92)
+          .type("y").pause(32)
+          .type(" ").pause(76)
+          .type("d").pause(88)
+          .type("i").pause(68)
+          .type("s").pause(80)
+          .type("f").pause(88)
+          .type("r").pause(60)
+          .type("u").pause(100)
+          .type("t").pause(88)
+          .type("a").pause(32)
+          .type("r").pause(40)
+          .type(" ").pause(96)
+          .type("e").pause(84)
+          .type("l").pause(32)
+          .type(" ").pause(80)
+          .type("p").pause(64)
+          .type("r").pause(32)
+          .type("o").pause(104)
+          .type("c").pause(48)
+          .type("e").pause(104)
+          .type("s").pause(56)
+          .type("o").pause(192)
+          .type(",").pause(56)
+          .break({ delay: 120 })
+          .type("d").pause(56)
+          .type("o").pause(72)
+          .type("n").pause(56)
+          .type("d").pause(52)
+          .type("e").pause(44)
+          .type(" ").pause(148)
+          .type("b").pause(72)
+          .type("a").pause(80)
+          .type("i").pause(92)
+          .type("l").pause(56)
+          .type("a").pause(92)
+          .type("r").pause(32)
+          .type(" ").pause(92)
+          .type("s").pause(52)
+          .type("i").pause(84)
+          .type("n").pause(44)
+          .type(" ").pause(96)
+          .type("p").pause(56)
+          .type("r").pause(76)
+          .type("e").pause(96)
+          .type("s").pause(32)
+          .type("i").pause(64)
+          .type("o").pause(56)
+          .type("n").pause(48)
+          .type("e").pause(100)
+          .type("s").pause(92)
+          .type(".").pause(400)
           .exec(async () => {
             const cursor = banner.querySelector('.ti-cursor');
             if (cursor) cursor.style.opacity = '0.3';
           })
           .go();
-        }
 
-        observer.unobserve(banner);
+          observer.unobserve(banner);
+        }
       }
     });
-  }, { 
-    threshold: 0.4 
-  });
+  }, { threshold: 0.3 });
 
   observer.observe(banner);
 }
 
 // =========================================================================
-// INICIALIZACIÓN UNIFICADA
+// INICIALIZACIÓN GENERAL DE LA WEB
 // =========================================================================
 document.addEventListener('DOMContentLoaded', () => {
   updateDateBadge();
   renderNews();
+  renderGallery();
   renderClasses();
   initQuoteBanner();
 });

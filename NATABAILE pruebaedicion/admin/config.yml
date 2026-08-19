@@ -17,13 +17,14 @@ collections:
     summary: "{{title}}  •  [{{tag}}]"
     fields:
       - { label: "Etiqueta sobre la Foto", name: "tag", widget: "string", default: "NOTICIA", hint: "Ej: EVENTO, NOTICIA" }
-      - { label: "Frecuencia / Días", name: "frequency", widget: "string", hint: "Ej: Cada 15 días, Todos los lunes" }
+      - { label: "Frecuencia / Días", name: "frequency", widget: "string", required: false, hint: "Ej: Cada 15 días, Todos los lunes" }
       - { label: "Título de la Noticia", name: "title", widget: "string" }
+      - { label: "Subtítulo", name: "subtitle", widget: "string", required: false, hint: "Ej: Tu cuerpo ya sabe... vení a escucharlo" }
+      - { label: "Ubicación / Lugar", name: "location", widget: "string", required: false, hint: "Ej: C/ De La Luna 19, 1A" }
       - { label: "Imagen de Fondo", name: "image", widget: "image" }
-      - { label: "Organizador", name: "organizer", widget: "string", hint: "Ej: Natalia Vicente / Escuela BNE" }
+      - { label: "Organizador", name: "organizer", widget: "string", required: false, hint: "Ej: Natalia Vicente / Escuela BNE" }
       - { label: "Información Extra", name: "extra_info", widget: "text", required: false }
-      - { label: "Texto del Botón", name: "button_text", widget: "string", default: "MÁS INFORMACIÓN" }
-      - { label: "Enlace del Botón", name: "button_link", widget: "string", default: "#" }
+      - { label: "Texto del Cuerpo (Markdown)", name: "body", widget: "markdown", required: false, hint: "Escribe aquí la información completa que se desplegará al pulsar 'MÁS INFORMACIÓN'" }
 
   # 📄 NOTICIAS SECUNDARIAS
   - name: "noticias_secundarias"
@@ -55,17 +56,51 @@ collections:
       - { label: "Etiqueta superior (Categoría / Nivel)", name: "badge", widget: "string", required: true }
       - { label: "Título Principal de la Tarjeta", name: "title", widget: "string", required: true }
       - { label: "Orden de Aparición", name: "order", widget: "number", default: 1, value_type: "int" }
-      - label: "CLASES / HORARIOS DE ESTA TARJETA"
-        label_singular: "Clase / Horario"
+      - label: "CLASES / UBICACIONES DE ESTA TARJETA"
+        label_singular: "Ubicación / Grupo"
         name: "schedules"
         widget: "list"
-        summary: '📍 {{fields.city}}  •  🕒 {{fields.day}} ({{fields.time_slot}})'
+        summary: '📍 {{fields.city}}'
         fields:
           - { label: "Título específico para esta clase (Opcional)", name: "sub_title", widget: "string", required: false }
           - { label: "LUGAR / CIUDAD", name: "city", widget: "string", required: true }
-          - { label: "Día", name: "day", widget: "string", required: true }
-          - { label: "Horario", name: "time_slot", widget: "string", required: true }
-          - { label: "Etiqueta al lado del Día/Hora (Opcional)", name: "meta_extra", widget: "string", required: false }
+          - label: "HORARIOS / DÍAS DE ESTA UBICACIÓN"
+            label_singular: "Horario / Día"
+            name: "time_slots"
+            widget: "list"
+            summary: '🕒 {{fields.day}} · {{fields.time_slot}}'
+            fields:
+              - { label: "Día", name: "day", widget: "string", required: true }
+              - { label: "Horario", name: "time_slot", widget: "string", required: true }
+              - { label: "Etiqueta al lado (Opcional)", name: "meta_extra", widget: "string", required: false }
           - { label: "DIRECCIÓN COMPLETA", name: "address", widget: "string", required: true }
           - { label: "Descripción / Info desplegable", name: "description", widget: "text", required: true }
           - { label: "Enlace de Google Maps", name: "map_link", widget: "string", required: true }
+
+          # 📸 GALERÍA MULTIMEDIA
+  
+  - name: "galeria_pagina"
+    label: "📸 Galería Multimedia"
+    files:
+      - file: "NATABAILE pruebaedicion/content/galeria.json"
+        label: "Gestión de Fotos"
+        name: "galeria"
+        fields:
+          - label: "Fotos de la Galería"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - { label: "Título / Alt (Descripción)", name: "title", widget: "string", default: "Tango Natalia Vicente" }
+              - { label: "Imagen", name: "image", widget: "image" }
+              - { 
+                  label: "Tamaño en la Rejilla", 
+                  name: "layout_type", 
+                  widget: "select", 
+                  options: [
+                    { label: "Normal (1x1)", value: "item-1" },
+                    { label: "Destacada (Grande)", value: "item-2" },
+                    { label: "Horizontal (Ancho Completo)", value: "item-wide" }
+                  ], 
+                  default: "item-1" 
+                }

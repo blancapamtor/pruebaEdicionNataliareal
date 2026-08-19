@@ -27,7 +27,7 @@
     CMS.registerPreviewStyle('cms-custom.css');
 
     // ==========================================
-    // 2. COMPONENTE PREVIEW: TARJETA DE CLASE
+    // 2. COMPONENTE PREVIEW: TARJETA DE CLASE (SOPORTE MULTI-HORARIO)
     // ==========================================
     const ClassPreview = createClass({
       render: function() {
@@ -43,9 +43,10 @@
           schedules = [{
             sub_title: '',
             city: 'LUGAR (Ej: MADRID CENTRO)',
-            day: 'Lunes y Miércoles',
-            time_slot: '19:00h - 20:30h',
-            meta_extra: 'Avanzado',
+            time_slots: [
+              { day: 'Lunes', time_slot: '19:00h', meta_extra: 'Avanzado' },
+              { day: 'Miércoles', time_slot: '20:30h', meta_extra: 'Iniciación' }
+            ],
             address: 'C/ Paz 4 (Casa Castilla-La Mancha)',
             description: 'Escribe aquí la información desplegable...',
             map_link: '#'
@@ -59,8 +60,13 @@
               h('h3', { className: 'card-title' }, title),
               
               h('div', { className: 'schedule-block' },
-                schedules.map((s, index) => 
-                  h('div', { key: index, style: { marginBottom: '20px' } },
+                schedules.map((s, index) => {
+                  let slots = s.time_slots && Array.isArray(s.time_slots) ? s.time_slots : [];
+                  if (slots.length === 0 && (s.day || s.time_slot)) {
+                    slots = [{ day: s.day, time_slot: s.time_slot, meta_extra: s.meta_extra }];
+                  }
+
+                  return h('div', { key: index, style: { marginBottom: '20px' } },
                     s.sub_title ? h('h4', { className: 'card-title', style: { fontSize: '1.2rem', marginTop: '15px', marginBottom: '10px' } }, s.sub_title) : null,
 
                     h('details', { className: 'schedule-item', open: true },
@@ -68,10 +74,12 @@
                         h('div', { className: 'summary-header' },
                           s.city ? h('span', { className: 'city-tag' }, s.city) : null,
                           
-                          h('div', { className: 'schedule-meta' },
-                            h('strong', {}, s.day || 'Día'),
-                            s.time_slot ? h('span', {}, ` · ${s.time_slot}`) : null,
-                            s.meta_extra ? h('em', {}, ` (${s.meta_extra})`) : null
+                          slots.map((ts, tsIdx) => 
+                            h('div', { key: tsIdx, className: 'schedule-meta', style: { marginBottom: '4px' } },
+                              h('strong', {}, ts.day || 'Día'),
+                              ts.time_slot ? h('span', {}, ` · ${ts.time_slot}`) : null,
+                              ts.meta_extra ? h('em', {}, ` (${ts.meta_extra})`) : null
+                            )
                           ),
                           
                           s.address ? h('small', { className: 'schedule-address' },
@@ -102,8 +110,8 @@
                         }, '📍 Ver ubicación en mapa') : null
                       )
                     )
-                  )
-                )
+                  );
+                })
               )
             ),
             
@@ -115,20 +123,28 @@
       }
     });
 
-    // ==========================================
+    // ==========================================================
     // 3. PREVISUALIZACIÓN DE NOTICIA DESTACADA (AZUL)
-    // ==========================================
+    // ==========================================================
     const FeaturedNewsPreview = createClass({
+      getInitialState: function() {
+        return { open: false };
+      },
+      toggleOpen: function() {
+        this.setState({ open: !this.state.open });
+      },
       render: function() {
         const entry = this.props.entry;
         const tag = entry.getIn(['data', 'tag']) || 'NOTICIA';
-        const frequency = entry.getIn(['data', 'frequency']) || 'CADA X DÍAS';
+        const frequency = entry.getIn(['data', 'frequency']) || '';
         const title = entry.getIn(['data', 'title']) || 'Escribe aquí el título...';
+        const subtitle = entry.getIn(['data', 'subtitle']) || '';
+        const location = entry.getIn(['data', 'location']) || '';
         const image = entry.getIn(['data', 'image']);
         const organizer = entry.getIn(['data', 'organizer']) || '';
         const extraInfo = entry.getIn(['data', 'extra_info']) || '';
-        const buttonText = entry.getIn(['data', 'button_text']) || 'MÁS INFORMACIÓN';
-        const buttonLink = entry.getIn(['data', 'button_link']) || '#';
+        const body = this.props.widgetFor('body');
+        const isOpen = this.state.open;
 
         const bgImageStyle = image 
           ? { backgroundImage: `url(${this.props.getAsset(image)})` } 
@@ -143,8 +159,9 @@
               ),
               h('div', { className: 'card-content' },
                 h('div', {},
-                  h('div', { className: 'card-meta' }, frequency),
+                  frequency ? h('div', { className: 'card-meta' }, frequency) : null,
                   h('h3', { className: 'card-title' }, title),
+                  subtitle ? h('p', { className: 'card-subtitle-highlight', style: { fontSize: '1rem', color: '#1f2937', fontWeight: '700', margin: '4px 0 12px 0' } }, subtitle) : null,
                   h('ul', { className: 'card-details' },
                     organizer ? h('li', {},
                       h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2' },
@@ -153,23 +170,40 @@
                       ),
                       h('strong', {}, `Org: ${organizer}`)
                     ) : null,
+                    location ? h('li', { style: { color: '#00b4d8', fontWeight: 'bold' } },
+                      h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2' },
+                        h('path', { d: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z' }),
+                        h('circle', { cx: '12', cy: '10', r: '3' })
+                      ),
+                      h('span', {}, location)
+                    ) : null,
                     extraInfo ? h('li', { style: { marginTop: '8px', opacity: 0.9 } },
                       h('span', {}, extraInfo)
                     ) : null
                   )
                 ),
-                h('div', { className: 'card-actions' },
-                  h('a', { href: buttonLink, className: 'btn-dark' }, buttonText)
-                )
+                h('div', { className: 'card-actions', style: { marginTop: '15px' } },
+                  h('button', { 
+                    type: 'button', 
+                    className: 'btn-dark', 
+                    onClick: this.toggleOpen,
+                    style: { width: '100%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', border: 'none' } 
+                  }, 
+                    isOpen ? 'MENOS INFORMACIÓN ▲' : 'MÁS INFORMACIÓN ▼'
+                  )
+                ),
+                isOpen ? h('div', { className: 'expanded-content-featured', style: { marginTop: '15px', paddingTop: '15px', borderTop: '1px dashed rgba(255,255,255,0.3)', textAlign: 'left' } },
+                  body
+                ) : null
               )
             )
           )
         );
       }
     });
-
+    
     // ==========================================
-    // 4. PREVISUALIZACIÓN DE NOTICIA SECUNDARIA (CORREGIDO)
+    // 4. PREVISUALIZACIÓN DE NOTICIA SECUNDARIA
     // ==========================================
     const SecondaryNewsPreview = createClass({
       render: function() {
@@ -189,7 +223,6 @@
             h('article', { className: 'news-sidebar' },
               h('div', { className: 'card-secondary is-expanded' },
                 
-                // Badges y Botón X
                 h('div', { className: 'card-badge-row' },
                   h('span', { className: 'badge badge-subtle' }, tag),
                   h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } },
@@ -203,11 +236,9 @@
                   )
                 ),
 
-                // Título y Subtítulo
                 h('h3', { className: 'card-title' }, title),
                 subtitle ? h('p', { style: { fontSize: '0.95rem', color: '#1f2937', fontWeight: '600', margin: '0 0 12px 0' } }, subtitle) : null,
 
-                // Ubicación y Fecha
                 location ? h('div', { className: 'card-location' },
                   h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2' },
                     h('path', { d: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z' }),
@@ -219,10 +250,8 @@
                   )
                 ) : null,
 
-                // Información Extra Corta
                 extraInfo ? h('p', { style: { fontSize: '0.85rem', color: '#5a6e82', margin: '0 0 16px 0' } }, extraInfo) : null,
 
-                // Botón Desplegable (MÁS INFORMACIÓN / VER MENOS)
                 h('button', { 
                   className: 'btn-cyan-outline', 
                   type: 'button',
@@ -240,7 +269,6 @@
                   )
                 ),
 
-                // Texto Largo y Enlace de Contacto final
                 h('div', { className: 'expanded-content', style: { display: 'block', marginTop: '16px', paddingTop: '16px', borderTop: '1px dashed rgba(12, 25, 44, 0.08)' } },
                   h('div', { style: { fontSize: '0.9rem', lineHeight: '1.6', color: '#374151', marginBottom: '16px' } }, body),
                   h('div', { style: { marginTop: '14px', paddingTop: '10px', borderTop: '1px dashed rgba(0,0,0,0.1)' } },
@@ -264,11 +292,50 @@
     });
 
     // ==========================================
-    // 5. REGISTRO DE PLANTILLAS EN DECAP CMS
+    // 5. PREVISUALIZACIÓN DE GALERÍA MULTIMEDIA (EN TIEMPO REAL)
+    // ==========================================
+    const GalleryPreview = createClass({
+      render: function() {
+        const entry = this.props.entry;
+        const itemsData = entry.getIn(['data', 'items']);
+        const items = itemsData ? itemsData.toJS() : [];
+
+        const getAsset = this.props.getAsset;
+
+        return h('section', { className: 'multimedia-section', style: { padding: '30px 15px', background: '#ffffff', minHeight: '100vh' } },
+          h('div', { className: 'container' },
+            h('h2', { className: 'section-title', style: { marginBottom: '25px', textAlign: 'center' } }, 'PREVISUALIZACIÓN DE GALERÍA'),
+            
+            h('div', { className: 'gallery-grid' },
+              items.map((item, index) => {
+                if (!item.image) return null;
+
+                // Transforma la ruta de imagen local al blob/asset temporal de Decap CMS
+                const imageUrl = getAsset(item.image);
+                const layoutClass = item.layout_type || 'item-1';
+                const altText = item.title || 'Foto Galería Natalia Vicente';
+
+                return h('div', { key: index, className: 'gallery-item ' + layoutClass },
+                  h('img', { 
+                    src: imageUrl, 
+                    alt: altText,
+                    style: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } 
+                  })
+                );
+              })
+            )
+          )
+        );
+      }
+    });
+
+    // ==========================================
+    // 6. REGISTRO DE PLANTILLAS EN DECAP CMS
     // ==========================================
     CMS.registerPreviewTemplate('clases', ClassPreview);
     CMS.registerPreviewTemplate("noticias_destacadas", FeaturedNewsPreview);
     CMS.registerPreviewTemplate("noticias_secundarias", SecondaryNewsPreview);
+    CMS.registerPreviewTemplate("galeria", GalleryPreview);
   </script>
 </body>
 </html>
