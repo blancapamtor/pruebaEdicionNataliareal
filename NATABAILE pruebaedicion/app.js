@@ -96,7 +96,6 @@ async function renderNews() {
       const organizer = getField(content, 'organizer');
       const extraInfo = getField(content, 'extra_info');
 
-      // Formateo de párrafos en el cuerpo
       const bodyMatch = content.split(/---[\r\n]+/);
       let longText = bodyMatch.length >= 3 ? bodyMatch.slice(2).join('---').trim() : '';
       if (longText) {
@@ -269,64 +268,41 @@ async function renderNews() {
   });
 }
 
-// ==========================================
-    // 5. PREVISUALIZACIÓN DE GALERÍA MULTIMEDIA (SIN FILTROS)
-    // ==========================================
-    const GalleryPreview = createClass({
-      render: function() {
-        const entry = this.props.entry;
-        const itemsData = entry.getIn(['data', 'items']);
-        const items = itemsData ? itemsData.toJS() : [];
+// =========================================================================
+// 3. RENDERIZADO DE GALERÍA MULTIMEDIA (DESDE JSON CON FALLBACK DE RUTA)
+// =========================================================================
+async function renderGallery() {
+  const container = document.getElementById('gallery-container');
+  if (!container) return;
 
-        const getAsset = this.props.getAsset;
+  let data = null;
 
-        return h('section', { className: 'multimedia-section', style: { padding: '30px 15px', background: '#ffffff', minHeight: '100vh' } },
-          h('div', { className: 'container' },
-            h('h2', { className: 'section-title', style: { marginBottom: '25px', textAlign: 'center' } }, 'VISTA PREVIA DE GALERÍA'),
-            
-            h('div', { className: 'gallery-grid' },
-              items.map((item, index) => {
-                if (!item.image) return null;
+  // Intento 1: Carga desde la API de GitHub
+  try {
+    const time = Date.now();
+    const rawUrl = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${encodeURIComponent(BASE_FOLDER)}/galeria.json?v=${time}`;
+    const res = await fetch(rawUrl);
+    if (res.ok) data = await res.json();
+  } catch (err) {}
 
-                const imageUrl = getAsset(item.image);
-                const layoutClass = item.layout_type || 'item-1';
-                const altText = item.title || 'Foto Galería Natalia Vicente';
+  // Intento 2: Carga de archivo local de fallback
+  if (!data) {
+    try {
+      const localRes = await fetch('./content/galeria.json');
+      if (localRes.ok) data = await localRes.json();
+    } catch (err) {}
+  }
 
-                return h('div', { 
-                  key: index, 
-                  className: 'gallery-item ' + layoutClass,
-                  // Reseteamos cualquier contenedor para evitar overlays o sombras
-                  style: { 
-                    overflow: 'hidden', 
-                    filter: 'none', 
-                    opacity: 1, 
-                    boxShadow: 'none', 
-                    background: 'transparent' 
-                  } 
-                },
-                  h('img', { 
-                    src: imageUrl, 
-                    alt: altText,
-                    // Estilos forzados para anular filtros CSS de la web (grayscale, brightness, etc.)
-                    style: { 
-                      width: '100%', 
-                      height: '100%', 
-                      objectFit: 'cover', 
-                      display: 'block',
-                      filter: 'none !important',
-                      webkitFilter: 'none !important',
-                      mixBlendMode: 'normal !important',
-                      opacity: '1 !important',
-                      transition: 'none !important'
-                    } 
-                  })
-                );
-              })
-            )
-          )
-        );
-      }
-    });
+  if (data && data.items) {
+    container.innerHTML = data.items.map(item => `
+      <div class="gallery-item ${item.layout_type || 'item-1'}">
+        <img src="${item.image}" alt="${item.title || 'Tango Natalia Vicente'}">
+      </div>
+    `).join('');
+  } else {
+    container.innerHTML = '<p style="text-align: center; color: #64748b;">No hay imágenes disponibles.</p>';
+  }
+}
 
 // =========================================================================
 // 4. RENDERIZADO DE CLASES Y TALLERES
@@ -336,6 +312,12 @@ async function renderClasses() {
   if (!container) return;
 
   const archivosClases = await getFolderFiles('clases');
+  
+  if (archivosClases.length === 0) {
+    container.innerHTML = '<p style="text-align: center; color: #64748b; grid-column: 1/-1;">No se pudieron cargar las clases.</p>';
+    return;
+  }
+
   const classList = [];
 
   for (const fileName of archivosClases) {
@@ -592,6 +574,7 @@ function initQuoteBanner() {
         }
       }
     });
+
   }, { threshold: 0.3 });
 
   observer.observe(banner);
