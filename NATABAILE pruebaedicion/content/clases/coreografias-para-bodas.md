@@ -3,8 +3,8 @@ badge: BODAS
 title: COREOGRAFIAS PARA BODAS
 order: 6
 schedules:
-  - city: A convenir la ubicación de la sala
-    address: .
+  - city: horario convenir
+    address: sala o estudio a convenir.
     map_link: .
     description: ...
 ---
