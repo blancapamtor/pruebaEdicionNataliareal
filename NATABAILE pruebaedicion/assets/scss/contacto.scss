@@ -74,7 +74,7 @@ body.page-contact {
       object-fit: cover;
       object-position: center left;
       filter: grayscale(100%);
-      opacity: 0.15;
+      opacity: 0.10;
       pointer-events: none;
     }
 
@@ -83,6 +83,7 @@ body.page-contact {
       z-index: 2;
       max-width: 480px;
       margin-top: auto; // Asegura que quede abajo de forma limpia
+      margin-bottom: 60px;
 
       .visual-heading {
         color: $color-cyan;
@@ -416,6 +417,10 @@ body.page-contact {
       .btn-back {
         top: 24px;
         left: 24px;
+      }
+
+      .visual-body{
+        margin-bottom: 20px;
       }
     }
 

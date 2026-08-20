@@ -61,7 +61,7 @@ body.page-contact {
   -o-object-position: center left;
      object-position: center left;
   filter: grayscale(100%);
-  opacity: 0.15;
+  opacity: 0.1;
   pointer-events: none;
 }
 .contact-layout .contact-pane-visual .visual-body {
@@ -69,6 +69,7 @@ body.page-contact {
   z-index: 2;
   max-width: 480px;
   margin-top: auto;
+  margin-bottom: 60px;
 }
 .contact-layout .contact-pane-visual .visual-body .visual-heading {
   color: #00c4f0;
@@ -353,6 +354,9 @@ body.page-contact {
   .contact-layout .contact-pane-visual .btn-back {
     top: 24px;
     left: 24px;
+  }
+  .contact-layout .contact-pane-visual .visual-body {
+    margin-bottom: 20px;
   }
   .contact-layout .contact-pane-form {
     padding: 50px 24px;

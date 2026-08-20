@@ -233,13 +233,26 @@ async function renderGallery() {
   const items = await loadJSONContent('galeria');
 
   if (items && items.length > 0) {
-    container.innerHTML = items.map(item => `
-      <div class="gallery-item ${item.layout_type || 'item-1'}">
-        <img src="${item.image}" alt="${item.title || 'Tango Natalia Vicente'}">
-      </div>
-    `).join('');
+    container.innerHTML = items.map(item => {
+      const src = item.file_url || item.image;
+      if (!src) return '';
+
+      const isVideo = item.media_type === 'video' || src.match(/\.(mp4|webm|mov|ogg)$/i);
+      const layoutClass = item.layout_type || 'item-1';
+      const title = item.title || 'Tango Natalia Vicente';
+
+      return `
+        <div class="gallery-item ${layoutClass}">
+          ${isVideo ? `
+            <video src="${src}" autoplay loop muted playsinline controlslist="nodownload"></video>
+          ` : `
+            <img src="${src}" alt="${title}" loading="lazy">
+          `}
+        </div>
+      `;
+    }).join('');
   } else {
-    container.innerHTML = '<p style="text-align: center; color: #64748b;">No hay imágenes disponibles.</p>';
+    container.innerHTML = '<p style="text-align: center; color: #64748b;">No hay multimedia disponible.</p>';
   }
 }
 
@@ -353,82 +366,82 @@ function initQuoteBanner() {
             speed: 0,
             cursorChar: '|',
           })
-          .type("U").pause(29)
-          .type("n").pause(9)
-          .type(" ").pause(14)
-          .type("e").pause(19)
-          .type("s").pause(8)
-          .type("p").pause(13)
-          .type("a").pause(26)
-          .type("c").pause(10)
-          .type("i").pause(14)
-          .type("o").pause(8)
-          .type(" ").pause(12)
-          .type("p").pause(11)
-          .type("a").pause(13)
-          .type("r").pause(11)
-          .type("a").pause(6)
+          .type("U").pause(40)
+          .type("n").pause(15)
+          .type(" ").pause(22)
+          .type("e").pause(28)
+          .type("s").pause(12)
+          .type("p").pause(20)
+          .type("a").pause(38)
+          .type("c").pause(15)
+          .type("i").pause(22)
+          .type("o").pause(12)
           .type(" ").pause(18)
-          .type("s").pause(9)
-          .type("o").pause(16)
-          .type("l").pause(22)
-          .type("t").pause(10)
-          .type("a").pause(7)
-          .type("r").pause(13)
-          .type("t").pause(11)
-          .type("e").pause(12)
-          .type(" ").pause(18)
-          .type("y").pause(6)
-          .type(" ").pause(15)
-          .type("d").pause(18)
-          .type("i").pause(14)
-          .type("s").pause(16)
-          .type("f").pause(18)
+          .type("p").pause(16)
+          .type("a").pause(20)
+          .type("r").pause(16)
+          .type("a").pause(10)
+          .type(" ").pause(26)
+          .type("s").pause(14)
+          .type("o").pause(24)
+          .type("l").pause(32)
+          .type("t").pause(15)
+          .type("a").pause(11)
+          .type("r").pause(20)
+          .type("t").pause(16)
+          .type("e").pause(18)
+          .type(" ").pause(26)
+          .type("y").pause(10)
+          .type(" ").pause(22)
+          .type("d").pause(26)
+          .type("i").pause(20)
+          .type("s").pause(24)
+          .type("f").pause(26)
+          .type("r").pause(18)
+          .type("u").pause(30)
+          .type("t").pause(26)
+          .type("a").pause(10)
           .type("r").pause(12)
-          .type("u").pause(20)
-          .type("t").pause(18)
-          .type("a").pause(6)
-          .type("r").pause(8)
-          .type(" ").pause(19)
-          .type("e").pause(17)
-          .type("l").pause(6)
-          .type(" ").pause(16)
-          .type("p").pause(13)
-          .type("r").pause(6)
-          .type("o").pause(21)
-          .type("c").pause(10)
-          .type("e").pause(21)
-          .type("s").pause(11)
-          .type("o").pause(38)
-          .type(",").pause(11)
-          .break({ delay: 24 })
-          .type("d").pause(11)
-          .type("o").pause(14)
-          .type("n").pause(11)
-          .type("d").pause(10)
-          .type("e").pause(9)
-          .type(" ").pause(30)
-          .type("b").pause(14)
-          .type("a").pause(16)
-          .type("i").pause(18)
-          .type("l").pause(11)
-          .type("a").pause(18)
-          .type("r").pause(6)
-          .type(" ").pause(18)
+          .type(" ").pause(28)
+          .type("e").pause(25)
+          .type("l").pause(10)
+          .type(" ").pause(24)
+          .type("p").pause(20)
+          .type("r").pause(10)
+          .type("o").pause(30)
+          .type("c").pause(15)
+          .type("e").pause(30)
+          .type("s").pause(16)
+          .type("o").pause(55)
+          .type(",").pause(16)
+          .break({ delay: 35 })
+          .type("d").pause(16)
+          .type("o").pause(20)
+          .type("n").pause(16)
+          .type("d").pause(15)
+          .type("e").pause(14)
+          .type(" ").pause(45)
+          .type("b").pause(20)
+          .type("a").pause(24)
+          .type("i").pause(26)
+          .type("l").pause(16)
+          .type("a").pause(26)
+          .type("r").pause(10)
+          .type(" ").pause(26)
+          .type("s").pause(15)
+          .type("i").pause(25)
+          .type("n").pause(14)
+          .type(" ").pause(28)
+          .type("p").pause(16)
+          .type("r").pause(22)
+          .type("e").pause(28)
           .type("s").pause(10)
-          .type("i").pause(17)
-          .type("n").pause(9)
-          .type(" ").pause(19)
-          .type("p").pause(11)
-          .type("r").pause(15)
-          .type("e").pause(19)
-          .type("s").pause(6)
-          .type("i").pause(13)
-          .type("o").pause(11)
-          .type("n").pause(10)
-          .type("e").pause(20)
-          .type("s").pause(18)
-          .type(".").pause(80)
+          .type("i").pause(20)
+          .type("o").pause(16)
+          .type("n").pause(15)
+          .type("e").pause(30)
+          .type("s").pause(26)
+          .type(".").pause(110)
           .exec(async () => {
             const cursor = banner.querySelector('.ti-cursor');
             if (cursor) cursor.style.opacity = '0.3';

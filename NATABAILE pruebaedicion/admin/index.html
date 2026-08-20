@@ -291,7 +291,7 @@
       }
     });
 
-    // ==========================================
+   // ==========================================
     // 5. PREVISUALIZACIÓN DE GALERÍA MULTIMEDIA (EN TIEMPO REAL)
     // ==========================================
     const GalleryPreview = createClass({
@@ -299,7 +299,6 @@
         const entry = this.props.entry;
         const itemsData = entry.getIn(['data', 'items']);
         const items = itemsData ? itemsData.toJS() : [];
-
         const getAsset = this.props.getAsset;
 
         return h('section', { className: 'multimedia-section', style: { padding: '30px 15px', background: '#ffffff', minHeight: '100vh' } },
@@ -308,19 +307,29 @@
             
             h('div', { className: 'gallery-grid' },
               items.map((item, index) => {
-                if (!item.image) return null;
+                const src = item.file_url || item.image; // Retrocompatibilidad
+                if (!src) return null;
 
-                // Transforma la ruta de imagen local al blob/asset temporal de Decap CMS
-                const imageUrl = getAsset(item.image);
+                const mediaUrl = getAsset(src);
                 const layoutClass = item.layout_type || 'item-1';
-                const altText = item.title || 'Foto Galería Natalia Vicente';
+                const altText = item.title || 'Galería Natalia Vicente';
+                const isVideo = item.media_type === 'video' || src.match(/\.(mp4|webm|mov|ogg)$/i);
 
                 return h('div', { key: index, className: 'gallery-item ' + layoutClass },
-                  h('img', { 
-                    src: imageUrl, 
-                    alt: altText,
-                    style: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } 
-                  })
+                  isVideo 
+                    ? h('video', { 
+                        src: mediaUrl, 
+                        controls: true, 
+                        muted: true, 
+                        loop: true,
+                        playsInline: true,
+                        style: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } 
+                      })
+                    : h('img', { 
+                        src: mediaUrl, 
+                        alt: altText,
+                        style: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } 
+                      })
                 );
               })
             )
