@@ -1,58 +1,18 @@
 // =========================================================================
-// CONFIGURACIÓN DECAP CMS & GITHUB
+// CARGA DE CONTENIDOS DESDE ARCHIVOS JSON LOCALES
 // =========================================================================
-const REPO_OWNER = 'blancapamtor';
-const REPO_NAME = 'pruebaEdicionNataliareal';
-const BASE_FOLDER = 'NATABAILE pruebaedicion/content';
 
-// Extrae el valor de un campo YAML del archivo Markdown
-function getField(content, fieldName) {
-  const regex = new RegExp(`^${fieldName}:\\s*(?:"([^"]*)"|'([^']*)'|([^\\n\\r]*))`, 'm');
-  const match = content.match(regex);
-  if (match) {
-    return (match[1] || match[2] || match[3] || '').trim();
-  }
-  return '';
-}
-
-// 1. Obtiene los nombres de los archivos .md de una carpeta en GitHub API
-async function getFolderFiles(folderName) {
-  const time = Date.now();
-  const githubApiUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${encodeURIComponent(BASE_FOLDER)}/${folderName}?v=${time}`;
-
+async function loadJSONContent(fileName) {
   try {
-    const res = await fetch(githubApiUrl);
-    
-    if (res.status === 403) {
-      console.warn('⚠️ Límite de peticiones alcanzado. Espera unos minutos o recarga la red.');
-      return [];
+    const response = await fetch(`./content/${fileName}.json?v=${Date.now()}`);
+    if (response.ok) {
+      const data = await response.json();
+      return data.items || [];
     }
-
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        return data
-          .filter(file => file.name.endsWith('.md'))
-          .map(file => file.name);
-      }
-    }
-  } catch (err) {
-    console.error(`Error leyendo la carpeta ${folderName}:`, err);
+  } catch (error) {
+    console.error(`Error cargando ./content/${fileName}.json:`, error);
   }
-
   return [];
-}
-
-// 2. Lee el contenido texto del archivo .md desde Raw GitHub
-async function loadMarkdown(folder, filename) {
-  const time = Date.now();
-  try {
-    const rawUrl = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${encodeURIComponent(BASE_FOLDER)}/${folder}/${filename}?v=${time}`;
-    const rawRes = await fetch(rawUrl);
-    if (rawRes.ok) return await rawRes.text();
-  } catch (e) {}
-
-  return null;
 }
 
 // =========================================================================
@@ -65,13 +25,11 @@ function initMobileMenu() {
   if (hamburgerBtn && navbar) {
     const navLinks = navbar.querySelectorAll('a');
 
-    // Toggle menú al hacer clic en el botón
     hamburgerBtn.addEventListener('click', () => {
       hamburgerBtn.classList.toggle('active');
       navbar.classList.toggle('active');
     });
 
-    // Cierra el menú al pulsar cualquier enlace
     navLinks.forEach(link => {
       link.addEventListener('click', () => {
         hamburgerBtn.classList.remove('active');
@@ -97,7 +55,7 @@ function updateDateBadge() {
 }
 
 // =========================================================================
-// 3. RENDERIZADO DE NOTICIAS (DESTACADA Y SECUNDARIAS UNIFICADAS)
+// 3. RENDERIZADO DE NOTICIAS (DESDE JSON LOCAL)
 // =========================================================================
 async function renderNews() {
   const featuredContainer = document.getElementById('featured-news-container');
@@ -106,164 +64,136 @@ async function renderNews() {
   if (!featuredContainer || !secondaryContainer) return;
 
   // --- 🌟 NOTICIA DESTACADA ---
-  const archivosDestacados = (await getFolderFiles('noticias_destacadas')).reverse();
+  const noticiasDestacadas = await loadJSONContent('noticias_destacadas');
+  if (noticiasDestacadas.length > 0) {
+    const item = noticiasDestacadas[0]; // Carga la última/primera noticia
+    
+    let longText = item.body || '';
+    if (longText) {
+      longText = longText
+        .replace(/([^\n])\n([^\n\-\*•])/g, '$1 $2')
+        .replace(/\n{2,}/g, '</p><p>')
+        .replace(/\n/g, '<br>');
+    }
 
-  for (const fileName of archivosDestacados) {
-    const content = await loadMarkdown('noticias_destacadas', fileName);
-    if (content) {
-      featuredContainer.innerHTML = '';
+    featuredContainer.innerHTML = `
+      <article class="news-card card-featured">
+        <div class="card-media">
+          <img src="${item.image || 'assets/imagenes/base.jpg'}" alt="${item.title || ''}" class="media-img" />
+          <span class="badge badge-accent">${item.tag || 'NOTICIA'}</span>
+        </div>
+        <div class="card-content">
+          ${item.frequency ? `<div class="card-meta"><span class="meta-day">${item.frequency}</span></div>` : ''}
+          <h3 class="card-title">${item.title || ''}</h3>
+          ${item.subtitle ? `<p class="card-subtitle-highlight" style="font-size: 1rem; color: #1f2937; font-weight: 700; margin: 4px 0 12px 0;">${item.subtitle}</p>` : ''}
+          
+          <ul class="card-details" style="list-style: none; padding: 0; margin-bottom: 12px;">
+            ${item.organizer ? `
+            <li style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              </svg>
+              <span>Organiza: <strong>${item.organizer}</strong></span>
+            </li>` : ''}
 
-      const tag = getField(content, 'tag') || 'NOTICIA';
-      const frequency = getField(content, 'frequency');
-      const title = getField(content, 'title');
-      const subtitle = getField(content, 'subtitle');
-      const location = getField(content, 'location');
-      const image = getField(content, 'image') || 'assets/imagenes/base.jpg';
-      const organizer = getField(content, 'organizer');
-      const extraInfo = getField(content, 'extra_info');
+            ${item.location ? `
+            <li style="display: flex; align-items: center; gap: 6px; color: #00b4d8; font-weight: 700; margin-bottom: 6px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span>${item.location}</span>
+            </li>` : ''}
 
-      const bodyMatch = content.split(/---[\r\n]+/);
-      let longText = bodyMatch.length >= 3 ? bodyMatch.slice(2).join('---').trim() : '';
-      if (longText) {
-        longText = longText
-          .replace(/([^\n])\n([^\n\-\*•])/g, '$1 $2')
-          .replace(/\n{2,}/g, '</p><p>')
-          .replace(/\n/g, '<br>');
-      }
+            ${item.extra_info ? `<li style="margin-top: 4px; font-size: 0.9rem; color: #475569;"><span>${item.extra_info}</span></li>` : ''}
+          </ul>
 
-      featuredContainer.innerHTML = `
-        <article class="news-card card-featured">
-          <div class="card-media">
-            <img src="${image}" alt="${title}" class="media-img" />
-            <span class="badge badge-accent">${tag}</span>
+          <div class="card-actions">
+            <button class="btn btn-dark js-trigger-expand-featured" type="button" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; border: none; cursor: pointer;">
+              <span class="btn-label">MÁS INFORMACIÓN</span>
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16" style="transition: transform 0.2s ease;">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
           </div>
-          <div class="card-content">
-            ${frequency ? `<div class="card-meta"><span class="meta-day">${frequency}</span></div>` : ''}
-            <h3 class="card-title">${title}</h3>
-            ${subtitle ? `<p class="card-subtitle-highlight" style="font-size: 1rem; color: #1f2937; font-weight: 700; margin: 4px 0 12px 0;">${subtitle}</p>` : ''}
-            
-            <ul class="card-details" style="list-style: none; padding: 0; margin-bottom: 12px;">
-              ${organizer ? `
-              <li style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-                </svg>
-                <span>Organiza: <strong>${organizer}</strong></span>
-              </li>` : ''}
 
-              ${location ? `
-              <li style="display: flex; align-items: center; gap: 6px; color: #00b4d8; font-weight: 700; margin-bottom: 6px;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-                </svg>
-                <span>${location}</span>
-              </li>` : ''}
-
-              ${extraInfo ? `<li style="margin-top: 4px; font-size: 0.9rem; color: #475569;"><span>${extraInfo}</span></li>` : ''}
-            </ul>
-
-            <div class="card-actions">
-              <button class="btn btn-dark js-trigger-expand-featured" type="button" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; border: none; cursor: pointer;">
-                <span class="btn-label">MÁS INFORMACIÓN</span>
-                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16" style="transition: transform 0.2s ease;">
-                  <path d="M6 9l6 6 6-6"/>
-                </svg>
-              </button>
-            </div>
-
-            <div class="expanded-content-featured" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.3);">
-              ${longText ? `<div class="news-body-text" style="font-size: 0.9rem; line-height: 1.6; text-align: left;"><p>${longText}</p></div>` : ''}
-            </div>
+          <div class="expanded-content-featured" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.3);">
+            ${longText ? `<div class="news-body-text" style="font-size: 0.9rem; line-height: 1.6; text-align: left;"><p>${longText}</p></div>` : ''}
           </div>
-        </article>
-      `;
+        </div>
+      </article>
+    `;
 
-      const featCard = featuredContainer.querySelector('.card-featured');
-      const featBtn = featCard.querySelector('.js-trigger-expand-featured');
-      const featContent = featCard.querySelector('.expanded-content-featured');
-      const featLabel = featCard.querySelector('.btn-label');
-      const featIcon = featCard.querySelector('.btn-icon');
+    const featCard = featuredContainer.querySelector('.card-featured');
+    const featBtn = featCard.querySelector('.js-trigger-expand-featured');
+    const featContent = featCard.querySelector('.expanded-content-featured');
+    const featLabel = featCard.querySelector('.btn-label');
+    const featIcon = featCard.querySelector('.btn-icon');
 
-      if (featBtn && featContent) {
-        featBtn.addEventListener('click', () => {
-          const isOpening = featContent.style.display === 'none' || !featContent.style.display;
-          if (isOpening) {
-            featContent.style.display = 'block';
-            featLabel.textContent = 'MENOS INFORMACIÓN';
-            featIcon.style.transform = 'rotate(180deg)';
-          } else {
-            featContent.style.display = 'none';
-            featLabel.textContent = 'MÁS INFORMACIÓN';
-            featIcon.style.transform = 'rotate(0deg)';
-          }
-        });
-      }
-
-      break; 
+    if (featBtn && featContent) {
+      featBtn.addEventListener('click', () => {
+        const isOpening = featContent.style.display === 'none' || !featContent.style.display;
+        if (isOpening) {
+          featContent.style.display = 'block';
+          featLabel.textContent = 'MENOS INFORMACIÓN';
+          featIcon.style.transform = 'rotate(180deg)';
+        } else {
+          featContent.style.display = 'none';
+          featLabel.textContent = 'MÁS INFORMACIÓN';
+          featIcon.style.transform = 'rotate(0deg)';
+        }
+      });
     }
   }
 
   // --- 📄 NOTICIAS SECUNDARIAS ---
-  const archivosSecundarios = await getFolderFiles('noticias_secundarias');
+  const noticiasSecundarias = await loadJSONContent('noticias_secundarias');
   secondaryContainer.innerHTML = '';
 
-  for (const fileName of archivosSecundarios) {
-    const rawContent = await loadMarkdown('noticias_secundarias', fileName);
-    if (rawContent) {
-      const tag = getField(rawContent, 'tag') || 'CLASE GRATUITA';
-      const statusTag = getField(rawContent, 'status_tag');
-      const title = getField(rawContent, 'title') || 'INICIACIÓN AL BAILE';
-      const subtitle = getField(rawContent, 'subtitle');
-      const dateStr = getField(rawContent, 'date_str');
-      const location = getField(rawContent, 'location');
-      const extraInfo = getField(rawContent, 'extra_info');
-
-      const bodyMatch = rawContent.split(/---[\r\n]+/);
-      let longText = bodyMatch.length >= 3 ? bodyMatch.slice(2).join('---').trim() : '';
-      if (longText) {
-        longText = longText
-          .replace(/([^\n])\n([^\n\-\*•])/g, '$1 $2')
-          .replace(/\n{2,}/g, '</p><p>')
-          .replace(/\n/g, '<br>');
-      }
-
-      secondaryContainer.innerHTML += `
-        <article class="news-card card-secondary">
-          <div class="card-badge-row">
-            <span class="badge badge-subtle">${tag}</span>
-            ${statusTag ? `<span class="status-indicator">${statusTag}</span>` : ''}
-          </div>
-
-          <h3 class="card-title">${title}</h3>
-          ${subtitle ? `<p class="card-subtitle-highlight" style="font-size: 0.95rem; color: #1f2937; font-weight: 600; margin: 0 0 12px 0;">${subtitle}</p>` : ''}
-
-          ${location || dateStr ? `
-          <div class="card-location">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-            </svg>
-            <div>
-              ${location ? `<strong>${location}</strong>` : ''}
-              ${dateStr ? `<p>${dateStr}</p>` : ''}
-            </div>
-          </div>` : ''}
-
-          ${extraInfo ? `<p class="secondary-extra-info" style="font-size: 0.85rem; color: #5a6e82; margin: 0 0 16px 0;">${extraInfo}</p>` : ''}
-
-          <button class="btn-cyan-outline js-trigger-expand" type="button">
-            <span class="btn-label">MÁS INFORMACIÓN</span>
-            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16" style="transition: transform 0.2s ease;">
-              <path d="M6 9l6 6 6-6"/>
-            </svg>
-          </button>
-
-          <div class="expanded-content" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #e2e8f0;">
-            ${longText ? `<div class="news-body-text" style="font-size: 0.9rem; line-height: 1.6; color: #374151; text-align: left;"><p>${longText}</p></div>` : ''}
-          </div>
-        </article>
-      `;
+  noticiasSecundarias.forEach(item => {
+    let longText = item.body || '';
+    if (longText) {
+      longText = longText
+        .replace(/([^\n])\n([^\n\-\*•])/g, '$1 $2')
+        .replace(/\n{2,}/g, '</p><p>')
+        .replace(/\n/g, '<br>');
     }
-  }
+
+    secondaryContainer.innerHTML += `
+      <article class="news-card card-secondary">
+        <div class="card-badge-row">
+          <span class="badge badge-subtle">${item.tag || 'CLASE GRATUITA'}</span>
+          ${item.status_tag ? `<span class="status-indicator">${item.status_tag}</span>` : ''}
+        </div>
+
+        <h3 class="card-title">${item.title || 'INICIACIÓN AL BAILE'}</h3>
+        ${item.subtitle ? `<p class="card-subtitle-highlight" style="font-size: 0.95rem; color: #1f2937; font-weight: 600; margin: 0 0 12px 0;">${item.subtitle}</p>` : ''}
+
+        ${item.location || item.date_str ? `
+        <div class="card-location">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+          <div>
+            ${item.location ? `<strong>${item.location}</strong>` : ''}
+            ${item.date_str ? `<p>${item.date_str}</p>` : ''}
+          </div>
+        </div>` : ''}
+
+        ${item.extra_info ? `<p class="secondary-extra-info" style="font-size: 0.85rem; color: #5a6e82; margin: 0 0 16px 0;">${item.extra_info}</p>` : ''}
+
+        <button class="btn-cyan-outline js-trigger-expand" type="button">
+          <span class="btn-label">MÁS INFORMACIÓN</span>
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16" style="transition: transform 0.2s ease;">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </button>
+
+        <div class="expanded-content" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #e2e8f0;">
+          ${longText ? `<div class="news-body-text" style="font-size: 0.9rem; line-height: 1.6; color: #374151; text-align: left;"><p>${longText}</p></div>` : ''}
+        </div>
+      </article>
+    `;
+  });
 
   const allCards = secondaryContainer.querySelectorAll('.news-card');
   allCards.forEach(card => {
@@ -275,7 +205,6 @@ async function renderNews() {
     if (triggerBtn && expandedContent) {
       triggerBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-
         const isOpening = expandedContent.style.display === 'none' || !expandedContent.style.display;
 
         if (isOpening) {
@@ -295,30 +224,16 @@ async function renderNews() {
 }
 
 // =========================================================================
-// 4. RENDERIZADO DE GALERÍA MULTIMEDIA (DESDE JSON CON FALLBACK DE RUTA)
+// 4. RENDERIZADO DE GALERÍA MULTIMEDIA (DESDE JSON LOCAL)
 // =========================================================================
 async function renderGallery() {
   const container = document.getElementById('gallery-container');
   if (!container) return;
 
-  let data = null;
+  const items = await loadJSONContent('galeria');
 
-  try {
-    const time = Date.now();
-    const rawUrl = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${encodeURIComponent(BASE_FOLDER)}/galeria.json?v=${time}`;
-    const res = await fetch(rawUrl);
-    if (res.ok) data = await res.json();
-  } catch (err) {}
-
-  if (!data) {
-    try {
-      const localRes = await fetch('./content/galeria.json');
-      if (localRes.ok) data = await localRes.json();
-    } catch (err) {}
-  }
-
-  if (data && data.items) {
-    container.innerHTML = data.items.map(item => `
+  if (items && items.length > 0) {
+    container.innerHTML = items.map(item => `
       <div class="gallery-item ${item.layout_type || 'item-1'}">
         <img src="${item.image}" alt="${item.title || 'Tango Natalia Vicente'}">
       </div>
@@ -329,104 +244,30 @@ async function renderGallery() {
 }
 
 // =========================================================================
-// 5. RENDERIZADO DE CLASES Y TALLERES
+// 5. RENDERIZADO DE CLASES Y TALLERES (DESDE JSON LOCAL)
 // =========================================================================
 async function renderClasses() {
   const container = document.getElementById('classes-container');
   if (!container) return;
 
-  const archivosClases = await getFolderFiles('clases');
-  
-  if (archivosClases.length === 0) {
+  const classList = await loadJSONContent('clases');
+
+  if (!classList || classList.length === 0) {
     container.innerHTML = '<p style="text-align: center; color: #64748b; grid-column: 1/-1;">No se pudieron cargar las clases.</p>';
     return;
   }
 
-  const classList = [];
-
-  for (const fileName of archivosClases) {
-    const text = await loadMarkdown('clases', fileName);
-    if (!text) continue;
-
-    const title = getField(text, 'title');
-    const badge = getField(text, 'badge');
-    const order = parseInt(getField(text, 'order')) || 1;
-
-    const schedules = [];
-    const schedulesMatch = text.match(/schedules:([\s\S]*?)(?=\n[a-z_]+:|\n---|$)/i);
-
-    if (schedulesMatch && schedulesMatch[1]) {
-      const rawBlocks = schedulesMatch[1].split(/\n\s*-\s+(?=(?:sub_title|city|time_slots|address):)/i).filter(b => b.trim());
-
-      rawBlocks.forEach(block => {
-        const getVal = (key) => {
-          const match = block.match(new RegExp(`${key}:\\s*(?:"([^"]*)"|'([^']*)'|([^\\n\\r]*))`, 'i'));
-          return match ? (match[1] || match[2] || match[3] || '').trim() : '';
-        };
-
-        const sub_title = getVal('sub_title');
-        const city = getVal('city');
-        const address = getVal('address');
-        const map_link = getVal('map_link');
-
-        let description = '';
-        const descMatch = block.match(/description:\s*(?:>[-+]?|\|[-+]?)?\s*([\s\S]*?)(?=\n\s*(?:map_link|address|city|sub_title|time_slots):|$)/i);
-        if (descMatch && descMatch[1]) {
-          description = descMatch[1]
-            .replace(/^["']|["']$/g, '')
-            .replace(/^>\-?|^\|/g, '')
-            .trim()
-            .replace(/([^\n])\n([^\n\-\*•])/g, '$1 $2')
-            .replace(/\n{3,}/g, '\n\n');
-        }
-
-        const timeSlots = [];
-        const timeSlotsMatch = block.match(/time_slots:([\s\S]*?)(?=\n\s*(?:address|description|map_link|city|sub_title):|$)/i);
-
-        if (timeSlotsMatch && timeSlotsMatch[1]) {
-          const rawSlots = timeSlotsMatch[1].split(/\n\s*-\s+/).filter(s => s.trim());
-          rawSlots.forEach(sBlock => {
-            const getSlotVal = (key) => {
-              const match = sBlock.match(new RegExp(`${key}:\\s*(?:"([^"]*)"|'([^']*)'|([^\\n\\r]*))`, 'i'));
-              return match ? (match[1] || match[2] || match[3] || '').trim() : '';
-            };
-            const day = getSlotVal('day');
-            const time_slot = getSlotVal('time_slot');
-            const meta_extra = getSlotVal('meta_extra');
-            if (day || time_slot) {
-              timeSlots.push({ day, time_slot, meta_extra });
-            }
-          });
-        }
-
-        if (timeSlots.length === 0) {
-          const day = getVal('day');
-          const time_slot = getVal('time_slot') || getVal('horario');
-          const meta_extra = getVal('meta_extra');
-          if (day || time_slot) {
-            timeSlots.push({ day, time_slot, meta_extra });
-          }
-        }
-
-        if (timeSlots.length > 0 || city || address) {
-          schedules.push({ sub_title, city, timeSlots, address, description, map_link });
-        }
-      });
-    }
-
-    classList.push({ title, badge, order, schedules });
-  }
-
-  classList.sort((a, b) => a.order - b.order);
+  // Ordenar por el campo "order"
+  classList.sort((a, b) => (parseInt(a.order) || 1) - (parseInt(b.order) || 1));
 
   container.innerHTML = classList.map(item => `
     <article class="class-card">
       <div class="card-top">
-        <span class="level-badge">${item.badge}</span>
-        <h3 class="card-title">${item.title}</h3>
+        <span class="level-badge">${item.badge || ''}</span>
+        <h3 class="card-title">${item.title || ''}</h3>
 
         <div class="schedule-block">
-          ${item.schedules.map(s => `
+          ${(item.schedules || []).map(s => `
             <div style="margin-bottom: 20px;">
               ${s.sub_title ? `
                 <h4 style="font-size: 0.95rem; font-weight: 800; color: #1e293b; letter-spacing: 0.05em; text-transform: uppercase; margin: 20px 0 10px 0;">
@@ -443,9 +284,9 @@ async function renderClasses() {
                       </span>
                     ` : ''}
                     
-                    ${s.timeSlots.map(ts => `
+                    ${(s.time_slots || []).map(ts => `
                       <div class="schedule-meta" style="margin-bottom: 4px; font-size: 0.95rem; color: #1e293b;">
-                        <strong>${ts.day}</strong>
+                        <strong>${ts.day || ''}</strong>
                         ${ts.time_slot ? `<span> · ${ts.time_slot}</span>` : ''}
                         ${ts.meta_extra ? `<span style="color: #6b7280; font-weight: normal;"> (${ts.meta_extra})</span>` : ''}
                       </div>
@@ -603,7 +444,6 @@ function initQuoteBanner() {
 
   observer.observe(banner);
 }
-
 
 // =========================================================================
 // INICIALIZACIÓN GENERAL DE LA WEB

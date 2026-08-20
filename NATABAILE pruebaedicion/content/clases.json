@@ -1,0 +1,148 @@
+{
+    "items": [
+      {
+        "badge": "1 a 1",
+        "title": "clases privadas",
+        "order": 4,
+        "schedules": [
+          {
+            "city": "HORARIO FLEXIBLE",
+            "address": "Sala y estudio a convenir",
+            "description": "Atención personalizada centrada al 100% en tus objetivos técnicos, corrección postural y ritmo propio.\n\nSala y horario a coordinar con el alumnado.",
+            "map_link": "",
+            "time_slots": [
+              {
+                "day": "Viernes",
+                "time_slot": "A partir de las 16:00h"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "badge": "BODAS",
+        "title": "COREOGRAFIAS PARA BODAS",
+        "order": 6,
+        "schedules": [
+          {
+            "city": "horario convenir",
+            "address": "sala o estudio a convenir.",
+            "description": "Coreografías personalizadas para tu gran día.",
+            "map_link": "."
+          }
+        ]
+      },
+      {
+        "badge": "ONLINE",
+        "title": "Entrenamiento en tango",
+        "order": 3,
+        "schedules": [
+          {
+            "city": "Via Zoom",
+            "address": "en casa",
+            "description": "Entrenamiento técnico desde la comodidad de tu espacio.",
+            "map_link": ".",
+            "time_slots": [
+              {
+                "day": "Martes",
+                "time_slot": "11h"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "badge": "Principiantes",
+        "title": "INICIACIÓN",
+        "order": 1,
+        "schedules": [
+          {
+            "sub_title": "DESDE CERO",
+            "city": "MADRID CENTRO",
+            "address": "C/ Paz 4 (Casa \"Castilla-La Mancha\")",
+            "description": "Conecta contigo y con los demás a través del diálogo corporal. Un espacio de convivencia, juego y sensibilidad para disfrutar del baile desde el primer momento.\n\n¡Anímate a probar la experiencia!",
+            "map_link": "https://www.google.com/maps/search/?api=1&query=C%2F+Paz+4+Casa+Castilla-La+Mancha+Madrid",
+            "meta_extra": "",
+            "time_slots": [
+              {
+                "day": "Lunes",
+                "time_slot": "19:00h"
+              }
+            ]
+          },
+          {
+            "sub_title": "INICIADOS",
+            "city": "ARANJUEZ",
+            "address": "Av. Plaza de los Toros, 57",
+            "description": "bla bña",
+            "map_link": "direccion",
+            "time_slots": [
+              {
+                "day": "Martes",
+                "time_slot": "21:00h"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "badge": "MILONGUEROS",
+        "title": "MEDIO/AVANZADO",
+        "order": 2,
+        "schedules": [
+          {
+            "city": "MADRID",
+            "address": "C/ Paz 4 (Casa \"Castilla-La Mancha\")",
+            "map_link": "https://www.google.com/maps/search/?api=1&query=C%2F+Paz+4+Casa+Castilla-La+Mancha+Madrid",
+            "description": "Clases orientadas a mejorar la fluidez y musicalidad en la pista.",
+            "time_slots": [
+              {
+                "day": "Jueves",
+                "time_slot": "19:00h",
+                "meta_extra": "Avanzado"
+              },
+              {
+                "day": "Jueves",
+                "time_slot": "20:30h",
+                "meta_extra": "Medio-Avanzado"
+              }
+            ]
+          },
+          {
+            "city": "ARANJUEZ",
+            "address": "Av. Plaza de los Toros, 57",
+            "map_link": "https://www.google.com/maps?q=Avenida+Plaza+de+Toros+57+Aranjuez",
+            "description": "Clases orientadas a mejorar la fluidez y musicalidad en la pista.",
+            "time_slots": [
+              {
+                "day": "Martes",
+                "time_slot": "20:00h",
+                "meta_extra": "Medio"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "badge": "TALLER",
+        "title": "CONCIENCIA CORPORAL EN TANGO",
+        "order": 5,
+        "schedules": [
+          {
+            "sub_title": "",
+            "city": "MADRID CENTRO",
+            "address": "C/ De La Luna 19, 1A",
+            "description": "Despertemos nuestra conciencia corporal, descubriendo una forma fluida de mover el cuerpo.",
+            "map_link": "https://www.google.com/maps/search/?api=1&query=C%2F+Paz+4+Casa+Castilla-La+Mancha+Madrid",
+            "meta_extra": "",
+            "time_slots": [
+              {
+                "day": "Lunes",
+                "time_slot": "19:00h"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
