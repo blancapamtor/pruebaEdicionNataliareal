@@ -1,7 +1,7 @@
 ---
 badge: TALLER
 title: CONCIENCIA CORPORAL EN TANGO
-order: 3
+order: 5
 schedules:
   - city: MADRID CENTRO
     day: Lunes
