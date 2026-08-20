@@ -1,5 +1,5 @@
 ---
-tag: CLASE GRATUITA
+tag: TALLER
 status_tag: PLAZAS LIMITADAS
 title: TALLER DE CONCIENCIA CORPORAL EN TANGO
 subtitle: Tu cuerpo ya sabe… vení a escucharlo
