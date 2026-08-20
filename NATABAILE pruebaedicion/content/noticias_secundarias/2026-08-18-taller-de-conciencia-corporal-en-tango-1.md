@@ -3,7 +3,7 @@ tag: TALLER
 status_tag: PLAZAS LIMITADAS
 title: TALLER DE CONCIENCIA CORPORAL EN TANGO
 subtitle: Tu cuerpo ya sabe… vení a escucharlo
-date_str: "10 Y 11 de Octubre "
+date_str: ""
 location: C/ De La Luna 19, 1A
 button_text: ¡APUNTATE!
 extra_info: "Plazas limitadas. Natalia: 667 080 998"
