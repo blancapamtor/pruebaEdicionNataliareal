@@ -25,19 +25,23 @@ body {
 }
 
 // ==========================================
-// 2. NAVEGACIÓN (Colores originales cian translúcido)
+// 2. NAVEGACIÓN (Escritorio + Menú Desplegable Móvil)
 // ==========================================
 .header {
   position: fixed;
-  top: 1.75rem; // 28px
+  top: 1.75rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
   
-  // Estructura alargada: ocupa el 85% de la pantalla hasta 900px
   width: 85%;
   max-width: 900px;
   pointer-events: none;
+
+  // Botón Hamburguesa oculto en escritorio
+  .hamburger-btn {
+    display: none;
+  }
 
   .navbar {
     pointer-events: auto;
@@ -48,15 +52,15 @@ body {
         
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 9999px;
-    padding: 0.6rem 1.5rem; // Más holgura en los laterales
+    padding: 0.6rem 1.5rem;
     box-shadow: 
       0 4px 6px -1px rgba(0, 0, 0, 0.04),
       0 14px 28px -4px rgba(22, 64, 81, 0.18);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease, border-radius 0.3s ease;
 
     ul {
       display: flex;
-      justify-content: space-evenly; // Distribución equilibrada a lo ancho
+      justify-content: space-evenly;
       align-items: center;
       gap: 0.75rem;
       list-style: none;
@@ -70,19 +74,16 @@ body {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          
-          min-height: 2.625rem; // 42px
-          padding: 0 1.5rem;    // Espaciado generoso
+          min-height: 2.625rem;
+          padding: 0 1.5rem;
           border-radius: 9999px;
-          
           color: #ffffff;
-          font-size: 0.875rem;   // 14px
+          font-size: 0.875rem;
           font-weight: 500;
           letter-spacing: 0.02em;
           line-height: 1;
           text-decoration: none;
           white-space: nowrap;
-          
           transition: background-color 0.2s ease, transform 0.15s ease;
 
           &:hover {
@@ -90,29 +91,124 @@ body {
             transform: translateY(-1px);
           }
 
-          &:active {
-            transform: translateY(0);
-            background-color: rgba(255, 255, 255, 0.24);
-          }
-
           &.active {
             background-color: rgba(255, 255, 255, 0.22);
             font-weight: 600;
           }
+        }
+      }
+    }
+  }
+}
 
-          &.nav-cta {
-            background-color: #ffffff;
-            color: $color-cyan;
-            font-weight: 600;
-            padding: 0 1.6rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+// ==========================================
+// ADAPTACIÓN RESPONSIVE MÓVIL (MENÚ FULLSCREEN)
+// ==========================================
+@media (max-width: 768px) {
+  .header {
+    top: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    max-width: none;
+    padding: 1rem;
+    display: flex;
+    justify-content: flex-end;
 
-            &:hover {
-              background-color: #ffffff;
-              color: darken($color-cyan, 6%);
-              transform: translateY(-1px);
-              box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
-            }
+    // Botón Hamburguesa fijo en la esquina superior derecha
+    .hamburger-btn {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      width: 48px;
+      height: 48px;
+      background-color: rgba($color-cyan, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      cursor: pointer;
+      pointer-events: auto;
+      z-index: 1001; // Queda por encima del menú desplegado
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(12px);
+      transition: transform 0.2s ease, background-color 0.2s ease;
+
+      span {
+        display: block;
+        width: 20px;
+        height: 2px;
+        background-color: #ffffff;
+        border-radius: 2px;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+
+      // Animación icono a cruz (X)
+      &.active {
+        background-color: rgba(#ffffff, 0.2); // Sutil cambio de color en la X
+        span:nth-child(1) {
+          transform: translateY(7px) rotate(45deg);
+        }
+        span:nth-child(2) {
+          opacity: 0;
+        }
+        span:nth-child(3) {
+          transform: translateY(-7px) rotate(-45deg);
+        }
+      }
+    }
+
+    // Menú que cubre toda la pantalla
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0; // Sin esquinas redondeadas para abarcar todo el viewport
+      border: none;
+      background-color: rgba($color-cyan, 0.97);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      // Estado cerrado
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(1.05);
+      transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+
+      // Estado abierto (pantalla completa)
+      &.active {
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
+        pointer-events: auto;
+      }
+
+      ul {
+        flex-direction: column;
+        gap: 1.5rem;
+        width: 100%;
+        text-align: center;
+
+        li {
+          width: 100%;
+          justify-content: center;
+
+          a {
+            width: auto;
+            justify-content: center;
+            font-size: 1.35rem; // Letra más grande para pantalla completa
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            padding: 0.8rem 2rem;
+            border-radius: 9999px;
           }
         }
       }
@@ -120,62 +216,43 @@ body {
   }
 }
 
-// Adaptación responsive Nav
-@media (max-width: 768px) {
-  .header {
-    top: 14px;
-    width: calc(100% - 28px);
+// ==========================================
+// CONTENEDOR UNIFICADO (HERO + CONÓCEME)
+// ==========================================
+.hero-and-about-wrapper {
+  position: relative;
+  background-color: #ffffff;
+  overflow: hidden; // Previene scroll horizontal por el halo
 
-    .navbar {
-      padding: 6px 8px;
-
-      ul {
-        gap: 4px;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none; // Oculta barra de scroll
-        &::-webkit-scrollbar {
-          display: none;
-        }
-
-        li a {
-          padding: 8px 12px;
-          font-size: 0.8rem;
-          white-space: nowrap;
-        }
-      }
-    }
-  }
-}
-
-@media (max-width: 640px) {
-  .header {
-    top: 0.75rem; // 12px
-    max-width: calc(100% - 1.5rem);
-
-    .navbar {
-      padding: 0.25rem 0.375rem;
-
-      ul {
-        gap: 0.125rem;
-
-        li a {
-          min-height: 2.25rem; // 36px en móvil
-          padding: 0 0.75rem;   // 12px horizontal
-          font-size: 0.8125rem; // 13px
-        }
-      }
-    }
+  // Curva ancha y difusa (Halo Azul)
+  &::after {
+    content: '';
+    position: absolute;
+    width: 160%;
+    height: 100%;
+    top: -25%;
+    left: -30%;
+    background: radial-gradient(
+      ellipse at center 35%, 
+      transparent 35%, 
+      rgba(0, 196, 240, 0.18) 60%, 
+      transparent 75%
+    );
+    transform: rotate(14deg);
+    filter: blur(38px);
+    pointer-events: none;
+    z-index: 10;
+    mix-blend-mode: multiply;
+    transition: all 0.3s ease;
   }
 }
 
 // ==========================================
-// 3. SECCIÓN HERO (Video Logo Transparente)
+// SECCIÓN HERO
 // ==========================================
 .hero {
   position: relative;
-  min-height: 90vh;
+  min-height: 75vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -184,7 +261,9 @@ body {
   .hero-brand {
     text-align: center;
     width: 100%;
-    margin-top: 110px; // Mantiene la posición bajada que definimos
+    margin-top: 50px;
+    position: relative;
+    z-index: 1;
 
     .logo-title {
       margin: 0;
@@ -192,22 +271,24 @@ body {
       justify-content: center;
       
       video {
-        max-width: 1150px; // Mantiene el tamaño grande
+        max-width: 1150px;
         width: 95%;        
         height: auto;
         display: block;
         margin: 0 auto;
-        // Al no llevar filtros, rinde mucho más rápido y sin parpadeos
+        mix-blend-mode: multiply;
       }
     }
   }
 }
 
 // ==========================================
-// 4. SECCIÓN SOBRE MÍ (Conóceme)
+// SECCIÓN SOBRE MÍ
 // ==========================================
 .about-section {
-  padding: 60px 0 100px;
+  padding: 140px 0 100px;
+  position: relative;
+  z-index: 1;
 
   .container {
     max-width: 1100px;
@@ -215,8 +296,8 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 100px;
-    align-items: end; // Alinea el contenido con la parte inferior de la imagen
-    padding: 0 3px;
+    align-items: end;
+    padding: 0 20px;
   }
 
   .about-content {
@@ -245,7 +326,6 @@ body {
       margin-bottom: 30px;
     }
 
-    // Botón estilo cápsula
     .btn-about-story {
       display: inline-flex;
       align-items: center;
@@ -284,7 +364,6 @@ body {
     }
   }
 
-  // Imagen con proporciones y color nativo
   .about-image {
     display: flex;
 
@@ -298,19 +377,101 @@ body {
   }
 }
 
-// Adaptación responsive Sobre Mí
-@media (max-width: 768px) {
+// ==========================================
+// ADAPTACIÓN RESPONSIVE COMPLETA
+// ==========================================
+
+// Tablet (hasta 1024px)
+@media (max-width: 1024px) {
+  .hero-and-about-wrapper {
+    // Reajuste del halo para tablets
+    &::after {
+      width: 180%;
+      height: 110%;
+      top: -15%;
+      left: -40%;
+      transform: rotate(8deg);
+      filter: blur(30px);
+      background: radial-gradient(
+        ellipse at center 40%, 
+        transparent 30%, 
+        rgba(0, 196, 240, 0.22) 60%, 
+        transparent 80%
+      );
+    }
+  }
+
   .about-section {
-    padding: 40px 0 60px;
+    padding: 100px 0 80px;
 
     .container {
-      grid-template-columns: 1fr;
-      gap: 32px;
+      gap: 50px;
     }
 
     .about-content {
       h2 {
-        font-size: 2.25rem;
+        font-size: 2.4rem;
+      }
+      p {
+        font-size: 1.1rem;
+      }
+    }
+  }
+}
+
+// Móvil (hasta 768px)
+@media (max-width: 768px) {
+  .hero-and-about-wrapper {
+    // Reajuste del halo para pantallas verticales de móvil
+    &::after {
+      width: 150%; // Ampliado para cubrir la mayor altura relativa del contenido en vertical
+      height: 80%;
+      top: -5%;
+      left: -55%;
+      transform: rotate(4deg); // Menos rotación para abarcar mejor el layout vertical
+      filter: blur(24px); // Blur más bajo para pantallas pequeñas
+      background: radial-gradient(
+        ellipse at center 30%, 
+        transparent 15%, 
+        rgba(0, 196, 240, 0.25) 55%, 
+        transparent 85%
+      );
+    }
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 50px 0 20px;
+
+    .hero-brand {
+      margin-top: 30px;
+
+      .logo-title video {
+        width: 90%;
+      }
+    }
+  }
+
+  .about-section {
+    padding: 50px 0 60px;
+
+    .container {
+      grid-template-columns: 1fr;
+      gap: 35px;
+    }
+
+    .about-content {
+      align-items: flex-start;
+
+      h2 {
+        font-size: 2rem;
+        margin-bottom: 16px;
+      }
+
+      p {
+        font-size: 1rem;
+        line-height: 1.5;
+        margin-bottom: 24px;
       }
 
       .btn-about-story {
@@ -318,8 +479,13 @@ body {
         justify-content: center;
       }
     }
+
+    .about-image {
+      order: -1;
+    }
   }
 }
+
 
 // ==========================================
 // 5. BANNER FRASE (Interactivo + TypeIt)
@@ -370,10 +536,13 @@ body {
 // Adaptación Responsive
 @media (max-width: 768px) {
   .quote-banner {
-    padding: 80px 20px;
+    padding: 80px 10px;
 
     .container {
-      min-height: 160px;
+      min-height: 140px;
+    }
+    .quote-text {
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
     }
   }
 }

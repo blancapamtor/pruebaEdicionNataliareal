@@ -10,7 +10,14 @@
 
   <!-- Navegación principal -->
   <header class="header">
-    <nav class="navbar">
+    <!-- Botón Hamburguesa (solo visible en móvil) -->
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  
+    <nav class="navbar" id="navbar">
       <ul>
         <li><a href="#sobre-mi">SOBRE MÍ</a></li>
         <li><a href="#clases">CLASES</a></li>
@@ -22,47 +29,54 @@
   </header>
 
   <main>
-    <section class="hero">
-      <div class="hero-brand">
-        <h1 class="logo-title">
-          <video autoplay muted playsinline preload="auto">
-            <!-- Para Chrome, Firefox, Edge y Android -->
-            <source src="assets/imagenes/logo-animado.webm" type="video/webm">
-            
-            <!-- Para Safari, macOS e iOS -->
-            <source src="assets/imagenes/logo-animado.mov" type='video/mp4; codecs="hvc1"'>
-            
-            Tu navegador no soporta videos con transparencia.
-          </video>
-        </h1>
-      </div>
-    </section>
-
-    <!-- Sección Conóceme / Sobre Mí -->
-    <section id="sobre-mi" class="about-section">
-      <div class="container">
-        
-        <div class="about-content">
-          <h2>CONÓCEME</h2>
-          <p>
-            Detrás de mi forma de entender el tango; directa, sin poses y enfocada en tu libertad, hay un largo camino de aprendizaje que empezó sobre las puntas de ballet y se pulió en Buenos Aires. Te invito a conocer la historia que transformó mi manera de enseñar.
-          </p>
-
-          <a href="mihistoria.html" class="btn-about-story">
-            <span>MI HISTORIA</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </a>
+    <!-- CONTENEDOR UNIFICADO PARA LA LUZ Y CURVA CONTINUA -->
+    <div class="hero-and-about-wrapper">
+      
+      <!-- 3. Sección Hero -->
+      <section class="hero">
+        <div class="hero-brand">
+          <h1 class="logo-title">
+            <video autoplay muted playsinline preload="auto">
+              <!-- Para Chrome, Firefox, Edge y Android -->
+              <source src="assets/imagenes/logo-animado-negro.webm" type="video/webm">
+              
+              <!-- Para Safari, macOS e iOS -->
+              <source src="assets/imagenes/logo-animado-negro.mov" type='video/mp4; codecs="hvc1"'>
+              
+              Tu navegador no soporta videos con transparencia.
+            </video>
+          </h1>
         </div>
+      </section>
 
-        <div class="about-image">
-          <img src="assets/imagenes/horizontal1.jpg" alt="Natalia Vicente bailando tango">
+      <!-- 4. Sección Conóceme / Sobre Mí -->
+      <section id="sobre-mi" class="about-section">
+        <div class="container">
+          
+          <div class="about-content">
+            <h2>CONÓCEME</h2>
+            <p>
+              Detrás de mi forma de entender el tango; directa, sin poses y enfocada en tu libertad, hay un largo camino de aprendizaje que empezó sobre las puntas de ballet y se pulió en Buenos Aires. Te invito a conocer la historia que transformó mi manera de enseñar.
+            </p>
+
+            <a href="mihistoria.html" class="btn-about-story">
+              <span>MI HISTORIA</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+
+          <div class="about-image">
+            <img src="assets/imagenes/horizontal1.jpg" alt="Natalia Vicente bailando tango">
+          </div>
+
         </div>
+      </section>
 
-      </div>
-    </section>
+    </div>
+    <!-- FIN DEL CONTENEDOR FLUIDO -->
 
     <!-- Sección Banner Interactivo -->
     <section class="quote-banner" id="quoteBanner">
@@ -88,6 +102,7 @@
       </div>
     </section>
 
+    <!-- Sección Multimedia -->
     <section id="multimedia" class="multimedia-section">
       <div class="container">
         <h2 class="section-title">MULTIMEDIA</h2>
@@ -96,6 +111,7 @@
         </div>
       </div>
     </section>
+
     <!-- Sección Últimas Noticias / Agenda -->
     <section id="noticias" class="news-section">
       <div class="news-container">
@@ -124,8 +140,8 @@
 
   </main>
 
-   <!-- Footer -->
-   <footer class="footer">
+  <!-- Footer -->
+  <footer class="footer">
     <div class="footer-container">
       <div class="footer-grid">
         
@@ -192,7 +208,7 @@
 
       <!-- Copyright -->
       <div class="footer-bottom">
-        <p>&copy; 2026 Natalia Vicente · Todos los derechos reservados.</p>
+        <p>&copy; <span id="footer-year">2026</span> Natalia Vicente · Todos los derechos reservados.</p>
       </div>
     </div>
   </footer>

@@ -56,7 +56,33 @@ async function loadMarkdown(folder, filename) {
 }
 
 // =========================================================================
-// 1. BADGE DE MES Y AÑO EN AGENDA
+// 1. MENÚ RESPONSIVE DESPLEGABLE EN MÓVIL
+// =========================================================================
+function initMobileMenu() {
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const navbar = document.getElementById('navbar');
+
+  if (hamburgerBtn && navbar) {
+    const navLinks = navbar.querySelectorAll('a');
+
+    // Toggle menú al hacer clic en el botón
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('active');
+      navbar.classList.toggle('active');
+    });
+
+    // Cierra el menú al pulsar cualquier enlace
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        hamburgerBtn.classList.remove('active');
+        navbar.classList.remove('active');
+      });
+    });
+  }
+}
+
+// =========================================================================
+// 2. BADGE DE MES Y AÑO EN AGENDA
 // =========================================================================
 function updateDateBadge() {
   const badgeElement = document.getElementById('current-month-badge');
@@ -71,7 +97,7 @@ function updateDateBadge() {
 }
 
 // =========================================================================
-// 2. RENDERIZADO DE NOTICIAS (DESTACADA Y SECUNDARIAS UNIFICADAS)
+// 3. RENDERIZADO DE NOTICIAS (DESTACADA Y SECUNDARIAS UNIFICADAS)
 // =========================================================================
 async function renderNews() {
   const featuredContainer = document.getElementById('featured-news-container');
@@ -269,7 +295,7 @@ async function renderNews() {
 }
 
 // =========================================================================
-// 3. RENDERIZADO DE GALERÍA MULTIMEDIA (DESDE JSON CON FALLBACK DE RUTA)
+// 4. RENDERIZADO DE GALERÍA MULTIMEDIA (DESDE JSON CON FALLBACK DE RUTA)
 // =========================================================================
 async function renderGallery() {
   const container = document.getElementById('gallery-container');
@@ -277,7 +303,6 @@ async function renderGallery() {
 
   let data = null;
 
-  // Intento 1: Carga desde la API de GitHub
   try {
     const time = Date.now();
     const rawUrl = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${encodeURIComponent(BASE_FOLDER)}/galeria.json?v=${time}`;
@@ -285,7 +310,6 @@ async function renderGallery() {
     if (res.ok) data = await res.json();
   } catch (err) {}
 
-  // Intento 2: Carga de archivo local de fallback
   if (!data) {
     try {
       const localRes = await fetch('./content/galeria.json');
@@ -305,7 +329,7 @@ async function renderGallery() {
 }
 
 // =========================================================================
-// 4. RENDERIZADO DE CLASES Y TALLERES
+// 5. RENDERIZADO DE CLASES Y TALLERES
 // =========================================================================
 async function renderClasses() {
   const container = document.getElementById('classes-container');
@@ -465,7 +489,7 @@ async function renderClasses() {
 }
 
 // =========================================================================
-// 5. BANNER INTERACTIVO
+// 6. BANNER INTERACTIVO
 // =========================================================================
 function initQuoteBanner() {
   const banner = document.getElementById('quoteBanner');
@@ -488,82 +512,82 @@ function initQuoteBanner() {
             speed: 0,
             cursorChar: '|',
           })
-          .type("U").pause(144)
-          .type("n").pause(44)
-          .type(" ").pause(72)
-          .type("e").pause(96)
-          .type("s").pause(40)
-          .type("p").pause(64)
-          .type("a").pause(132)
-          .type("c").pause(48)
-          .type("i").pause(68)
-          .type("o").pause(40)
-          .type(" ").pause(60)
-          .type("p").pause(56)
-          .type("a").pause(64)
-          .type("r").pause(56)
-          .type("a").pause(28)
-          .type(" ").pause(88)
-          .type("s").pause(44)
-          .type("o").pause(80)
-          .type("l").pause(112)
-          .type("t").pause(52)
-          .type("a").pause(36)
-          .type("r").pause(64)
-          .type("t").pause(56)
-          .type("e").pause(60)
-          .type(" ").pause(92)
-          .type("y").pause(32)
-          .type(" ").pause(76)
-          .type("d").pause(88)
-          .type("i").pause(68)
-          .type("s").pause(80)
-          .type("f").pause(88)
-          .type("r").pause(60)
-          .type("u").pause(100)
-          .type("t").pause(88)
-          .type("a").pause(32)
-          .type("r").pause(40)
-          .type(" ").pause(96)
-          .type("e").pause(84)
-          .type("l").pause(32)
-          .type(" ").pause(80)
-          .type("p").pause(64)
-          .type("r").pause(32)
-          .type("o").pause(104)
-          .type("c").pause(48)
-          .type("e").pause(104)
-          .type("s").pause(56)
-          .type("o").pause(192)
-          .type(",").pause(56)
-          .break({ delay: 120 })
-          .type("d").pause(56)
-          .type("o").pause(72)
-          .type("n").pause(56)
-          .type("d").pause(52)
-          .type("e").pause(44)
-          .type(" ").pause(148)
-          .type("b").pause(72)
-          .type("a").pause(80)
-          .type("i").pause(92)
-          .type("l").pause(56)
-          .type("a").pause(92)
-          .type("r").pause(32)
-          .type(" ").pause(92)
-          .type("s").pause(52)
-          .type("i").pause(84)
-          .type("n").pause(44)
-          .type(" ").pause(96)
-          .type("p").pause(56)
-          .type("r").pause(76)
-          .type("e").pause(96)
-          .type("s").pause(32)
-          .type("i").pause(64)
-          .type("o").pause(56)
-          .type("n").pause(48)
-          .type("e").pause(100)
-          .type("s").pause(92)
-          .type(".").pause(400)
+          .type("U").pause(29)
+          .type("n").pause(9)
+          .type(" ").pause(14)
+          .type("e").pause(19)
+          .type("s").pause(8)
+          .type("p").pause(13)
+          .type("a").pause(26)
+          .type("c").pause(10)
+          .type("i").pause(14)
+          .type("o").pause(8)
+          .type(" ").pause(12)
+          .type("p").pause(11)
+          .type("a").pause(13)
+          .type("r").pause(11)
+          .type("a").pause(6)
+          .type(" ").pause(18)
+          .type("s").pause(9)
+          .type("o").pause(16)
+          .type("l").pause(22)
+          .type("t").pause(10)
+          .type("a").pause(7)
+          .type("r").pause(13)
+          .type("t").pause(11)
+          .type("e").pause(12)
+          .type(" ").pause(18)
+          .type("y").pause(6)
+          .type(" ").pause(15)
+          .type("d").pause(18)
+          .type("i").pause(14)
+          .type("s").pause(16)
+          .type("f").pause(18)
+          .type("r").pause(12)
+          .type("u").pause(20)
+          .type("t").pause(18)
+          .type("a").pause(6)
+          .type("r").pause(8)
+          .type(" ").pause(19)
+          .type("e").pause(17)
+          .type("l").pause(6)
+          .type(" ").pause(16)
+          .type("p").pause(13)
+          .type("r").pause(6)
+          .type("o").pause(21)
+          .type("c").pause(10)
+          .type("e").pause(21)
+          .type("s").pause(11)
+          .type("o").pause(38)
+          .type(",").pause(11)
+          .break({ delay: 24 })
+          .type("d").pause(11)
+          .type("o").pause(14)
+          .type("n").pause(11)
+          .type("d").pause(10)
+          .type("e").pause(9)
+          .type(" ").pause(30)
+          .type("b").pause(14)
+          .type("a").pause(16)
+          .type("i").pause(18)
+          .type("l").pause(11)
+          .type("a").pause(18)
+          .type("r").pause(6)
+          .type(" ").pause(18)
+          .type("s").pause(10)
+          .type("i").pause(17)
+          .type("n").pause(9)
+          .type(" ").pause(19)
+          .type("p").pause(11)
+          .type("r").pause(15)
+          .type("e").pause(19)
+          .type("s").pause(6)
+          .type("i").pause(13)
+          .type("o").pause(11)
+          .type("n").pause(10)
+          .type("e").pause(20)
+          .type("s").pause(18)
+          .type(".").pause(80)
           .exec(async () => {
             const cursor = banner.querySelector('.ti-cursor');
             if (cursor) cursor.style.opacity = '0.3';
@@ -580,10 +604,12 @@ function initQuoteBanner() {
   observer.observe(banner);
 }
 
+
 // =========================================================================
 // INICIALIZACIÓN GENERAL DE LA WEB
 // =========================================================================
 document.addEventListener('DOMContentLoaded', () => {
+  initMobileMenu();
   updateDateBadge();
   renderNews();
   renderGallery();
