@@ -5,7 +5,7 @@ title: SIN CHAMUYO
 subtitle: PRÁCTICA GUIADA
 location: C/ Paz, 4, Madrid. (Casa Regional "Castilla-La Mancha)
 image: assets/imagenes/horizontal1.jpg
-organizer: "Natalia y "
+organizer: "Natalia "
 ---
 
 
