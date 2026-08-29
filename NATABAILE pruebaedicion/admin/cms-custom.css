@@ -367,3 +367,69 @@
    .card-secondary:hover .btn-cyan-outline svg {
      transform: translateX(4px);
    }
+
+/* ==========================================
+   4. ESTILOS DE LA GALERÍA MULTIMEDIA (PREVIEW)
+   ========================================== */
+   .multimedia-section {
+    padding: 30px 15px;
+    background-color: #ffffff;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  
+  .multimedia-section .container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .multimedia-section .section-title {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--admin-primary, #00c6f3);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  
+  /* Grilla en Cascada (Masonry) Automática */
+  .multimedia-section .gallery-grid {
+    column-count: 3;
+    column-gap: 16px;
+    width: 100%;
+  }
+  
+  .multimedia-section .gallery-item {
+    break-inside: avoid;
+    margin-bottom: 16px;
+    position: relative;
+    border-radius: var(--radius-md, 12px);
+    overflow: hidden;
+    box-shadow: var(--admin-shadow-sm);
+    background-color: #f1f5f9;
+    transition: transform 0.2s ease;
+  }
+  
+  .multimedia-section .gallery-item:hover {
+    transform: translateY(-2px);
+  }
+  
+  .multimedia-section .gallery-item img,
+  .multimedia-section .gallery-item video {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    filter: none !important; /* Mantiene colores nativos en el panel */
+  }
+  
+  /* Adaptatibilidad en pantallas pequeñas del CMS */
+  @media (max-width: 900px) {
+    .multimedia-section .gallery-grid {
+      column-count: 2;
+    }
+  }
+  
+  @media (max-width: 500px) {
+    .multimedia-section .gallery-grid {
+      column-count: 1;
+    }
+  }

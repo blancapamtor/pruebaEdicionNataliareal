@@ -301,7 +301,7 @@
     });
 
    // ==========================================
-    // 5. PREVISUALIZACIÓN DE GALERÍA MULTIMEDIA (EN TIEMPO REAL)
+    // 5. PREVISUALIZACIÓN DE GALERÍA MULTIMEDIA
     // ==========================================
     const GalleryPreview = createClass({
       render: function() {
@@ -310,21 +310,20 @@
         const items = itemsData ? itemsData.toJS() : [];
         const getAsset = this.props.getAsset;
 
-        return h('section', { className: 'multimedia-section', style: { padding: '30px 15px', background: '#ffffff', minHeight: '100vh' } },
+        return h('section', { className: 'multimedia-section', style: { padding: '20px', background: '#ffffff', minHeight: '100vh' } },
           h('div', { className: 'container' },
-            h('h2', { className: 'section-title', style: { marginBottom: '25px', textAlign: 'center' } }, 'PREVISUALIZACIÓN DE GALERÍA'),
+            h('h2', { className: 'section-title', style: { marginBottom: '20px', fontSize: '1.5rem', color: '#00c4f0' } }, 'VISTA PREVIA DE GALERÍA'),
             
             h('div', { className: 'gallery-grid' },
               items.map((item, index) => {
-                const src = item.file_url || item.image; // Retrocompatibilidad
+                const src = item.file_url || item.image;
                 if (!src) return null;
 
                 const mediaUrl = getAsset(src);
-                const layoutClass = item.layout_type || 'item-1';
                 const altText = item.title || 'Galería Natalia Vicente';
-                const isVideo = item.media_type === 'video' || src.match(/\.(mp4|webm|mov|ogg)$/i);
+                const isVideo = src.match(/\.(mp4|webm|mov|ogg)$/i);
 
-                return h('div', { key: index, className: 'gallery-item ' + layoutClass },
+                return h('div', { key: index, className: 'gallery-item' },
                   isVideo 
                     ? h('video', { 
                         src: mediaUrl, 
@@ -332,12 +331,12 @@
                         muted: true, 
                         loop: true,
                         playsInline: true,
-                        style: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } 
+                        style: { width: '100%', height: 'auto', display: 'block', borderRadius: '8px' } 
                       })
                     : h('img', { 
                         src: mediaUrl, 
                         alt: altText,
-                        style: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } 
+                        style: { width: '100%', height: 'auto', display: 'block', borderRadius: '8px' } 
                       })
                 );
               })

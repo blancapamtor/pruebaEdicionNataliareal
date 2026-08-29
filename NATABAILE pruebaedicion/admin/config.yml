@@ -96,29 +96,7 @@ collections:
           - label: "Elementos de la Galería"
             name: "items"
             widget: "list"
-            summary: "{{fields.title}} ({{fields.media_type}})"
+            summary: "{{fields.title}} - {{fields.file_url}}"
             fields:
-              - { label: "Título / Alt", name: "title", widget: "string", default: "Tango Natalia Vicente" }
-              - { 
-                  label: "Tipo de Archivo", 
-                  name: "media_type", 
-                  widget: "select", 
-                  options: [
-                    { label: "Imagen", value: "image" },
-                    { label: "Vídeo", value: "video" }
-                  ], 
-                  default: "image" 
-                }
+              - { label: "Título / Descripción Alt", name: "title", widget: "string", default: "Natalia Vicente", required: false }
               - { label: "Archivo (Imagen o Vídeo MP4/MOV)", name: "file_url", widget: "file" }
-              - { 
-                  label: "Tamaño en Cuadrícula", 
-                  name: "layout_type", 
-                  widget: "select", 
-                  options: [
-                    { label: "Normal (1x1)", value: "item-1" },
-                    { label: "Destacado Grande (2x2)", value: "item-2" },
-                    { label: "Horizontal Ancho (2x1)", value: "item-wide" },
-                    { label: "Vertical Alto (1x2)", value: "item-tall" }
-                  ], 
-                  default: "item-1" 
-                }
