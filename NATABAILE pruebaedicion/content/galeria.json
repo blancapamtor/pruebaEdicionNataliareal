@@ -9,6 +9,18 @@
     },
     {
       "title": "Tango Natalia Vicente",
+      "media_type": "image",
+      "layout_type": "item-1",
+      "file_url": "assets/imagenes/dsc06935.jpg"
+    },
+    {
+      "title": "Tango Natalia Vicente",
+      "media_type": "image",
+      "layout_type": "item-1",
+      "file_url": "assets/imagenes/dsc06934.jpg"
+    },
+    {
+      "title": "Tango Natalia Vicente",
       "layout_type": "item-1",
       "image": "assets/imagenes/vertical1.jpg",
       "media_type": "image",
@@ -24,7 +36,19 @@
       "title": "Tango Natalia Vicente",
       "media_type": "image",
       "layout_type": "item-1",
+      "file_url": "assets/imagenes/dsc06888.jpg"
+    },
+    {
+      "title": "Tango Natalia Vicente",
+      "media_type": "image",
+      "layout_type": "item-1",
       "file_url": "assets/imagenes/vertical1.jpg"
+    },
+    {
+      "title": "Tango Natalia Vicente",
+      "media_type": "image",
+      "layout_type": "item-1",
+      "file_url": "assets/imagenes/horizontal1.jpg"
     }
   ]
 }
