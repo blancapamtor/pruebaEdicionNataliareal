@@ -143,7 +143,7 @@
         const image = entry.getIn(['data', 'image']);
         const organizer = entry.getIn(['data', 'organizer']) || '';
         const extraInfo = entry.getIn(['data', 'extra_info']) || '';
-        const body = this.props.widgetFor('body');
+        const body = entry.getIn(['data', 'body']) || (this.props.widgetFor ? this.props.widgetFor('body') : '');
         const isOpen = this.state.open;
 
         const bgImageStyle = image 
@@ -216,7 +216,16 @@
         const dateStr = entry.getIn(['data', 'date_str']) || ''; 
         const location = entry.getIn(['data', 'location']) || '';
         const extraInfo = entry.getIn(['data', 'extra_info']) || '';
-        const body = this.props.widgetFor('body');
+        
+        // Evitamos la excepción leyendo la propiedad como string si widgetFor da error
+        let body = entry.getIn(['data', 'body']) || '';
+        try {
+          if (this.props.widgetFor && this.props.widgetFor('body')) {
+            body = this.props.widgetFor('body');
+          }
+        } catch (e) {
+          body = entry.getIn(['data', 'body']) || '';
+        }
 
         return h('div', { className: 'news-section', style: { padding: '30px 15px', background: '#fdfbf7', minHeight: '100vh' } },
           h('div', { style: { maxWidth: '440px', margin: '0 auto' } },
@@ -343,8 +352,11 @@
     // ==========================================
     CMS.registerPreviewTemplate('clases', ClassPreview);
     CMS.registerPreviewTemplate("noticias_destacadas", FeaturedNewsPreview);
+    CMS.registerPreviewTemplate("noticias_destacadas_page", FeaturedNewsPreview);
     CMS.registerPreviewTemplate("noticias_secundarias", SecondaryNewsPreview);
+    CMS.registerPreviewTemplate("noticias_secundarias_page", SecondaryNewsPreview);
     CMS.registerPreviewTemplate("galeria", GalleryPreview);
+    CMS.registerPreviewTemplate("galeria_page", GalleryPreview);
   </script>
 </body>
 </html>
