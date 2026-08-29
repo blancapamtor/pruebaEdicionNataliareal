@@ -19,6 +19,12 @@
       "media_type": "image",
       "layout_type": "item-1",
       "file_url": "assets/imagenes/horizontal3.jpg"
+    },
+    {
+      "title": "Tango Natalia Vicente",
+      "media_type": "image",
+      "layout_type": "item-1",
+      "file_url": "assets/imagenes/vertical1.jpg"
     }
   ]
 }
