@@ -3,22 +3,42 @@
     {
       "title": "Tango Natalia Vicente",
       "layout_type": "item-2",
-      "image": "assets/imagenes/horizontal1.jpg"
+      "image": "assets/imagenes/horizontal1.jpg",
+      "media_type": "image",
+      "file_url": "assets/imagenes/horizontal1.jpg"
     },
     {
       "title": "Tango Natalia Vicente",
       "layout_type": "item-1",
-      "image": "assets/imagenes/horizontal3.jpg"
+      "image": "assets/imagenes/horizontal3.jpg",
+      "media_type": "image",
+      "file_url": "assets/imagenes/horizontal2.jpg"
     },
     {
       "title": "Tango Natalia Vicente",
       "layout_type": "item-1",
-      "image": "assets/imagenes/vertical1.jpg"
+      "image": "assets/imagenes/vertical1.jpg",
+      "media_type": "image",
+      "file_url": "assets/imagenes/horizontal2.jpg"
     },
     {
       "title": "Tango Natalia Vicente",
       "layout_type": "item-1",
-      "image": "assets/imagenes/horizontal1.jpg"
+      "image": "assets/imagenes/horizontal1.jpg",
+      "media_type": "image",
+      "file_url": "assets/imagenes/base.jpg"
+    },
+    {
+      "title": "Tango Natalia Vicente",
+      "media_type": "image",
+      "layout_type": "item-1",
+      "file_url": "assets/imagenes/horizontal3.jpg"
+    },
+    {
+      "title": "Tango Natalia Vicente",
+      "media_type": "video",
+      "layout_type": "item-1",
+      "file_url": "assets/imagenes/grabación-de-pantalla-2026-06-04-a-las-13.13.42.mov"
     }
   ]
 }
