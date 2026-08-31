@@ -6,7 +6,7 @@
       "image": "assets/imagenes/horizontal1.jpg",
       "media_type": "image",
       "file_url": "assets/imagenes/horizontal1.jpg",
-      "caption": "Sesión de fotos "
+      "caption": ""
     },
     {
       "title": "Tango Natalia Vicente",
@@ -46,10 +46,11 @@
       "file_url": "assets/imagenes/vertical1.jpg"
     },
     {
-      "title": "Tango Natalia Vicente",
+      "title": "Coreografías para bodas",
       "media_type": "image",
       "layout_type": "item-1",
-      "file_url": "assets/imagenes/horizontal1.jpg"
+      "file_url": "assets/imagenes/bodas-cris-y-robert-nata_ent1a2up.mp4",
+      "caption": "Coreografías para bodas"
     }
   ]
 }
