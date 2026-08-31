@@ -321,9 +321,10 @@
 
                 const mediaUrl = getAsset(src);
                 const altText = item.title || 'Galería Natalia Vicente';
+                const captionText = item.caption || '';
                 const isVideo = src.match(/\.(mp4|webm|mov|ogg)$/i);
 
-                return h('div', { key: index, className: 'gallery-item' },
+                return h('figure', { key: index, className: 'gallery-item', style: { margin: 0, display: 'flex', flexDirection: 'column' } },
                   isVideo 
                     ? h('video', { 
                         src: mediaUrl, 
@@ -331,13 +332,26 @@
                         muted: true, 
                         loop: true,
                         playsInline: true,
-                        style: { width: '100%', height: 'auto', display: 'block', borderRadius: '8px' } 
+                        style: { width: '100%', height: 'auto', display: 'block', borderRadius: '8px 8px 0 0' } 
                       })
                     : h('img', { 
                         src: mediaUrl, 
                         alt: altText,
-                        style: { width: '100%', height: 'auto', display: 'block', borderRadius: '8px' } 
-                      })
+                        style: { width: '100%', height: 'auto', display: 'block', borderRadius: '8px 8px 0 0' } 
+                      }),
+                  captionText 
+                    ? h('figcaption', { 
+                        style: { 
+                          padding: '8px 12px', 
+                          fontSize: '0.85rem', 
+                          color: '#475569', 
+                          background: '#f8fafc', 
+                          borderTop: '1px solid #e2e8f0',
+                          borderRadius: '0 0 8px 8px',
+                          fontStyle: 'italic'
+                        } 
+                      }, captionText) 
+                    : null
                 );
               })
             )

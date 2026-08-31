@@ -240,15 +240,17 @@ async function renderGallery() {
       const isVideo = item.media_type === 'video' || src.match(/\.(mp4|webm|mov|ogg)$/i);
       const layoutClass = item.layout_type || 'item-1';
       const title = item.title || 'Tango Natalia Vicente';
+      const captionText = item.caption || '';
 
       return `
-        <div class="gallery-item ${layoutClass}">
+        <figure class="gallery-item ${layoutClass}">
           ${isVideo ? `
             <video src="${src}" autoplay loop muted playsinline controlslist="nodownload"></video>
           ` : `
             <img src="${src}" alt="${title}" loading="lazy">
           `}
-        </div>
+          ${captionText ? `<figcaption class="gallery-caption">${captionText}</figcaption>` : ''}
+        </figure>
       `;
     }).join('');
   } else {
