@@ -882,20 +882,18 @@ $color-border:     rgba(12, 25, 44, 0.08);
   // Galería adaptable por columnas
   .gallery-grid {
     column-count: 3;
-    column-gap: 16px;
+    column-gap: 20px;
     width: 100%;
 
     .gallery-item {
       break-inside: avoid;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       position: relative;
-      overflow: hidden;
-      border-radius: 12px;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      background-color: transparent;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: transparent;
+      box-shadow: none;
+      transition: transform 0.3s ease;
 
       img, video {
         width: 100%;
@@ -903,17 +901,19 @@ $color-border:     rgba(12, 25, 44, 0.08);
         display: block;
         object-fit: contain;
         border-radius: 12px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        transition: box-shadow 0.3s ease;
       }
 
-      // Estilos para el pie de foto / leyenda sutil
+      // Pie de foto sutil sin fondos
       figcaption, .gallery-caption {
         padding: 8px 4px 0 4px;
         font-family: $font-sans;
-        font-size: 0.82rem;
+        font-size: 0.85rem;
         font-weight: 400;
-        color: #64748b; // Gris elegante y sutil
-        background-color: transparent;
-        border: none;
+        color: #64748b; // Gris elegante sutil
+        background: transparent !important;
+        border: none !important;
         font-style: italic;
         line-height: 1.35;
         margin: 0;
@@ -922,7 +922,10 @@ $color-border:     rgba(12, 25, 44, 0.08);
 
       &:hover {
         transform: translateY(-4px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        
+        img, video {
+          box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+        }
       }
     }
 

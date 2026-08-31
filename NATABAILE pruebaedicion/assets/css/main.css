@@ -698,22 +698,20 @@ body {
 .multimedia-section .gallery-grid {
   -moz-column-count: 3;
        column-count: 3;
-  -moz-column-gap: 16px;
-       column-gap: 16px;
+  -moz-column-gap: 20px;
+       column-gap: 20px;
   width: 100%;
 }
 .multimedia-section .gallery-grid .gallery-item {
   -moz-column-break-inside: avoid;
        break-inside: avoid;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   position: relative;
-  overflow: hidden;
-  border-radius: 12px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  background-color: transparent;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: transparent;
+  box-shadow: none;
+  transition: transform 0.3s ease;
 }
 .multimedia-section .gallery-grid .gallery-item img, .multimedia-section .gallery-grid .gallery-item video {
   width: 100%;
@@ -722,15 +720,17 @@ body {
   -o-object-fit: contain;
      object-fit: contain;
   border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
 }
 .multimedia-section .gallery-grid .gallery-item figcaption, .multimedia-section .gallery-grid .gallery-item .gallery-caption {
   padding: 8px 4px 0 4px;
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 400;
   color: #64748b;
-  background-color: transparent;
-  border: none;
+  background: transparent !important;
+  border: none !important;
   font-style: italic;
   line-height: 1.35;
   margin: 0;
@@ -738,7 +738,9 @@ body {
 }
 .multimedia-section .gallery-grid .gallery-item:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+.multimedia-section .gallery-grid .gallery-item:hover img, .multimedia-section .gallery-grid .gallery-item:hover video {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
 }
 @media (max-width: 900px) {
   .multimedia-section .gallery-grid {
