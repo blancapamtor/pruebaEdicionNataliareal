@@ -7,6 +7,7 @@ media_folder: "NATABAILE pruebaedicion/assets/imagenes"
 public_folder: "assets/imagenes"
 
 media_library:
+  name: default
   config:
     max_file_size: 30000000
 
