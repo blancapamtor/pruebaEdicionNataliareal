@@ -121,7 +121,6 @@
      color: #0c192c;
    }
    
-   /* Badges y etiquetas */
    .badge {
      display: inline-block;
      padding: 4px 10px;
@@ -143,7 +142,6 @@
      border-left: 3px solid #00c6f3;
    }
    
-   /* Segunda etiqueta opcional (ej: Plazas) */
    .status-indicator-badge {
      font-size: 0.72rem;
      font-weight: 800;
@@ -155,7 +153,7 @@
      letter-spacing: 0.04em;
    }
    
-   /* 1. TARJETA DESTACADA / GRANDE (AZUL CIAN) */
+   /* Tarjeta Destacada */
    .card-featured {
      background-color: #00c6f3;
      border-radius: 16px;
@@ -269,7 +267,7 @@
      box-shadow: 0 4px 12px rgba(12, 25, 44, 0.2);
    }
    
-   /* 2. TARJETA SECUNDARIA (DERECHA / SIDEBAR) */
+   /* Tarjeta Secundaria */
    .news-sidebar {
      display: flex;
      flex-direction: column;
@@ -367,145 +365,106 @@
    .card-secondary:hover .btn-cyan-outline svg {
      transform: translateX(4px);
    }
-
-/* ==========================================
-   4. ESTILOS DE LA GALERÍA MULTIMEDIA (PREVIEW)
-   ========================================== */
+   
+   /* ==========================================
+      4. ESTILOS DE LA GALERÍA MULTIMEDIA (PREVIEW)
+      ========================================== */
    .multimedia-section {
-    padding: 30px 15px;
-    background-color: #ffffff;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  }
-  
-  .multimedia-section .container {
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-  
-  .multimedia-section .section-title {
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: var(--admin-primary, #00c6f3);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-  
-  /* Grilla en Cascada (Masonry) Automática */
-  .multimedia-section .gallery-grid {
-    column-count: 3;
-    column-gap: 16px;
-    width: 100%;
-  }
-  
-  .multimedia-section .gallery-item {
-    break-inside: avoid;
-    margin-bottom: 16px;
-    position: relative;
-    border-radius: var(--radius-md, 12px);
-    overflow: hidden;
-    box-shadow: var(--admin-shadow-sm);
-    background-color: #f1f5f9;
-    transition: transform 0.2s ease;
-  }
-  
-  .multimedia-section .gallery-item:hover {
-    transform: translateY(-2px);
-  }
-  
-  .multimedia-section .gallery-item img,
-  .multimedia-section .gallery-item video {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: contain;
-    filter: none !important; /* Mantiene colores nativos en el panel */
-  }
-  
-  /* Adaptatibilidad en pantallas pequeñas del CMS */
-  @media (max-width: 900px) {
-    .multimedia-section .gallery-grid {
-      column-count: 2;
-    }
-  }
-  
-  @media (max-width: 500px) {
-    .multimedia-section .gallery-grid {
-      column-count: 1;
-    }
-  }
-
-  /* ==========================================
-   VISTA PREVIA DE MINIATURAS EN PANEL IZQUIERDO
-   ========================================== */
-
-/* Estilizado de la barra colapsable del acordeón */
-div[class*="ListControl"] div[class*="TopBar"] {
-  background-color: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 8px !important;
-  padding: 8px 12px !important;
-  margin-bottom: 6px !important;
-  transition: all 0.2s ease !important;
-}
-
-div[class*="ListControl"] div[class*="TopBar"]:hover {
-  border-color: #00c6f3 !important;
-  background-color: #f8fafc !important;
-}
-
-/* Identifica imágenes cargadas y crea la miniatura */
-div[class*="TopBar"] span[class*="Title"] {
-  display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
-  font-weight: 700 !important;
-  color: #1e293b !important;
-}
-
-/* Opcional: Genera un indicador visual limpio del elemento */
-div[class*="TopBar"] span[class*="Title"]::before {
-  content: "🖼️";
-  font-size: 1.1rem;
-  display: inline-block;
-  padding: 4px 8px;
-  background-color: #e0f7fc;
-  border-radius: 6px;
-}
-
-/* ==========================================
-   MINIATURAS Y ACCORDEÓN EN PANEL IZQUIERDO (DECAP CMS)
-   ========================================== */
-
-/* Barra colapsada del ítem de lista */
-div[class*="ListItemTopBar"] {
-  background-color: #ffffff !important;
-  border: 1.5px solid #e2e8f0 !important;
-  border-radius: 8px !important;
-  padding: 10px 14px !important;
-  margin-bottom: 6px !important;
-  transition: all 0.2s ease !important;
-}
-
-div[class*="ListItemTopBar"]:hover {
-  border-color: #00c6f3 !important;
-  background-color: #f8fafc !important;
-}
-
-/* Texto dentro del elemento colapsado */
-div[class*="ListItemTopBar"] [class*="TopBarTitle"] {
-  font-weight: 700 !important;
-  color: #0c192c !important;
-  font-size: 0.88rem !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-}
-
-/* Icono indicador de imagen */
-div[class*="ListItemTopBar"] [class*="TopBarTitle"]::before {
-  content: "🖼️";
-  font-size: 0.95rem;
-  background-color: #e0f7fc;
-  padding: 3px 6px;
-  border-radius: 4px;
-}
+     padding: 30px 15px;
+     background-color: #ffffff;
+     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+   }
+   
+   .multimedia-section .container {
+     max-width: 1000px;
+     margin: 0 auto;
+   }
+   
+   .multimedia-section .section-title {
+     font-size: 1.5rem;
+     font-weight: 900;
+     color: var(--admin-primary, #00c6f3);
+     text-transform: uppercase;
+     margin-bottom: 20px;
+   }
+   
+   .multimedia-section .gallery-grid {
+     column-count: 3;
+     column-gap: 16px;
+     width: 100%;
+   }
+   
+   .multimedia-section .gallery-item {
+     break-inside: avoid;
+     margin-bottom: 16px;
+     position: relative;
+     border-radius: var(--radius-md, 12px);
+     overflow: hidden;
+     box-shadow: var(--admin-shadow-sm);
+     background-color: #f1f5f9;
+     transition: transform 0.2s ease;
+   }
+   
+   .multimedia-section .gallery-item:hover {
+     transform: translateY(-2px);
+   }
+   
+   .multimedia-section .gallery-item img,
+   .multimedia-section .gallery-item video {
+     width: 100%;
+     height: auto;
+     display: block;
+     object-fit: contain;
+     filter: none !important;
+   }
+   
+   @media (max-width: 900px) {
+     .multimedia-section .gallery-grid {
+       column-count: 2;
+     }
+   }
+   
+   @media (max-width: 500px) {
+     .multimedia-section .gallery-grid {
+       column-count: 1;
+     }
+   }
+   
+   /* ==========================================
+      5. MINIATURAS EN EL PANEL IZQUIERDO (LISTA)
+      ========================================== */
+   
+   /* Barra colapsada del elemento */
+   div[class*="ListItemTopBar"] {
+     background-color: #ffffff !important;
+     border: 1.5px solid #e2e8f0 !important;
+     border-radius: 8px !important;
+     padding: 8px 12px !important;
+     margin-bottom: 8px !important;
+     transition: all 0.2s ease !important;
+     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+   }
+   
+   div[class*="ListItemTopBar"]:hover {
+     border-color: #00c6f3 !important;
+     background-color: #f8fafc !important;
+   }
+   
+   /* Alineación e integración de la miniatura real */
+   div[class*="ListItemTopBar"] [class*="TopBarTitle"] {
+     display: flex !important;
+     align-items: center !important;
+     font-weight: 700 !important;
+     color: #0c192c !important;
+     font-size: 0.88rem !important;
+   }
+   
+   /* Oculta el icono por defecto para dar paso a la imagen inyectada */
+   div[class*="ListItemTopBar"] [class*="TopBarTitle"]::before {
+     display: none !important;
+   }
+   
+   /* Manejador de arrastre (Drag Handle) */
+   div[class*="ListItemTopBar"] [class*="DragHandle"] {
+     cursor: grab !important;
+   }
