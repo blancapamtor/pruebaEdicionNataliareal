@@ -6,6 +6,10 @@ backend:
 media_folder: "NATABAILE pruebaedicion/assets/imagenes"
 public_folder: "assets/imagenes"
 
+media_library:
+  config:
+    max_file_size: 30000000
+
 collections:
   # 🌟 1. NOTICIAS DESTACADAS
   - name: "noticias_destacadas_page"
