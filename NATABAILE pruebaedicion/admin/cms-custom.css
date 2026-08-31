@@ -471,3 +471,60 @@ div[class*="TopBar"] span[class*="Title"]::before {
   background-color: #e0f7fc;
   border-radius: 6px;
 }
+/* ==========================================
+   5. MINIATURAS Y PIES DE FOTO EN EL PANEL Y PREVIEW
+   ========================================== */
+
+/* Estilizado del encabezado colapsable en el panel izquierdo */
+div[class*="ListControl"] div[class*="TopBar"] {
+  background-color: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+  margin-bottom: 8px !important;
+  min-height: 54px !important;
+  display: flex !important;
+  align-items: center !important;
+  transition: all 0.2s ease !important;
+}
+
+div[class*="ListControl"] div[class*="TopBar"]:hover {
+  border-color: #00c6f3 !important;
+  box-shadow: 0 4px 12px rgba(0, 198, 243, 0.12) !important;
+  background-color: #f8fafc !important;
+}
+
+/* Alineación del texto e icono en la barra del acordeón */
+div[class*="TopBar"] span[class*="Title"] {
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  color: #0c192c !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+/* Identificador visual para los elementos multimedia */
+div[class*="TopBar"] span[class*="Title"]::before {
+  content: "🖼️";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background-color: #e0f7fc;
+  border-radius: 6px;
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+/* Estilo para los pies de foto en la grilla de la derecha (Preview) */
+.multimedia-section .gallery-item figcaption {
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  color: #475569;
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  font-style: italic;
+  line-height: 1.4;
+}
