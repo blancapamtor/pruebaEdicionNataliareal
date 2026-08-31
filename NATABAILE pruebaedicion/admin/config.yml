@@ -52,39 +52,43 @@ collections:
               - { label: "Información Extra", name: "extra_info", widget: "text", required: false }
               - { label: "Detalles desplegable", name: "body", widget: "text", required: false }
 
-  # 🕺 3. CLASES Y TALLERES
-  - name: "clases_page"
-    label: "🕺 Clases y Talleres"
-    files:
-      - file: "NATABAILE pruebaedicion/content/clases.json"
-        label: "Gestión de Clases"
-        name: "clases"
+  # ==========================================
+  # 🕺 3. CLASES Y TALLERES (COLECCIÓN INDIVIDUAL)
+  # ==========================================
+  - name: "clases" # El nombre interno cambia para reflejar que es carpeta
+    label: "💃 Clases y Talleres"
+    label_singular: "Clase"
+    folder: "content/clases" # IMPORTANTE: Crea esta carpeta en la raíz
+    create: true # Esto habilita el botón "Nueva Clase"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    format: "json"
+    fields:
+      - { label: "Etiqueta superior (Categoría / Nivel)", name: "badge", widget: "string", required: true }
+      - { label: "Título Principal de la Clase", name: "title", widget: "string", required: true }
+      - { label: "Orden de Aparición", name: "order", widget: "number", default: 1, value_type: "int" }
+      
+      # Conservamos la estructura de ubicaciones y horarios
+      - label: "Ubicaciones y Horarios"
+        name: "schedules"
+        widget: "list"
+        summary: "{{fields.city}} - {{fields.address}}"
         fields:
-          - label: "Lista de Clases"
-            name: "items"
+          - { label: "Subtítulo de ubicación (Opcional)", name: "sub_title", widget: "string", required: false }
+          - { label: "LUGAR / CIUDAD (Ej: Madrid Centro)", name: "city", widget: "string", required: true }
+          
+          # Bloque de Horarios (conservado)
+          - label: "Horarios"
+            name: "time_slots"
             widget: "list"
-            summary: "{{fields.title}} • (Orden: {{fields.order}})"
             fields:
-              - { label: "Etiqueta superior (Categoría / Nivel)", name: "badge", widget: "string", required: true }
-              - { label: "Título Principal", name: "title", widget: "string", required: true }
-              - { label: "Orden de Aparición", name: "order", widget: "number", default: 1, value_type: "int" }
-              - label: "Ubicaciones"
-                name: "schedules"
-                widget: "list"
-                fields:
-                  - { label: "Subtítulo", name: "sub_title", widget: "string", required: false }
-                  - { label: "LUGAR / CIUDAD", name: "city", widget: "string", required: true }
-                  - label: "Horarios"
-                    name: "time_slots"
-                    widget: "list"
-                    fields:
-                      - { label: "Día", name: "day", widget: "string", required: true }
-                      - { label: "Horario", name: "time_slot", widget: "string", required: true }
-                      - { label: "Meta Extra", name: "meta_extra", widget: "string", required: false }
-                  - { label: "Dirección", name: "address", widget: "string", required: true }
-                  - { label: "Descripción", name: "description", widget: "text", required: true }
-                  - { label: "Enlace Google Maps", name: "map_link", widget: "string", required: true }
-
+              - { label: "Día (Ej: Lunes)", name: "day", widget: "string", required: true }
+              - { label: "Horario (Ej: 19:00h)", name: "time_slot", widget: "string", required: true }
+              - { label: "Info Extra / Nivel (Ej: Iniciación)", name: "meta_extra", widget: "string", required: false }
+              
+          - { label: "Dirección Completa", name: "address", widget: "string", required: true }
+          - { label: "Descripción desplegable", name: "description", widget: "text", required: true }
+          - { label: "Enlace Google Maps", name: "map_link", widget: "string", required: true }
+          
 # 📸 GALERÍA MULTIMEDIA
   - name: "galeria_pagina"
     label: "📸 Galería Multimedia"
