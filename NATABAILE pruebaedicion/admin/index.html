@@ -20,6 +20,21 @@
   <!-- Carga de Decap CMS -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
+  <script>
+    window.addEventListener('change', function(e) {
+      if (e.target && e.target.type === 'file') {
+        const file = e.target.files[0];
+        const maxMb = 25; // Define el límite en Megabytes que desees
+        const maxBytes = maxMb * 1024 * 1024;
+        
+        if (file && file.size > maxBytes) {
+          alert(`⚠️ El archivo "${file.name}" supera el límite permitido de ${maxMb}MB. Por favor, comprímelo antes de subirlo.`);
+          e.target.value = ''; // Cancela la selección del archivo
+        }
+      }
+    }, true);
+  </script>
+
   <!-- 🎨 PLANTILLAS DE VISTA PREVIA EN TIEMPO REAL -->
   <script>
     // 1. Inyectamos los estilos reales de la web y los personalizados al iframe
