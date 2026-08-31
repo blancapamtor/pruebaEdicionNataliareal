@@ -53,42 +53,47 @@ collections:
               - { label: "Detalles desplegable", name: "body", widget: "text", required: false }
 
   # ==========================================
-  # 🕺 3. CLASES Y TALLERES (COLECCIÓN INDIVIDUAL)
+  # 🕺 3. CLASES Y TALLERES (JSON ÚNICO CON TARJETAS SEPARADAS)
   # ==========================================
-  - name: "clases" # El nombre interno cambia para reflejar que es carpeta
-    label: "💃 Clases y Talleres"
-    label_singular: "Clase"
-    folder: "content/clases" # IMPORTANTE: Crea esta carpeta en la raíz
-    create: true # Esto habilita el botón "Nueva Clase"
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    format: "json"
-    fields:
-      - { label: "Etiqueta superior (Categoría / Nivel)", name: "badge", widget: "string", required: true }
-      - { label: "Título Principal de la Clase", name: "title", widget: "string", required: true }
-      - { label: "Orden de Aparición", name: "order", widget: "number", default: 1, value_type: "int" }
-      
-      # Conservamos la estructura de ubicaciones y horarios
-      - label: "Ubicaciones y Horarios"
-        name: "schedules"
-        widget: "list"
-        summary: "{{fields.city}} - {{fields.address}}"
+  - name: "clases_page"
+    label: "🕺 Clases y Talleres"
+    files:
+      - file: "content/clases.json"
+        label: "Gestión de Clases"
+        name: "clases"
         fields:
-          - { label: "Subtítulo de ubicación (Opcional)", name: "sub_title", widget: "string", required: false }
-          - { label: "LUGAR / CIUDAD (Ej: Madrid Centro)", name: "city", widget: "string", required: true }
-          
-          # Bloque de Horarios (conservado)
-          - label: "Horarios"
-            name: "time_slots"
+          - label: "Lista de Clases"
+            name: "items"
             widget: "list"
+            # Esta línea hace que cada tarjeta se identifique por su Título y Orden
+            summary: "💃 {{fields.title}} (Orden: {{fields.order}})"
             fields:
-              - { label: "Día (Ej: Lunes)", name: "day", widget: "string", required: true }
-              - { label: "Horario (Ej: 19:00h)", name: "time_slot", widget: "string", required: true }
-              - { label: "Info Extra / Nivel (Ej: Iniciación)", name: "meta_extra", widget: "string", required: false }
+              - { label: "Etiqueta superior (Categoría / Nivel)", name: "badge", widget: "string", required: true }
+              - { label: "Título Principal de la Clase", name: "title", widget: "string", required: true }
+              - { label: "Orden de Aparición", name: "order", widget: "number", default: 1, value_type: "int" }
               
-          - { label: "Dirección Completa", name: "address", widget: "string", required: true }
-          - { label: "Descripción desplegable", name: "description", widget: "text", required: true }
-          - { label: "Enlace Google Maps", name: "map_link", widget: "string", required: true }
-          
+              - label: "Ubicaciones y Horarios"
+                name: "schedules"
+                widget: "list"
+                summary: "📍 {{fields.city}} - {{fields.address}}"
+                fields:
+                  - { label: "Subtítulo (Opcional)", name: "sub_title", widget: "string", required: false }
+                  - { label: "LUGAR / CIUDAD (Ej: Madrid Centro)", name: "city", widget: "string", required: true }
+                  
+                  - label: "Horarios"
+                    name: "time_slots"
+                    widget: "list"
+                    summary: "⏰ {{fields.day}}: {{fields.time_slot}}"
+                    fields:
+                      - { label: "Día (Ej: Lunes)", name: "day", widget: "string", required: true }
+                      - { label: "Horario (Ej: 19:00h)", name: "time_slot", widget: "string", required: true }
+                      - { label: "Info Extra / Nivel", name: "meta_extra", widget: "string", required: false }
+                      
+                  - { label: "Dirección Completa", name: "address", widget: "string", required: true }
+                  - { label: "Descripción desplegable", name: "description", widget: "text", required: true }
+                  - { label: "Enlace Google Maps", name: "map_link", widget: "string", required: true }
+
+                  
 # 📸 GALERÍA MULTIMEDIA
   - name: "galeria_pagina"
     label: "📸 Galería Multimedia"
