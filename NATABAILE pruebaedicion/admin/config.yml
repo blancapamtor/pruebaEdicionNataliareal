@@ -51,9 +51,9 @@ collections:
               - { label: "Lugar", name: "location", widget: "string", required: false }
               - { label: "Información Extra", name: "extra_info", widget: "text", required: false }
               - { label: "Detalles desplegable", name: "body", widget: "text", required: false }
-
-  # ==========================================
-  # 🕺 3. CLASES Y TALLERES (JSON ÚNICO CON TARJETAS SEPARADAS)
+              
+# ==========================================
+  # 🕺 3. CLASES Y TALLERES (ARCHIVO ÚNICO JSON)
   # ==========================================
   - name: "clases_page"
     label: "🕺 Clases y Talleres"
@@ -65,35 +65,36 @@ collections:
           - label: "Lista de Clases"
             name: "items"
             widget: "list"
-            # Esta línea hace que cada tarjeta se identifique por su Título y Orden
             summary: "💃 {{fields.title}} (Orden: {{fields.order}})"
             fields:
-              - { label: "Etiqueta superior (Categoría / Nivel)", name: "badge", widget: "string", required: true }
+              - { label: "Etiqueta superior (Categoría / Nivel)", name: "badge", widget: "string", required: false }
               - { label: "Título Principal de la Clase", name: "title", widget: "string", required: true }
-              - { label: "Orden de Aparición", name: "order", widget: "number", default: 1, value_type: "int" }
+              - { label: "Orden de Aparición", name: "order", widget: "number", default: 1, value_type: "int", required: false }
               
               - label: "Ubicaciones y Horarios"
                 name: "schedules"
                 widget: "list"
+                required: false
                 summary: "📍 {{fields.city}} - {{fields.address}}"
                 fields:
                   - { label: "Subtítulo (Opcional)", name: "sub_title", widget: "string", required: false }
-                  - { label: "LUGAR / CIUDAD (Ej: Madrid Centro)", name: "city", widget: "string", required: true }
+                  - { label: "LUGAR / CIUDAD", name: "city", widget: "string", required: false }
                   
                   - label: "Horarios"
                     name: "time_slots"
                     widget: "list"
+                    required: false
                     summary: "⏰ {{fields.day}}: {{fields.time_slot}}"
                     fields:
-                      - { label: "Día (Ej: Lunes)", name: "day", widget: "string", required: true }
-                      - { label: "Horario (Ej: 19:00h)", name: "time_slot", widget: "string", required: true }
+                      - { label: "Día", name: "day", widget: "string", required: false }
+                      - { label: "Horario", name: "time_slot", widget: "string", required: false }
                       - { label: "Info Extra / Nivel", name: "meta_extra", widget: "string", required: false }
                       
-                  - { label: "Dirección Completa", name: "address", widget: "string", required: true }
-                  - { label: "Descripción desplegable", name: "description", widget: "text", required: true }
-                  - { label: "Enlace Google Maps", name: "map_link", widget: "string", required: true }
+                  - { label: "Dirección Completa", name: "address", widget: "string", required: false }
+                  - { label: "Descripción desplegable", name: "description", widget: "text", required: false }
+                  - { label: "Enlace Google Maps", name: "map_link", widget: "string", required: false }
 
-                  
+
 # 📸 GALERÍA MULTIMEDIA
   - name: "galeria_pagina"
     label: "📸 Galería Multimedia"
