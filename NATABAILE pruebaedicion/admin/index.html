@@ -20,16 +20,17 @@
   <!-- Carga de Decap CMS -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
+  <!-- 🛑 CONTROL DE TAMAÑO MÁXIMO DE ARCHIVOS (25MB) -->
   <script>
     window.addEventListener('change', function(e) {
       if (e.target && e.target.type === 'file') {
         const file = e.target.files[0];
-        const maxMb = 25; // Define el límite en Megabytes que desees
+        const maxMb = 25; // Límite en Megabytes
         const maxBytes = maxMb * 1024 * 1024;
         
         if (file && file.size > maxBytes) {
           alert(`⚠️ El archivo "${file.name}" supera el límite permitido de ${maxMb}MB. Por favor, comprímelo antes de subirlo.`);
-          e.target.value = ''; // Cancela la selección del archivo
+          e.target.value = ''; // Cancela la selección
         }
       }
     }, true);
@@ -42,7 +43,7 @@
     CMS.registerPreviewStyle('cms-custom.css');
 
     // ==========================================
-    // 2. COMPONENTE PREVIEW: TARJETA DE CLASE (SOPORTE MULTI-HORARIO)
+    // 2. COMPONENTE PREVIEW: TARJETA DE CLASE
     // ==========================================
     const ClassPreview = createClass({
       render: function() {
@@ -139,7 +140,7 @@
     });
 
     // ==========================================================
-    // 3. PREVISUALIZACIÓN DE NOTICIA DESTACADA (AZUL)
+    // 3. PREVISUALIZACIÓN DE NOTICIA DESTACADA
     // ==========================================================
     const FeaturedNewsPreview = createClass({
       getInitialState: function() {
@@ -232,7 +233,6 @@
         const location = entry.getIn(['data', 'location']) || '';
         const extraInfo = entry.getIn(['data', 'extra_info']) || '';
         
-        // Evitamos la excepción leyendo la propiedad como string si widgetFor da error
         let body = entry.getIn(['data', 'body']) || '';
         try {
           if (this.props.widgetFor && this.props.widgetFor('body')) {
@@ -315,8 +315,8 @@
       }
     });
 
-   // ==========================================
-    // 5. PREVISUALIZACIÓN DE GALERÍA MULTIMEDIA
+    // ==========================================
+    // 5. PREVISUALIZACIÓN DE GALERÍA + MINIATURAS EN PANEL IZQUIERDO
     // ==========================================
     const GalleryPreview = createClass({
       render: function() {
@@ -324,6 +324,29 @@
         const itemsData = entry.getIn(['data', 'items']);
         const items = itemsData ? itemsData.toJS() : [];
         const getAsset = this.props.getAsset;
+
+        // Inyección de miniaturas en las barras colapsadas de la lista izquierda
+        setTimeout(() => {
+          const listBars = document.querySelectorAll('div[class*="ListItemTopBar"]');
+          listBars.forEach((bar, index) => {
+            if (items[index] && items[index].file_url) {
+              const src = items[index].file_url;
+              const imgUrl = getAsset(src);
+              
+              if (!bar.querySelector('.cms-list-thumb')) {
+                const img = document.createElement('img');
+                img.src = imgUrl;
+                img.className = 'cms-list-thumb';
+                img.style.cssText = 'width: 36px; height: 36px; object-fit: cover; border-radius: 6px; margin-right: 10px; border: 1px solid #cbd5e1; flex-shrink: 0;';
+                
+                const titleEl = bar.querySelector('[class*="TopBarTitle"]');
+                if (titleEl) {
+                  titleEl.prepend(img);
+                }
+              }
+            }
+          });
+        }, 150);
 
         return h('section', { className: 'multimedia-section', style: { padding: '20px', background: '#ffffff', minHeight: '100vh' } },
           h('div', { className: 'container' },
