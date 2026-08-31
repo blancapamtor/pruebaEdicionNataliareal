@@ -471,60 +471,41 @@ div[class*="TopBar"] span[class*="Title"]::before {
   background-color: #e0f7fc;
   border-radius: 6px;
 }
+
 /* ==========================================
-   5. MINIATURAS Y PIES DE FOTO EN EL PANEL Y PREVIEW
+   MINIATURAS Y ACCORDEÓN EN PANEL IZQUIERDO (DECAP CMS)
    ========================================== */
 
-/* Estilizado del encabezado colapsable en el panel izquierdo */
-div[class*="ListControl"] div[class*="TopBar"] {
+/* Barra colapsada del ítem de lista */
+div[class*="ListItemTopBar"] {
   background-color: #ffffff !important;
   border: 1.5px solid #e2e8f0 !important;
-  border-radius: 10px !important;
+  border-radius: 8px !important;
   padding: 10px 14px !important;
-  margin-bottom: 8px !important;
-  min-height: 54px !important;
-  display: flex !important;
-  align-items: center !important;
+  margin-bottom: 6px !important;
   transition: all 0.2s ease !important;
 }
 
-div[class*="ListControl"] div[class*="TopBar"]:hover {
+div[class*="ListItemTopBar"]:hover {
   border-color: #00c6f3 !important;
-  box-shadow: 0 4px 12px rgba(0, 198, 243, 0.12) !important;
   background-color: #f8fafc !important;
 }
 
-/* Alineación del texto e icono en la barra del acordeón */
-div[class*="TopBar"] span[class*="Title"] {
-  font-size: 0.88rem !important;
+/* Texto dentro del elemento colapsado */
+div[class*="ListItemTopBar"] [class*="TopBarTitle"] {
   font-weight: 700 !important;
   color: #0c192c !important;
+  font-size: 0.88rem !important;
   display: flex !important;
   align-items: center !important;
-  gap: 10px !important;
+  gap: 8px !important;
 }
 
-/* Identificador visual para los elementos multimedia */
-div[class*="TopBar"] span[class*="Title"]::before {
+/* Icono indicador de imagen */
+div[class*="ListItemTopBar"] [class*="TopBarTitle"]::before {
   content: "🖼️";
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
+  font-size: 0.95rem;
   background-color: #e0f7fc;
-  border-radius: 6px;
-  flex-shrink: 0;
-  font-size: 1rem;
-}
-
-/* Estilo para los pies de foto en la grilla de la derecha (Preview) */
-.multimedia-section .gallery-item figcaption {
-  padding: 10px 14px;
-  font-size: 0.85rem;
-  color: #475569;
-  background-color: #f8fafc;
-  border-top: 1px solid #e2e8f0;
-  font-style: italic;
-  line-height: 1.4;
+  padding: 3px 6px;
+  border-radius: 4px;
 }
