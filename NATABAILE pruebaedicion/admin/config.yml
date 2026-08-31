@@ -51,14 +51,14 @@ collections:
               - { label: "Lugar", name: "location", widget: "string", required: false }
               - { label: "Información Extra", name: "extra_info", widget: "text", required: false }
               - { label: "Detalles desplegable", name: "body", widget: "text", required: false }
-              
-# ==========================================
+
+  # ==========================================
   # 🕺 3. CLASES Y TALLERES (ARCHIVO ÚNICO JSON)
   # ==========================================
   - name: "clases_page"
     label: "🕺 Clases y Talleres"
     files:
-      - file: "content/clases.json"
+      - file: "NATABAILE pruebaedicion/content/clases.json" # Ruta completa a tu archivo
         label: "Gestión de Clases"
         name: "clases"
         fields:
@@ -93,8 +93,7 @@ collections:
                   - { label: "Dirección Completa", name: "address", widget: "string", required: false }
                   - { label: "Descripción desplegable", name: "description", widget: "text", required: false }
                   - { label: "Enlace Google Maps", name: "map_link", widget: "string", required: false }
-
-
+                  
 # 📸 GALERÍA MULTIMEDIA
   - name: "galeria_pagina"
     label: "📸 Galería Multimedia"
