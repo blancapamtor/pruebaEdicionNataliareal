@@ -10,16 +10,22 @@
     },
     {
       "title": "Tango Natalia Vicente",
-      "layout_type": "item-1",
-      "image": "assets/imagenes/vertical1.jpg",
       "media_type": "image",
-      "file_url": "assets/imagenes/horizontal2.jpg"
+      "layout_type": "item-1",
+      "file_url": "assets/imagenes/dsc06935.jpg"
     },
     {
       "title": "Tango Natalia Vicente",
       "media_type": "image",
       "layout_type": "item-1",
-      "file_url": "assets/imagenes/dsc06935.jpg"
+      "file_url": "assets/imagenes/vertical1.jpg"
+    },
+    {
+      "title": "Tango Natalia Vicente",
+      "layout_type": "item-1",
+      "image": "assets/imagenes/vertical1.jpg",
+      "media_type": "image",
+      "file_url": "assets/imagenes/horizontal2.jpg"
     },
     {
       "title": "Tango Natalia Vicente",
@@ -38,12 +44,6 @@
       "media_type": "image",
       "layout_type": "item-1",
       "file_url": "assets/imagenes/dsc06888.jpg"
-    },
-    {
-      "title": "Tango Natalia Vicente",
-      "media_type": "image",
-      "layout_type": "item-1",
-      "file_url": "assets/imagenes/vertical1.jpg"
     },
     {
       "title": "Coreografías para bodas",
