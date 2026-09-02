@@ -1,15 +1,15 @@
 {
-    "items": [
-      {
-        "tag": "NUEVO",
-        "frequency": "TODOS LOS LUNES",
-        "title": "SIN CHAMUYO",
-        "subtitle": "PRÁCTICA GUIADA",
-        "location": "C/ Paz, 4, Madrid. (Casa Regional \"Castilla-La Mancha)",
-        "image": "assets/imagenes/horizontal1.jpg",
-        "organizer": "Natalia",
-        "extra_info": "",
-        "body": "UN ESPACIO PARA APRENDER, PRACTICAR Y DISFRUTAR DEL TANGO\n\n¿Te gustaría aprender tango en un espacio donde puedas sentirte cómodo, seguro y libre para experimentar?\n\nEste es un lugar pensado para descubrir el tango sin presiones. Un ambiente de confianza donde equivocarse también forma parte del aprendizaje y donde cada pregunta es bienvenida.\n\nPodrás explorar y resolver todas tus dudas sobre:\n\n• Técnica y postura.\n• Coordinación y conexión.\n• Uso del espacio en la pista.\n• Musicalidad e interpretación.\n\nTrabajamos para que cada persona encuentre su propio camino en el tango, desarrollando herramientas que le permitan bailar con mayor seguridad, disfrute y confianza."
-      }
-    ]
-  }
+  "items": [
+    {
+      "body": "UN ESPACIO PARA PRACTICAR Y DISFRUTAR DEL TANGO\n\nEste es un lugar pensado para descubrir el tango sin presiones. Un ambiente de confianza donde equivocarse también forma parte del aprendizaje y donde cada pregunta es bienvenida.\n\nPodrás explorar y resolver todas tus dudas sobre:\n\n• Técnica y postura.\n• Coordinación y conexión.\n• Uso del espacio en la pista.\n• Musicalidad e interpretación.\n\nTrabajamos para que cada persona encuentre su propio camino en el tango, desarrollando herramientas que le permitan bailar con mayor seguridad, disfrute y confianza.",
+      "organizer": "Natalia",
+      "location": "C/ Paz, 4, Madrid. (Casa Regional \"Castilla-La Mancha)",
+      "subtitle": "PRÁCTICA GUIADA",
+      "title": "SIN CHAMUYO",
+      "tag": "NUEVO",
+      "image": "assets/imagenes/horizontal1.jpg",
+      "frequency": "TODOS LOS LUNES",
+      "extra_info": ""
+    }
+  ]
+}
