@@ -10,6 +10,8 @@ collections:
   # 🌟 1. NOTICIAS DESTACADAS
   - name: "noticias_destacadas_page"
     label: "🌟 Noticias Destacadas"
+    editor:
+    preview: false
     files:
       - file: "NATABAILE pruebaedicion/content/noticias_destacadas.json"
         label: "Gestión Noticias Destacadas"
