@@ -140,79 +140,96 @@
     });
 
     // ==========================================================
-    // 3. PREVISUALIZACIÓN DE NOTICIA DESTACADA
+    // 3. PREVISUALIZACIÓN DE NOTICIAS DESTACADAS (SOPORTE PARA LISTAS)
     // ==========================================================
     const FeaturedNewsPreview = createClass({
       getInitialState: function() {
-        return { open: false };
+        return { openMap: {} };
       },
-      toggleOpen: function() {
-        this.setState({ open: !this.state.open });
+      toggleOpen: function(index) {
+        this.setState({
+          openMap: Object.assign({}, this.state.openMap, {
+            [index]: !this.state.openMap[index]
+          })
+        });
       },
       render: function() {
-        const entry = this.props.entry;
-        const tag = entry.getIn(['data', 'tag']) || 'NOTICIA';
-        const frequency = entry.getIn(['data', 'frequency']) || '';
-        const title = entry.getIn(['data', 'title']) || 'Escribe aquí el título...';
-        const subtitle = entry.getIn(['data', 'subtitle']) || '';
-        const location = entry.getIn(['data', 'location']) || '';
-        const image = entry.getIn(['data', 'image']);
-        const organizer = entry.getIn(['data', 'organizer']) || '';
-        const extraInfo = entry.getIn(['data', 'extra_info']) || '';
-        const body = entry.getIn(['data', 'body']) || (this.props.widgetFor ? this.props.widgetFor('body') : '');
-        const isOpen = this.state.open;
+        const self = this;
+        // Obtenemos los elementos de la lista 'items' de forma segura
+        const items = this.props.widgetsFor('items');
 
-        const bgImageStyle = image 
-          ? { backgroundImage: `url(${this.props.getAsset(image)})` } 
-          : { backgroundColor: '#111827' };
+        if (!items || !items.map) {
+          return h('div', { style: { padding: '20px' } }, 'Cargando lista de noticias...');
+        }
 
         return h('div', { className: 'news-section', style: { padding: '30px 15px', background: '#fcfbf7', minHeight: '100vh' } },
           h('div', { style: { maxWidth: '580px', margin: '0 auto' } },
-            h('article', { className: 'card-featured' },
-              h('div', { className: 'card-media' },
-                h('div', { className: 'media-img', style: bgImageStyle }),
-                h('span', { className: 'badge badge-accent' }, tag)
-              ),
-              h('div', { className: 'card-content' },
-                h('div', {},
-                  frequency ? h('div', { className: 'card-meta' }, frequency) : null,
-                  h('h3', { className: 'card-title' }, title),
-                  subtitle ? h('p', { className: 'card-subtitle-highlight', style: { fontSize: '1rem', color: '#1f2937', fontWeight: '700', margin: '4px 0 12px 0' } }, subtitle) : null,
-                  h('ul', { className: 'card-details' },
-                    organizer ? h('li', {},
-                      h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2' },
-                        h('path', { d: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2' }),
-                        h('circle', { cx: '12', cy: '7', r: '4' })
-                      ),
-                      h('strong', {}, `Org: ${organizer}`)
-                    ) : null,
-                    location ? h('li', { style: { color: '#00b4d8', fontWeight: 'bold' } },
-                      h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2' },
-                        h('path', { d: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z' }),
-                        h('circle', { cx: '12', cy: '10', r: '3' })
-                      ),
-                      h('span', {}, location)
-                    ) : null,
-                    extraInfo ? h('li', { style: { marginTop: '8px', opacity: 0.9 } },
-                      h('span', {}, extraInfo)
-                    ) : null
-                  )
+            items.map(function(item, index) {
+              if (!item) return null;
+              const data = item.get('data');
+              if (!data) return null;
+
+              const tag = data.get('tag') || 'NOTICIA';
+              const frequency = data.get('frequency') || '';
+              const title = data.get('title') || 'Título de la noticia...';
+              const subtitle = data.get('subtitle') || '';
+              const location = data.get('location') || '';
+              const image = data.get('image');
+              const organizer = data.get('organizer') || '';
+              const extraInfo = data.get('extra_info') || '';
+              const body = data.get('body') || '';
+              const isOpen = !!self.state.openMap[index];
+
+              const bgImageStyle = image 
+                ? { backgroundImage: `url(${self.props.getAsset(image)})` } 
+                : { backgroundColor: '#111827' };
+
+              return h('article', { key: index, className: 'card-featured', style: { marginBottom: '25px' } },
+                h('div', { className: 'card-media' },
+                  h('div', { className: 'media-img', style: bgImageStyle }),
+                  h('span', { className: 'badge badge-accent' }, tag)
                 ),
-                h('div', { className: 'card-actions', style: { marginTop: '15px' } },
-                  h('button', { 
-                    type: 'button', 
-                    className: 'btn-dark', 
-                    onClick: this.toggleOpen,
-                    style: { width: '100%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', border: 'none' } 
-                  }, 
-                    isOpen ? 'MENOS INFORMACIÓN ▲' : 'MÁS INFORMACIÓN ▼'
-                  )
-                ),
-                isOpen ? h('div', { className: 'expanded-content-featured', style: { marginTop: '15px', paddingTop: '15px', borderTop: '1px dashed rgba(255,255,255,0.3)', textAlign: 'left' } },
-                  body
-                ) : null
-              )
-            )
+                h('div', { className: 'card-content' },
+                  h('div', {},
+                    frequency ? h('div', { className: 'card-meta' }, frequency) : null,
+                    h('h3', { className: 'card-title' }, title),
+                    subtitle ? h('p', { className: 'card-subtitle-highlight', style: { fontSize: '1rem', color: '#1f2937', fontWeight: '700', margin: '4px 0 12px 0' } }, subtitle) : null,
+                    h('ul', { className: 'card-details' },
+                      organizer ? h('li', {},
+                        h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2' },
+                          h('path', { d: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2' }),
+                          h('circle', { cx: '12', cy: '7', r: '4' })
+                        ),
+                        h('strong', {}, `Org: ${organizer}`)
+                      ) : null,
+                      location ? h('li', { style: { color: '#00b4d8', fontWeight: 'bold' } },
+                        h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2' },
+                          h('path', { d: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z' }),
+                          h('circle', { cx: '12', cy: '10', r: '3' })
+                        ),
+                        h('span', {}, location)
+                      ) : null,
+                      extraInfo ? h('li', { style: { marginTop: '8px', opacity: 0.9 } },
+                        h('span', {}, extraInfo)
+                      ) : null
+                    )
+                  ),
+                  h('div', { className: 'card-actions', style: { marginTop: '15px' } },
+                    h('button', { 
+                      type: 'button', 
+                      className: 'btn-dark', 
+                      onClick: function() { self.toggleOpen(index); },
+                      style: { width: '100%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', border: 'none' } 
+                    }, 
+                      isOpen ? 'MENOS INFORMACIÓN ▲' : 'MÁS INFORMACIÓN ▼'
+                    )
+                  ),
+                  isOpen ? h('div', { className: 'expanded-content-featured', style: { marginTop: '15px', paddingTop: '15px', borderTop: '1px dashed rgba(255,255,255,0.3)', textAlign: 'left', whiteSpace: 'pre-wrap' } },
+                    body
+                  ) : null
+                )
+              );
+            })
           )
         );
       }
