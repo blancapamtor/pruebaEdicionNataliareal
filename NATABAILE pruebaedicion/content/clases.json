@@ -6,16 +6,17 @@
       "order": 4,
       "schedules": [
         {
-          "city": "HORARIO FLEXIBLE",
+          "city": "HORARIO FLEXIBLE ",
           "address": "Sala y estudio a convenir",
-          "description": "Atención personalizada centrada al 100% en tus objetivos técnicos, corrección postural y ritmo propio.\n\nSala y horario a coordinar con el alumnado.",
+          "description": "Atención personalizada centrada al 100% en tus objetivos técnicos, corrección postural, comprensión del movimiento, practicando la ejecución, partiendo de tu propio ritmo.\n\nSala y horario a coordinar con el alumnado.",
           "map_link": ".",
           "time_slots": [
             {
               "day": "Viernes",
               "time_slot": "A partir de las 16:00h"
             }
-          ]
+          ],
+          "sub_title": "Clases a tu medida."
         }
       ]
     },
