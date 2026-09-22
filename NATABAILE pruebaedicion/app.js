@@ -144,17 +144,23 @@ async function renderNews() {
 }
 
 // =========================================================================
-// 4. RENDERIZADO DE NOTICIAS SECUNDARIAS
+// 4. RENDERIZADO DE NOTICIAS SECUNDARIAS (Dinámicas)
 // =========================================================================
 async function renderSecondaryNews() {
   const secondaryContainer = document.getElementById('secondary-news-container') || document.querySelector('.news-sidebar');
   if (!secondaryContainer) return;
 
   try {
-    const noticia1 = await loadJSONContent('noticias_secundarias/iniciacion-al-baile');
-    const noticia2 = await loadJSONContent('noticias_secundarias/taller-conciencia-corporal');
-    
-    const noticiasSecundarias = [noticia1, noticia2].filter(Boolean);
+    // Intenta cargar la lista completa o los archivos individuales
+    let noticiasSecundarias = await loadJSONContent('noticias_secundarias');
+
+    // Si devuelve nulo o no es array, cargamos los archivos conocidos
+    if (!Array.isArray(noticiasSecundarias)) {
+      const n1 = await loadJSONContent('noticias_secundarias/iniciacion-al-baile');
+      const n2 = await loadJSONContent('noticias_secundarias/noticia-de-prueba');
+      const n3 = await loadJSONContent('noticias_secundarias/taller-conciencia-corporal');
+      noticiasSecundarias = [n1, n2, n3].filter(Boolean);
+    }
 
     secondaryContainer.innerHTML = '';
 
@@ -170,7 +176,7 @@ async function renderSecondaryNews() {
       secondaryContainer.innerHTML += `
         <article class="news-card card-secondary">
           <div class="card-badge-row">
-            <span class="badge badge-subtle">${item.tag || 'CLASE GRATUITA'}</span>
+            <span class="badge badge-subtle">${item.tag || 'NOTICIA'}</span>
             ${item.status_tag ? `<span class="status-indicator">${item.status_tag}</span>` : ''}
           </div>
 
