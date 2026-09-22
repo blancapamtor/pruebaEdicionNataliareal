@@ -144,27 +144,41 @@ async function renderNews() {
 }
 
 // =========================================================================
-// 4. RENDERIZADO DE NOTICIAS SECUNDARIAS (Carga Automática de Archivos)
+// 4. RENDERIZADO DE NOTICIAS SECUNDARIAS (Dinámico e Ilimitado)
 // =========================================================================
 async function renderSecondaryNews() {
   const secondaryContainer = document.getElementById('secondary-news-container') || document.querySelector('.news-sidebar');
   if (!secondaryContainer) return;
 
   try {
-    // Lista explícita de todos los nombres de archivos JSON que tienes en content/noticias_secundarias/
-    const archivos = [
-      'iniciacion-al-baile',
-      'noticia-de-prueba',
-      'noticia-de-prueba-2',
-      'taller-conciencia-corporal'
-    ];
+    let noticias = [];
 
-    // Carga todos los archivos en paralelo
-    const peticiones = archivos.map(file => loadJSONContent(`noticias_secundarias/${file}`));
-    const resultados = await Promise.all(peticiones);
-    
-    // Filtra las respuestas válidas
-    const noticias = resultados.filter(item => item && (item.title || item.titulo));
+    // 1. Intentar obtener la lista de archivos directamente del API de GitHub (Ilimitado)
+    try {
+      const repoResponse = await fetch('https://api.github.com/repos/blancapamtor/pruebaEdicionNataliareal/contents/content/noticias_secundarias');
+      if (repoResponse.ok) {
+        const files = await repoResponse.json();
+        const jsonFiles = files.filter(f => f.name.endsWith('.json'));
+        
+        const peticiones = jsonFiles.map(f => fetch(`./content/noticias_secundarias/${f.name}?v=${Date.now()}`).then(r => r.json()));
+        noticias = await Promise.all(peticiones);
+      }
+    } catch (err) {
+      console.warn("No se pudo escanear vía GitHub API, usando fallback.", err);
+    }
+
+    // 2. Fallback si falla la API de GitHub
+    if (!noticias || noticias.length === 0) {
+      const fallbackFiles = [
+        'iniciacion-al-baile',
+        'noticia-de-prueba',
+        'noticia-de-prueba-2',
+        'taller-conciencia-corporal'
+      ];
+      const peticiones = fallbackFiles.map(file => loadJSONContent(`noticias_secundarias/${file}`));
+      const resultados = await Promise.all(peticiones);
+      noticias = resultados.filter(Boolean);
+    }
 
     secondaryContainer.innerHTML = '';
 
@@ -222,7 +236,6 @@ async function renderSecondaryNews() {
       `;
     });
 
-    // Asignación de desplegables
     const allCards = secondaryContainer.querySelectorAll('.news-card');
     allCards.forEach(card => {
       const triggerBtn = card.querySelector('.js-trigger-expand');
