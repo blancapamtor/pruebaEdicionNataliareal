@@ -145,117 +145,69 @@ async function renderNews() {
     }
   }
 
-  // --- 📄 NOTICIAS SECUNDARIAS ---
-  const noticiasSecundarias = await loadJSONContent('noticias_secundarias');
-  secondaryContainer.innerHTML = '';
+// --- 📄 NOTICIAS SECUNDARIAS (Dinámicas) ---
+async function renderSecondaryNews() {
+  try {
+    // Si tienes una API o lista de archivos, o cargamos los JSON dinámicamente
+    // Ejemplo haciendo fetch al índice o un array con las noticias obtenidas:
+    const response = await fetch('/api/noticias_secundarias'); // O el endpoint/método que uses para cargar ficheros de la carpeta
+    const noticiasSecundarias = await response.json();
 
-  noticiasSecundarias.forEach(item => {
-    let longText = item.body || '';
-    if (longText) {
-      longText = longText
-        .replace(/([^\n])\n([^\n\-\*•])/g, '$1 $2')
-        .replace(/\n{2,}/g, '</p><p>')
-        .replace(/\n/g, '<br>');
-    }
+    secondaryContainer.innerHTML = '';
 
-    secondaryContainer.innerHTML += `
-      <article class="news-card card-secondary">
-        <div class="card-badge-row">
-          <span class="badge badge-subtle">${item.tag || 'CLASE GRATUITA'}</span>
-          ${item.status_tag ? `<span class="status-indicator">${item.status_tag}</span>` : ''}
-        </div>
+    noticiasSecundarias.forEach(item => {
+      let longText = item.body || '';
+      if (longText) {
+        longText = longText
+          .replace(/([^\n])\n([^\n\-\*•])/g, '$1 $2')
+          .replace(/\n{2,}/g, '</p><p>')
+          .replace(/\n/g, '<br>');
+      }
 
-        <h3 class="card-title">${item.title || 'INICIACIÓN AL BAILE'}</h3>
-        ${item.subtitle ? `<p class="card-subtitle-highlight" style="font-size: 0.95rem; color: #1f2937; font-weight: 600; margin: 0 0 12px 0;">${item.subtitle}</p>` : ''}
-
-        ${item.location || item.date_str ? `
-        <div class="card-location">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-          </svg>
-          <div>
-            ${item.location ? `<strong>${item.location}</strong>` : ''}
-            ${item.date_str ? `<p>${item.date_str}</p>` : ''}
+      secondaryContainer.innerHTML += `
+        <article class="news-card card-secondary">
+          <div class="card-badge-row">
+            <span class="badge badge-subtle">${item.tag || 'CLASE GRATUITA'}</span>
+            ${item.status_tag ? `<span class="status-indicator">${item.status_tag}</span>` : ''}
           </div>
-        </div>` : ''}
 
-        ${item.extra_info ? `<p class="secondary-extra-info" style="font-size: 0.85rem; color: #5a6e82; margin: 0 0 16px 0;">${item.extra_info}</p>` : ''}
+          <h3 class="card-title">${item.title || ''}</h3>
+          ${item.subtitle ? `<p class="card-subtitle-highlight" style="font-size: 0.95rem; color: #1f2937; font-weight: 600; margin: 0 0 12px 0;">${item.subtitle}</p>` : ''}
 
-        <button class="btn-cyan-outline js-trigger-expand" type="button">
-          <span class="btn-label">MÁS INFORMACIÓN</span>
-          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16" style="transition: transform 0.2s ease;">
-            <path d="M6 9l6 6 6-6"/>
-          </svg>
-        </button>
+          ${item.location || item.date_str ? `
+          <div class="card-location">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            <div>
+              ${item.location ? `<strong>${item.location}</strong>` : ''}
+              ${item.date_str ? `<p>${item.date_str}</p>` : ''}
+            </div>
+          </div>` : ''}
 
-        <div class="expanded-content" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #e2e8f0;">
-          ${longText ? `<div class="news-body-text" style="font-size: 0.9rem; line-height: 1.6; color: #374151; text-align: left;"><p>${longText}</p></div>` : ''}
-        </div>
-      </article>
-    `;
-  });
+          ${item.extra_info ? `<p class="secondary-extra-info" style="font-size: 0.85rem; color: #5a6e82; margin: 0 0 16px 0;">${item.extra_info}</p>` : ''}
 
-  const allCards = secondaryContainer.querySelectorAll('.news-card');
-  allCards.forEach(card => {
-    const triggerBtn = card.querySelector('.js-trigger-expand');
-    const expandedContent = card.querySelector('.expanded-content');
-    const label = card.querySelector('.btn-label');
-    const icon = card.querySelector('.btn-icon');
+          <button class="btn-cyan-outline js-trigger-expand" type="button">
+            <span class="btn-label">MÁS INFORMACIÓN</span>
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16" style="transition: transform 0.2s ease;">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
 
-    if (triggerBtn && expandedContent) {
-      triggerBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpening = expandedContent.style.display === 'none' || !expandedContent.style.display;
-
-        if (isOpening) {
-          expandedContent.style.display = 'block';
-          if (label) label.textContent = 'MENOS INFORMACIÓN';
-          if (icon) icon.style.transform = 'rotate(180deg)';
-          card.classList.add('is-expanded');
-        } else {
-          expandedContent.style.display = 'none';
-          if (label) label.textContent = 'MÁS INFORMACIÓN';
-          if (icon) icon.style.transform = 'rotate(0deg)';
-          card.classList.remove('is-expanded');
-        }
-      });
-    }
-  });
-}
-
-// =========================================================================
-// 4. RENDERIZADO DE GALERÍA MULTIMEDIA (DESDE JSON LOCAL)
-// =========================================================================
-async function renderGallery() {
-  const container = document.getElementById('gallery-container');
-  if (!container) return;
-
-  const items = await loadJSONContent('galeria');
-
-  if (items && items.length > 0) {
-    container.innerHTML = items.map(item => {
-      const src = item.file_url || item.image;
-      if (!src) return '';
-
-      const isVideo = item.media_type === 'video' || src.match(/\.(mp4|webm|mov|ogg)$/i);
-      const layoutClass = item.layout_type || 'item-1';
-      const title = item.title || 'Tango Natalia Vicente';
-      const captionText = item.caption || '';
-
-      return `
-        <figure class="gallery-item ${layoutClass}">
-          ${isVideo ? `
-            <video src="${src}" autoplay loop muted playsinline controlslist="nodownload"></video>
-          ` : `
-            <img src="${src}" alt="${title}" loading="lazy">
-          `}
-          ${captionText ? `<figcaption class="gallery-caption">${captionText}</figcaption>` : ''}
-        </figure>
+          <div class="expanded-content" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #e2e8f0;">
+            ${longText ? `<div class="news-body-text" style="font-size: 0.9rem; line-height: 1.6; color: #374151; text-align: left;"><p>${longText}</p></div>` : ''}
+          </div>
+        </article>
       `;
-    }).join('');
-  } else {
-    container.innerHTML = '<p style="text-align: center; color: #64748b;">No hay multimedia disponible.</p>';
+    });
+
+    // Re-vincular eventos click de desplegable
+    bindExpandEvents();
+
+  } catch (error) {
+    console.error("Error al cargar las noticias secundarias:", error);
   }
+}
 }
 
 // =========================================================================

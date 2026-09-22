@@ -1,5 +1,5 @@
 // ==========================================
-// RESET DE BORDES / A SANGRE
+// RESET DE BORDES Y ANCHOS
 // ==========================================
 html, body {
   margin: 0;
@@ -18,7 +18,7 @@ $color-text-muted: #737b83;
 $font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
 // ==========================================
-// 2. BLOQUEO DE SCROLL TEMPORAL (JS)
+// 2. BLOQUEO DE SCROLL TEMPORAL
 // ==========================================
 body.no-scroll {
   overflow: hidden;
@@ -26,7 +26,7 @@ body.no-scroll {
 }
 
 // ==========================================
-// 3. ESTILOS EDITORIALES
+// 3. ESTILOS DE PÁGINA Y GRID EDITORIAL
 // ==========================================
 .story-page {
   position: relative;
@@ -96,13 +96,13 @@ body.no-scroll {
       }
     }
 
-    // Cuadrícula Grid Perfectamente Alineada
+    // Cuadrícula Grid Equilibrada
     .story-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      column-gap: 4rem;
-      row-gap: 3.5rem;
-      align-items: center;
+      column-gap: 3.5rem;
+      row-gap: 3rem;
+      align-items: start;
 
       &.is-hidden {
         opacity: 0;
@@ -118,7 +118,7 @@ body.no-scroll {
                     filter 1s cubic-bezier(0.25, 1, 0.5, 1);
       }
 
-      // Bloques de Texto
+      // Bloques de texto
       .story-block {
         display: flex;
         flex-direction: column;
@@ -127,14 +127,14 @@ body.no-scroll {
         p {
           font-family: $font-sans;
           font-size: 1.05rem;
-          line-height: 1.7;
+          line-height: 1.75;
           font-weight: 400;
           color: $color-text-body;
           margin: 0;
 
           strong {
             font-weight: 700;
-            color: $color-text-dark;
+            color: #000000; // Negrita con alto contraste
           }
 
           em {
@@ -143,32 +143,33 @@ body.no-scroll {
           }
         }
 
-        &--top {
+        &--1 {
           grid-column: 1;
           grid-row: 1;
         }
 
-        &--middle {
+        &--2 {
           grid-column: 2;
           grid-row: 2;
         }
 
-        &--bottom {
-          grid-column: 1 / -1; // Ocupa las dos columnas abajo para cerrar la historia de forma elegante
+        &--3 {
+          grid-column: 1 / -1;
+          max-width: 950px;
           margin-top: 1rem;
-          max-width: 900px;
         }
       }
 
-      // Bloques de Imágenes
+      // Fotos equilibradas en proporción
       .story-media {
         margin: 0;
+        width: 100%;
 
         .media-frame {
           position: relative;
           overflow: hidden;
           background-color: #f0f0f0;
-          border-radius: 8px;
+          border-radius: 12px;
           box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 
           img {
@@ -186,22 +187,23 @@ body.no-scroll {
           }
         }
 
-        &--primary {
+        &--portrait {
           grid-column: 2;
           grid-row: 1;
 
           .media-frame {
-            aspect-ratio: 4 / 3;
+            aspect-ratio: 3 / 4;
+            max-height: 480px;
           }
         }
 
-        &--accent {
+        &--landscape {
           grid-column: 1;
           grid-row: 2;
 
           .media-frame {
-            aspect-ratio: 4 / 5;
-            max-height: 480px;
+            aspect-ratio: 4 / 3;
+            max-height: 380px;
           }
         }
       }
@@ -361,22 +363,21 @@ body.no-scroll {
         grid-template-columns: 1fr;
         row-gap: 2rem;
 
-        .story-block--top {
+        .story-block--1 {
           grid-column: 1;
           grid-row: 1;
         }
 
-        .story-media--primary {
+        .story-media--portrait {
           grid-column: 1;
           grid-row: 2;
+
+          .media-frame {
+            aspect-ratio: 4 / 5;
+          }
         }
 
-        .story-block--middle {
-          grid-column: 1;
-          grid-row: 3;
-        }
-
-        .story-media--accent {
+        .story-media--landscape {
           grid-column: 1;
           grid-row: 4;
 
@@ -385,7 +386,12 @@ body.no-scroll {
           }
         }
 
-        .story-block--bottom {
+        .story-block--2 {
+          grid-column: 1;
+          grid-row: 3;
+        }
+
+        .story-block--3 {
           grid-column: 1;
           grid-row: 5;
         }

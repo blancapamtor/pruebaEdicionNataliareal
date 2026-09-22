@@ -30,27 +30,25 @@ collections:
               - { label: "Información Extra", name: "extra_info", widget: "text", required: false }
               - { label: "Texto del Cuerpo", name: "body", widget: "text", required: false }
 
-  # 📄 2. NOTICIAS SECUNDARIAS
-  - name: "noticias_secundarias_page"
+ # 📄 2. NOTICIAS SECUNDARIAS (Colección dinámica por carpeta)
+  - name: "noticias_secundarias"
     label: "📄 Noticias Secundarias"
-    files:
-      - file: "NATABAILE pruebaedicion/content/noticias_secundarias.json"
-        label: "Gestión Noticias Secundarias"
-        name: "noticias_secundarias"
-        fields:
-          - label: "Lista de Noticias Secundarias"
-            name: "items"
-            widget: "list"
-            summary: "{{fields.title}}"
-            fields:
-              - { label: "Etiqueta Principal", name: "tag", widget: "string", default: "CLASE GRATUITA" }
-              - { label: "Etiqueta secundaria", name: "status_tag", widget: "string", required: false }
-              - { label: "Título", name: "title", widget: "string" }
-              - { label: "Subtítulo", name: "subtitle", widget: "string", required: false }
-              - { label: "Fecha", name: "date_str", widget: "string", required: false }
-              - { label: "Lugar", name: "location", widget: "string", required: false }
-              - { label: "Información Extra", name: "extra_info", widget: "text", required: false }
-              - { label: "Detalles desplegable", name: "body", widget: "text", required: false }
+    folder: "NATABAILE pruebaedicion/content/noticias_secundarias" # Carpeta donde se guardará cada noticia
+    create: true # Permite a tu cliente añadir nuevas noticias
+    slug: "{{fields.title}}" # Nombre con el que se creará el archivo .json
+    extension: "json"
+    format: "json"
+    identifier_field: "title"
+    fields:
+      - { label: "Etiqueta Principal", name: "tag", widget: "string", default: "CLASE GRATUITA" }
+      - { label: "Etiqueta secundaria", name: "status_tag", widget: "string", required: false }
+      - { label: "Título", name: "title", widget: "string" }
+      - { label: "Subtítulo", name: "subtitle", widget: "string", required: false }
+      - { label: "Fecha", name: "date_str", widget: "string", required: false }
+      - { label: "Lugar", name: "location", widget: "string", required: false }
+      - { label: "Información Extra", name: "extra_info", widget: "text", required: false }
+      - { label: "Detalles desplegable", name: "body", widget: "text", required: false }
+      
 
   # ==========================================
   # 🕺 3. CLASES Y TALLERES (ARCHIVO ÚNICO JSON)
