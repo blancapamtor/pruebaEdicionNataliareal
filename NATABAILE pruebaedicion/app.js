@@ -142,9 +142,8 @@ async function renderNews() {
     }
   }
 }
-
 // =========================================================================
-// 4. RENDERIZADO DE NOTICIAS SECUNDARIAS (Dinámico e Ilimitado)
+// 4. RENDERIZADO DE NOTICIAS SECUNDARIAS (Carga Robusta para N Noticias)
 // =========================================================================
 async function renderSecondaryNews() {
   const secondaryContainer = document.getElementById('secondary-news-container') || document.querySelector('.news-sidebar');
@@ -153,31 +152,58 @@ async function renderSecondaryNews() {
   try {
     let noticias = [];
 
-    // 1. Intentar obtener la lista de archivos directamente del API de GitHub (Ilimitado)
+    // 1. Intentar escanear vía GitHub API
     try {
-      const repoResponse = await fetch('https://api.github.com/repos/blancapamtor/pruebaEdicionNataliareal/contents/content/noticias_secundarias');
+      const repoResponse = await fetch(`https://api.github.com/repos/blancapamtor/pruebaEdicionNataliareal/contents/content/noticias_secundarias?cachebust=${Date.now()}`);
       if (repoResponse.ok) {
         const files = await repoResponse.json();
         const jsonFiles = files.filter(f => f.name.endsWith('.json'));
         
-        const peticiones = jsonFiles.map(f => fetch(`./content/noticias_secundarias/${f.name}?v=${Date.now()}`).then(r => r.json()));
-        noticias = await Promise.all(peticiones);
+        const peticiones = jsonFiles.map(f => 
+          fetch(`./content/noticias_secundarias/${f.name}?v=${Date.now()}`)
+            .then(r => r.ok ? r.json() : null)
+        );
+        const res = await Promise.all(peticiones);
+        noticias = res.filter(Boolean);
       }
     } catch (err) {
-      console.warn("No se pudo escanear vía GitHub API, usando fallback.", err);
+      console.warn("Fallo al consultar GitHub API, activando modo alternativo", err);
     }
 
-    // 2. Fallback si falla la API de GitHub
-    if (!noticias || noticias.length === 0) {
-      const fallbackFiles = [
+    // 2. Si la API de GitHub no devuelve todos o falla, probar archivos individuales conocidos y genéricos
+    if (!noticias || noticias.length < 5) {
+      // Intenta cargar nombres comunes creados por Decap CMS + indices numéricos
+      const posiblesArchivos = [
         'iniciacion-al-baile',
         'noticia-de-prueba',
         'noticia-de-prueba-2',
+        'noticia-de-prueba-3',
+        'noticia-de-prueba-4',
         'taller-conciencia-corporal'
       ];
-      const peticiones = fallbackFiles.map(file => loadJSONContent(`noticias_secundarias/${file}`));
+
+      // Añadir búsqueda de slugs numéricos por si acaso
+      for (let i = 1; i <= 15; i++) {
+        posiblesArchivos.push(`noticia-${i}`, `noticia_secundaria_${i}`);
+      }
+
+      const peticiones = posiblesArchivos.map(file => 
+        fetch(`./content/noticias_secundarias/${file}.json?v=${Date.now()}`)
+          .then(r => r.ok ? r.json() : null)
+          .catch(() => null)
+      );
+
       const resultados = await Promise.all(peticiones);
-      noticias = resultados.filter(Boolean);
+      
+      // Combinar y eliminar duplicados comparando títulos
+      const combinados = [...noticias, ...resultados.filter(Boolean)];
+      const unicos = new Map();
+      combinados.forEach(item => {
+        if (item && (item.title || item.titulo)) {
+          unicos.set(item.title || item.titulo, item);
+        }
+      });
+      noticias = Array.from(unicos.values());
     }
 
     secondaryContainer.innerHTML = '';
