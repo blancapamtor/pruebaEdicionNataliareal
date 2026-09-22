@@ -143,7 +143,7 @@ async function renderNews() {
   }
 }
 // =========================================================================
-// 4. RENDERIZADO DE NOTICIAS SECUNDARIAS (Carga Robusta para N Noticias)
+// 4. RENDERIZADO DE NOTICIAS SECUNDARIAS (Multi-archivo independiente)
 // =========================================================================
 async function renderSecondaryNews() {
   const secondaryContainer = document.getElementById('secondary-news-container') || document.querySelector('.news-sidebar');
@@ -152,9 +152,9 @@ async function renderSecondaryNews() {
   try {
     let noticias = [];
 
-    // 1. Intentar escanear vía GitHub API
+    // 1. Intentar escanear la carpeta directamente vía GitHub API
     try {
-      const repoResponse = await fetch(`https://api.github.com/repos/blancapamtor/pruebaEdicionNataliareal/contents/content/noticias_secundarias?cachebust=${Date.now()}`);
+      const repoResponse = await fetch(`https://api.github.com/repos/blancapamtor/pruebaEdicionNataliareal/contents/content/noticias_secundarias?cb=${Date.now()}`);
       if (repoResponse.ok) {
         const files = await repoResponse.json();
         const jsonFiles = files.filter(f => f.name.endsWith('.json'));
@@ -162,53 +162,55 @@ async function renderSecondaryNews() {
         const peticiones = jsonFiles.map(f => 
           fetch(`./content/noticias_secundarias/${f.name}?v=${Date.now()}`)
             .then(r => r.ok ? r.json() : null)
+            .catch(() => null)
         );
         const res = await Promise.all(peticiones);
         noticias = res.filter(Boolean);
       }
     } catch (err) {
-      console.warn("Fallo al consultar GitHub API, activando modo alternativo", err);
+      console.warn("API de GitHub no disponible, pasando a barrido de slugs", err);
     }
 
-    // 2. Si la API de GitHub no devuelve todos o falla, probar archivos individuales conocidos y genéricos
-    if (!noticias || noticias.length < 5) {
-      // Intenta cargar nombres comunes creados por Decap CMS + indices numéricos
-      const posiblesArchivos = [
+    // 2. Si la API de GitHub no devuelve archivos o falla por caché, barrer slugs comunes
+    if (!noticias || noticias.length === 0) {
+      const slugsAEscanear = [
         'iniciacion-al-baile',
+        'taller-conciencia-corporal',
         'noticia-de-prueba',
+        'noticia-de-prueba-1',
         'noticia-de-prueba-2',
         'noticia-de-prueba-3',
         'noticia-de-prueba-4',
-        'taller-conciencia-corporal'
+        'noticia-de-prueba-5'
       ];
 
-      // Añadir búsqueda de slugs numéricos por si acaso
-      for (let i = 1; i <= 15; i++) {
-        posiblesArchivos.push(`noticia-${i}`, `noticia_secundaria_${i}`);
+      // Generar automáticamente del 1 al 20 por si le asignan slugs numerados
+      for (let i = 1; i <= 20; i++) {
+        slugsAEscanear.push(`noticia-${i}`, `noticia_secundaria_${i}`, `noticia_${i}`);
       }
 
-      const peticiones = posiblesArchivos.map(file => 
-        fetch(`./content/noticias_secundarias/${file}.json?v=${Date.now()}`)
+      const peticiones = slugsAEscanear.map(slug => 
+        fetch(`./content/noticias_secundarias/${slug}.json?v=${Date.now()}`)
           .then(r => r.ok ? r.json() : null)
           .catch(() => null)
       );
 
       const resultados = await Promise.all(peticiones);
-      
-      // Combinar y eliminar duplicados comparando títulos
-      const combinados = [...noticias, ...resultados.filter(Boolean)];
-      const unicos = new Map();
-      combinados.forEach(item => {
-        if (item && (item.title || item.titulo)) {
-          unicos.set(item.title || item.titulo, item);
-        }
-      });
-      noticias = Array.from(unicos.values());
+      noticias = resultados.filter(Boolean);
     }
+
+    // 3. Eliminar duplicados si coinciden por título
+    const unicosMap = new Map();
+    noticias.forEach(item => {
+      if (item && (item.title || item.titulo)) {
+        unicosMap.set(item.title || item.titulo, item);
+      }
+    });
+    const listaNoticias = Array.from(unicosMap.values());
 
     secondaryContainer.innerHTML = '';
 
-    noticias.forEach(item => {
+    listaNoticias.forEach(item => {
       let longText = item.body || item.description || '';
       if (longText) {
         longText = longText
@@ -218,7 +220,7 @@ async function renderSecondaryNews() {
       }
 
       const mainTag = item.tag || item.etiqueta_principal || 'NOTICIA';
-      const subTag = item.status_tag || item.etiqueta_secundaria || item.sub_tag || '';
+      const subTag = item.status_tag || item.etiqueta_secundaria || '';
       const cardTitle = item.title || item.titulo || '';
       const cardSub = item.subtitle || item.subtitulo || '';
       const cardLoc = item.location || item.lugar || '';
@@ -262,6 +264,7 @@ async function renderSecondaryNews() {
       `;
     });
 
+    // Desplegables de información
     const allCards = secondaryContainer.querySelectorAll('.news-card');
     allCards.forEach(card => {
       const triggerBtn = card.querySelector('.js-trigger-expand');
