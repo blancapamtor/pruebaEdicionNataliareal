@@ -381,6 +381,45 @@ function initQuoteBanner() {
 }
 
 // =========================================================================
+// RENDERIZADO DE GALERÍA MULTIMEDIA
+// =========================================================================
+async function renderGallery() {
+  const container = document.getElementById('gallery-container') || document.querySelector('.gallery-grid');
+  if (!container) return;
+
+  try {
+    const items = await loadJSONContent('galeria');
+
+    if (items && items.length > 0) {
+      container.innerHTML = items.map(item => {
+        const src = item.file_url || item.image;
+        if (!src) return '';
+
+        const isVideo = item.media_type === 'video' || src.match(/\.(mp4|webm|mov|ogg)$/i);
+        const layoutClass = item.layout_type || 'item-1';
+        const title = item.title || 'Tango Natalia Vicente';
+        const captionText = item.caption || '';
+
+        return `
+          <figure class="gallery-item ${layoutClass}">
+            ${isVideo ? `
+              <video src="${src}" autoplay loop muted playsinline controlslist="nodownload"></video>
+            ` : `
+              <img src="${src}" alt="${title}" loading="lazy">
+            `}
+            ${captionText ? `<figcaption class="gallery-caption">${captionText}</figcaption>` : ''}
+          </figure>
+        `;
+      }).join('');
+    } else {
+      container.innerHTML = '<p style="text-align: center; color: #64748b; grid-column: 1/-1;">No hay multimedia disponible.</p>';
+    }
+  } catch (e) {
+    console.error("Error al cargar la galería:", e);
+  }
+}
+
+// =========================================================================
 // INICIALIZACIÓN GENERAL DE LA WEB
 // =========================================================================
 document.addEventListener('DOMContentLoaded', () => {
@@ -388,6 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateDateBadge();
   renderNews();
   renderSecondaryNews();
+  renderGallery(); 
   renderClasses();
   initQuoteBanner();
 });
