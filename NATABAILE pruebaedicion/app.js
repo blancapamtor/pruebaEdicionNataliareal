@@ -148,10 +148,11 @@ async function renderNews() {
 // --- 📄 NOTICIAS SECUNDARIAS (Dinámicas) ---
 async function renderSecondaryNews() {
   try {
-    // Si tienes una API o lista de archivos, o cargamos los JSON dinámicamente
-    // Ejemplo haciendo fetch al índice o un array con las noticias obtenidas:
-    const response = await fetch('/api/noticias_secundarias'); // O el endpoint/método que uses para cargar ficheros de la carpeta
-    const noticiasSecundarias = await response.json();
+    // Carga los JSON locales directamente
+    const noticia1 = await loadJSONContent('noticias_secundarias/iniciacion-al-baile');
+    const noticia2 = await loadJSONContent('noticias_secundarias/taller-conciencia-corporal');
+    
+    const noticiasSecundarias = [noticia1, noticia2].filter(Boolean);
 
     secondaryContainer.innerHTML = '';
 
@@ -201,14 +202,38 @@ async function renderSecondaryNews() {
       `;
     });
 
-    // Re-vincular eventos click de desplegable
-    bindExpandEvents();
+    // Vincular eventos click
+    const allCards = secondaryContainer.querySelectorAll('.news-card');
+    allCards.forEach(card => {
+      const triggerBtn = card.querySelector('.js-trigger-expand');
+      const expandedContent = card.querySelector('.expanded-content');
+      const label = card.querySelector('.btn-label');
+      const icon = card.querySelector('.btn-icon');
+
+      if (triggerBtn && expandedContent) {
+        triggerBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpening = expandedContent.style.display === 'none' || !expandedContent.style.display;
+
+          if (isOpening) {
+            expandedContent.style.display = 'block';
+            if (label) label.textContent = 'MENOS INFORMACIÓN';
+            if (icon) icon.style.transform = 'rotate(180deg)';
+            card.classList.add('is-expanded');
+          } else {
+            expandedContent.style.display = 'none';
+            if (label) label.textContent = 'MÁS INFORMACIÓN';
+            if (icon) icon.style.transform = 'rotate(0deg)';
+            card.classList.remove('is-expanded');
+          }
+        });
+      }
+    });
 
   } catch (error) {
     console.error("Error al cargar las noticias secundarias:", error);
   }
-}
-}
+} } 
 
 // =========================================================================
 // 5. RENDERIZADO DE CLASES Y TALLERES (DESDE JSON LOCAL)
