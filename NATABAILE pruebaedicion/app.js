@@ -7,12 +7,12 @@ async function loadJSONContent(fileName) {
     const response = await fetch(`./content/${fileName}.json?v=${Date.now()}`);
     if (response.ok) {
       const data = await response.json();
-      return data.items || [];
+      return Array.isArray(data) ? data : (data.items || data);
     }
   } catch (error) {
     console.error(`Error cargando ./content/${fileName}.json:`, error);
   }
-  return [];
+  return null;
 }
 
 // =========================================================================
@@ -55,18 +55,15 @@ function updateDateBadge() {
 }
 
 // =========================================================================
-// 3. RENDERIZADO DE NOTICIAS (DESDE JSON LOCAL)
+// 3. RENDERIZADO DE NOTICIA DESTACADA
 // =========================================================================
 async function renderNews() {
   const featuredContainer = document.getElementById('featured-news-container');
-  const secondaryContainer = document.getElementById('secondary-news-container');
+  if (!featuredContainer) return;
 
-  if (!featuredContainer || !secondaryContainer) return;
-
-  // --- 🌟 NOTICIA DESTACADA ---
   const noticiasDestacadas = await loadJSONContent('noticias_destacadas');
-  if (noticiasDestacadas.length > 0) {
-    const item = noticiasDestacadas[0]; // Carga la última/primera noticia
+  if (noticiasDestacadas && noticiasDestacadas.length > 0) {
+    const item = noticiasDestacadas[0];
     
     let longText = item.body || '';
     if (longText) {
@@ -144,11 +141,16 @@ async function renderNews() {
       });
     }
   }
+}
 
-// --- 📄 NOTICIAS SECUNDARIAS (Dinámicas) ---
+// =========================================================================
+// 4. RENDERIZADO DE NOTICIAS SECUNDARIAS
+// =========================================================================
 async function renderSecondaryNews() {
+  const secondaryContainer = document.getElementById('secondary-news-container') || document.querySelector('.news-sidebar');
+  if (!secondaryContainer) return;
+
   try {
-    // Carga los JSON locales directamente
     const noticia1 = await loadJSONContent('noticias_secundarias/iniciacion-al-baile');
     const noticia2 = await loadJSONContent('noticias_secundarias/taller-conciencia-corporal');
     
@@ -202,7 +204,6 @@ async function renderSecondaryNews() {
       `;
     });
 
-    // Vincular eventos click
     const allCards = secondaryContainer.querySelectorAll('.news-card');
     allCards.forEach(card => {
       const triggerBtn = card.querySelector('.js-trigger-expand');
@@ -233,10 +234,10 @@ async function renderSecondaryNews() {
   } catch (error) {
     console.error("Error al cargar las noticias secundarias:", error);
   }
-} } 
+}
 
 // =========================================================================
-// 5. RENDERIZADO DE CLASES Y TALLERES (DESDE JSON LOCAL)
+// 5. RENDERIZADO DE CLASES Y TALLERES
 // =========================================================================
 async function renderClasses() {
   const container = document.getElementById('classes-container');
@@ -249,7 +250,6 @@ async function renderClasses() {
     return;
   }
 
-  // Ordenar por el campo "order"
   classList.sort((a, b) => (parseInt(a.order) || 1) - (parseInt(b.order) || 1));
 
   container.innerHTML = classList.map(item => `
@@ -345,82 +345,26 @@ function initQuoteBanner() {
             speed: 0,
             cursorChar: '|',
           })
-          .type("U").pause(40)
-          .type("n").pause(15)
-          .type(" ").pause(22)
-          .type("e").pause(28)
-          .type("s").pause(12)
-          .type("p").pause(20)
-          .type("a").pause(38)
-          .type("c").pause(15)
-          .type("i").pause(22)
-          .type("o").pause(12)
-          .type(" ").pause(18)
-          .type("p").pause(16)
-          .type("a").pause(20)
-          .type("r").pause(16)
-          .type("a").pause(10)
-          .type(" ").pause(26)
-          .type("s").pause(14)
-          .type("o").pause(24)
-          .type("l").pause(32)
-          .type("t").pause(15)
-          .type("a").pause(11)
-          .type("r").pause(20)
-          .type("t").pause(16)
-          .type("e").pause(18)
-          .type(" ").pause(26)
-          .type("y").pause(10)
-          .type(" ").pause(22)
-          .type("d").pause(26)
-          .type("i").pause(20)
-          .type("s").pause(24)
-          .type("f").pause(26)
-          .type("r").pause(18)
-          .type("u").pause(30)
-          .type("t").pause(26)
-          .type("a").pause(10)
-          .type("r").pause(12)
-          .type(" ").pause(28)
-          .type("e").pause(25)
-          .type("l").pause(10)
-          .type(" ").pause(24)
-          .type("p").pause(20)
-          .type("r").pause(10)
-          .type("o").pause(30)
-          .type("c").pause(15)
-          .type("e").pause(30)
-          .type("s").pause(16)
-          .type("o").pause(55)
-          .type(",").pause(16)
+          .type("U").pause(40).type("n").pause(15).type(" ").pause(22).type("e").pause(28)
+          .type("s").pause(12).type("p").pause(20).type("a").pause(38).type("c").pause(15)
+          .type("i").pause(22).type("o").pause(12).type(" ").pause(18).type("p").pause(16)
+          .type("a").pause(20).type("r").pause(16).type("a").pause(10).type(" ").pause(26)
+          .type("s").pause(14).type("o").pause(24).type("l").pause(32).type("t").pause(15)
+          .type("a").pause(11).type("r").pause(20).type("t").pause(16).type("e").pause(18)
+          .type(" ").pause(26).type("y").pause(10).type(" ").pause(22).type("d").pause(26)
+          .type("i").pause(20).type("s").pause(24).type("f").pause(26).type("r").pause(18)
+          .type("u").pause(30).type("t").pause(26).type("a").pause(10).type("r").pause(12)
+          .type(" ").pause(28).type("e").pause(25).type("l").pause(10).type(" ").pause(24)
+          .type("p").pause(20).type("r").pause(10).type("o").pause(30).type("c").pause(15)
+          .type("e").pause(30).type("s").pause(16).type("o").pause(55).type(",").pause(16)
           .break({ delay: 35 })
-          .type("d").pause(16)
-          .type("o").pause(20)
-          .type("n").pause(16)
-          .type("d").pause(15)
-          .type("e").pause(14)
-          .type(" ").pause(45)
-          .type("b").pause(20)
-          .type("a").pause(24)
-          .type("i").pause(26)
-          .type("l").pause(16)
-          .type("a").pause(26)
-          .type("r").pause(10)
-          .type(" ").pause(26)
-          .type("s").pause(15)
-          .type("i").pause(25)
-          .type("n").pause(14)
-          .type(" ").pause(28)
-          .type("p").pause(16)
-          .type("r").pause(22)
-          .type("e").pause(28)
-          .type("s").pause(10)
-          .type("i").pause(20)
-          .type("o").pause(16)
-          .type("n").pause(15)
-          .type("e").pause(30)
-          .type("s").pause(26)
-          .type(".").pause(110)
+          .type("d").pause(16).type("o").pause(20).type("n").pause(16).type("d").pause(15)
+          .type("e").pause(14).type(" ").pause(45).type("b").pause(20).type("a").pause(24)
+          .type("i").pause(26).type("l").pause(16).type("a").pause(26).type("r").pause(10)
+          .type(" ").pause(26).type("s").pause(15).type("i").pause(25).type("n").pause(14)
+          .type(" ").pause(28).type("p").pause(16).type("r").pause(22).type("e").pause(28)
+          .type("s").pause(10).type("i").pause(20).type("o").pause(16).type("n").pause(15)
+          .type("e").pause(30).type("s").pause(26).type(".").pause(110)
           .exec(async () => {
             const cursor = banner.querySelector('.ti-cursor');
             if (cursor) cursor.style.opacity = '0.3';
@@ -431,12 +375,10 @@ function initQuoteBanner() {
         }
       }
     });
-
   }, { threshold: 0.3 });
 
   observer.observe(banner);
 }
-
 
 // =========================================================================
 // INICIALIZACIÓN GENERAL DE LA WEB
@@ -445,8 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileMenu();
   updateDateBadge();
   renderNews();
-  renderSecondaryNews(); // 👈 Añade esta línea para ejecutar la carga de noticias secundarias
-  renderGallery();
+  renderSecondaryNews();
   renderClasses();
   initQuoteBanner();
 });
