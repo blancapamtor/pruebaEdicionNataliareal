@@ -420,6 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileMenu();
   updateDateBadge();
   renderNews();
+  renderSecondaryNews(); // 👈 Añade esta línea para ejecutar la carga de noticias secundarias
   renderGallery();
   renderClasses();
   initQuoteBanner();
