@@ -144,28 +144,27 @@ async function renderNews() {
 }
 
 // =========================================================================
-// 4. RENDERIZADO DE NOTICIAS SECUNDARIAS (Sincronizado con CMS)
+// 4. RENDERIZADO DE NOTICIAS SECUNDARIAS (Carga Automática de Archivos)
 // =========================================================================
 async function renderSecondaryNews() {
   const secondaryContainer = document.getElementById('secondary-news-container') || document.querySelector('.news-sidebar');
   if (!secondaryContainer) return;
 
   try {
-    // 1. Cargar las noticias secundarias desde las distintas rutas posibles
-    let noticias = await loadJSONContent('noticias_secundarias');
+    // Lista explícita de todos los nombres de archivos JSON que tienes en content/noticias_secundarias/
+    const archivos = [
+      'iniciacion-al-baile',
+      'noticia-de-prueba',
+      'noticia-de-prueba-2',
+      'taller-conciencia-corporal'
+    ];
 
-    if (!Array.isArray(noticias)) {
-      const archivos = [
-        'iniciacion-al-baile',
-        'noticia-de-prueba',
-        'noticia-de-prueba-2',
-        'taller-conciencia-corporal'
-      ];
-      
-      const peticiones = archivos.map(file => loadJSONContent(`noticias_secundarias/${file}`));
-      const resultados = await Promise.all(peticiones);
-      noticias = resultados.filter(Boolean);
-    }
+    // Carga todos los archivos en paralelo
+    const peticiones = archivos.map(file => loadJSONContent(`noticias_secundarias/${file}`));
+    const resultados = await Promise.all(peticiones);
+    
+    // Filtra las respuestas válidas
+    const noticias = resultados.filter(item => item && (item.title || item.titulo));
 
     secondaryContainer.innerHTML = '';
 
@@ -178,9 +177,13 @@ async function renderSecondaryNews() {
           .replace(/\n/g, '<br>');
       }
 
-      // Mapeo de campos del CMS (Etiqueta principal, secundaria, etc.)
       const mainTag = item.tag || item.etiqueta_principal || 'NOTICIA';
       const subTag = item.status_tag || item.etiqueta_secundaria || item.sub_tag || '';
+      const cardTitle = item.title || item.titulo || '';
+      const cardSub = item.subtitle || item.subtitulo || '';
+      const cardLoc = item.location || item.lugar || '';
+      const cardDate = item.date_str || item.fecha || '';
+      const cardExtra = item.extra_info || item.informacion_extra || '';
 
       secondaryContainer.innerHTML += `
         <article class="news-card card-secondary">
@@ -189,21 +192,21 @@ async function renderSecondaryNews() {
             ${subTag ? `<span class="status-indicator" style="font-size: 0.8rem; font-weight: 600; color: #64748b; text-transform: uppercase;">${subTag}</span>` : ''}
           </div>
 
-          <h3 class="card-title">${item.title || item.titulo || ''}</h3>
-          ${item.subtitle || item.subtitulo ? `<p class="card-subtitle-highlight" style="font-size: 0.95rem; color: #1f2937; font-weight: 600; margin: 0 0 12px 0;">${item.subtitle || item.subtitulo}</p>` : ''}
+          <h3 class="card-title">${cardTitle}</h3>
+          ${cardSub ? `<p class="card-subtitle-highlight" style="font-size: 0.95rem; color: #1f2937; font-weight: 600; margin: 0 0 12px 0;">${cardSub}</p>` : ''}
 
-          ${item.location || item.lugar || item.date_str || item.fecha ? `
+          ${cardLoc || cardDate ? `
           <div class="card-location" style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 12px; color: #00b4d8;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="flex-shrink: 0; margin-top: 2px;">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
             </svg>
             <div style="font-size: 0.9rem; line-height: 1.3;">
-              ${item.location || item.lugar ? `<strong style="display: block; color: #1e293b;">${item.location || item.lugar}</strong>` : ''}
-              ${item.date_str || item.fecha ? `<span style="color: #64748b;">${item.date_str || item.fecha}</span>` : ''}
+              ${cardLoc ? `<strong style="display: block; color: #1e293b;">${cardLoc}</strong>` : ''}
+              ${cardDate ? `<span style="color: #64748b;">${cardDate}</span>` : ''}
             </div>
           </div>` : ''}
 
-          ${item.extra_info || item.informacion_extra ? `<p class="secondary-extra-info" style="font-size: 0.85rem; color: #5a6e82; margin: 0 0 16px 0;">${item.extra_info || item.informacion_extra}</p>` : ''}
+          ${cardExtra ? `<p class="secondary-extra-info" style="font-size: 0.85rem; color: #5a6e82; margin: 0 0 16px 0;">${cardExtra}</p>` : ''}
 
           <button class="btn-cyan-outline js-trigger-expand" type="button">
             <span class="btn-label">MÁS INFORMACIÓN</span>
@@ -219,7 +222,7 @@ async function renderSecondaryNews() {
       `;
     });
 
-    // Eventos para desplegar la información extra
+    // Asignación de desplegables
     const allCards = secondaryContainer.querySelectorAll('.news-card');
     allCards.forEach(card => {
       const triggerBtn = card.querySelector('.js-trigger-expand');
